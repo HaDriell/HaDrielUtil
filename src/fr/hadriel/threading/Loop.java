@@ -12,6 +12,7 @@ public abstract class Loop {
         if(running)
             return;
         running = true;
+        onStart();
         thread = new Thread(this::run);
         thread.start();
     }
@@ -22,7 +23,7 @@ public abstract class Loop {
         running = false;
         thread.join();
         thread = null;
-        onStart();
+        onStop();
     }
 
     public synchronized void interrupt() {

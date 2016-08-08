@@ -27,12 +27,6 @@ public class Vec2 {
         return this;
     }
 
-    public Vec2 div(float x, float y) {
-        this.x /= x;
-        this.y /= y;
-        return this;
-    }
-
     public Vec2 scale(float x, float y) {
         this.x *= x;
         this.y *= y;
@@ -73,10 +67,6 @@ public class Vec2 {
 
     public Vec2 sub(Vec2 v) {
         return sub(v.x, v.y);
-    }
-
-    public Vec2 div(Vec2 v) {
-        return div(v.x, v.y);
     }
 
     public float len2() {
@@ -130,8 +120,8 @@ public class Vec2 {
     }
 
     public Vec2 normalize() {
-        float len = len();
-        div(len, len);
+        float invLen = 1f / len();
+        scale(invLen, invLen);
         return this;
     }
 

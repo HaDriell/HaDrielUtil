@@ -183,6 +183,12 @@ public class Matrix3f {
         return this;
     }
 
+    public Vec2 transform(Vec2 v) {
+        float dx = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
+        float dy = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
+        return v.set(dx, dy);
+    }
+
     public static Matrix3f Scale(float sx, float sy) {
         return new Matrix3f().setToScale(sx, sy);
     }
