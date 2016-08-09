@@ -19,12 +19,14 @@ public class Window extends TickedLoop {
     private Group root;
 
     private HLRenderer renderer;
+    private Transform transform;
 
     public Window(WindowConfiguration configuration) {
         this.frame = null;
         this.root = new Group();
         this.canvas = new Canvas();
         this.renderer = new HLRenderer(canvas);
+        this.transform = new Transform();
         initCanvas();
         configure(configuration);
     }
@@ -100,9 +102,18 @@ public class Window extends TickedLoop {
     }
 
     public void dispose() {
-        frame.dispose();
         frame = null;
-        interrupt();
+        try {
+            stop();
+        } catch (InterruptedException ignore) {}
+    }
+
+    public Transform getTransform() {
+        return transform;
+    }
+
+    public void setTransform(Transform transform) {
+        this.transform = transform;
     }
 
     public Group getRoot() {
@@ -121,14 +132,13 @@ public class Window extends TickedLoop {
         setTickRate(60);
     }
 
-    private int age;
-
     protected void onTick() {
         renderer.begin();
         HLGraphics g = renderer.getGraphics();
-        age = (age + 1) % 255;
-        g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight(), new Color(age, age, age));
+        g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight(), Color.black);
+        g.push(transform.toMatrix());
         g.draw(root);
+        g.pop();
         g.dispose();
         renderer.end();
     }

@@ -56,25 +56,39 @@ public class Group extends Widget implements IEventListener {
 
     public boolean onMouseMoved(MouseMovedEvent event) {
         Vec2 mouse = transformInverse.transform(new Vec2(event.x, event.y));
-        for(Widget widget : widgets)
-            if(widget.enabled && widget.hit(mouse) && widget.onMouseMoved(event))
+        for(Widget widget : widgets) {
+            if (widget.enabled && widget.hit(mouse) && widget.onMouseMoved(event)) {
                 return true;
+            }
+        }
         return false;
     }
 
     public boolean onMousePressed(MousePressedEvent event) {
         Vec2 mouse = transformInverse.transform(new Vec2(event.x, event.y));
-        for(Widget widget : widgets)
-            if(widget.enabled && widget.hit(mouse) && widget.onMousePressed(event))
+        for(Widget widget : widgets) {
+            if (widget.enabled && widget.hit(mouse) && widget.onMousePressed(event)) {
                 return true;
+            }
+        }
         return false;
     }
     
     public boolean onMouseReleased(MouseReleasedEvent event) {
         Vec2 mouse = transformInverse.transform(new Vec2(event.x, event.y));
-        for(Widget widget : widgets)
-            if(widget.enabled && widget.hit(mouse) && widget.onMouseReleased(event))
+        for(Widget widget : widgets) {
+            if (widget.enabled && widget.hit(mouse) && widget.onMouseReleased(event)) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    protected boolean isHit(Vec2 v) {
+        for(int i = widgets.size() - 1; i >= 0; i--) {
+            if(widgets.get(i).hit(v))
+                return true;
+        }
         return false;
     }
 

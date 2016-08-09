@@ -51,6 +51,21 @@ public class Matrix3f {
         this(IDENTITY);
     }
 
+    public Matrix3f setToTransform(float scaleX, float scaleY, float rotation, float positionX, float positionY) {
+        float cos = Mathf.cos(Mathf.toRadians(rotation));
+        float sin = Mathf.sin(Mathf.toRadians(rotation));
+        elements[M00] = cos * scaleX;
+        elements[M01] = -sin;
+        elements[M02] = positionX;
+        elements[M10] = sin;
+        elements[M11] = cos * scaleY;
+        elements[M12] = positionY;
+        elements[M20] = 0;
+        elements[M21] = 0;
+        elements[M22] = 1;
+        return this;
+    }
+
     public Matrix3f set(float[] flatMatrix) {
         if(flatMatrix.length != 9)
             throw new IllegalArgumentException("Invalid flat Matrix size");

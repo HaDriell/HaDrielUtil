@@ -6,8 +6,10 @@ import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.graphics.Window;
 import fr.hadriel.graphics.ui.Group;
 import fr.hadriel.graphics.ui.Widget;
+import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.time.Timer;
 
 import java.awt.Color;
 
@@ -19,10 +21,8 @@ public class TestEventGraphics {
 
     public static class EchoWidget extends Widget {
 
-        boolean hitted = false;
-
         public void onRender(HLGraphics graphics) {
-            graphics.fillRect(0, 0, (int) size.x, (int) size.y, hitted ? Color.red : Color.blue);
+            graphics.fillRect(0, 0, (int) size.x, (int) size.y, hovered ? Color.red : Color.blue);
         }
 
         public void onUpdate(float delta) {
@@ -55,15 +55,12 @@ public class TestEventGraphics {
         }
 
         public boolean hit(Vec2 v) {
-            hitted = super.hit(v);
-            if(hitted) {
-                System.out.println("hit!");
-            }
-            return hitted;
+            System.out.println(v + " " +  hovered);
+            return super.hit(v);
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Group g = new Group();
         Widget w = new EchoWidget();
         w.size.set(100, 100);
@@ -74,13 +71,13 @@ public class TestEventGraphics {
         window.getRoot().add(g);
         window.start();
 
-        Matrix3f tr = new Matrix3f();
-        while(!Thread.interrupted()) {
-            tr.rotate(1f);
-//            w.setTransform(tr);
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException ingore) {}
+        float dx, dy;
+        Timer timer = new Timer();
+        while(!window.isDisposed()) {
+            dx = Mathf.cos(timer.elapsed()) * 10;
+            dy = Mathf.sin(timer.elapsed()) * 10;
+            window.getTransform().setToTranslation(dx, dy);
+            Thread.sleep(16);
         }
     }
 }

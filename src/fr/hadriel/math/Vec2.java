@@ -17,6 +17,10 @@ public class Vec2 {
         this(0, 0);
     }
 
+    public Vec2(Vec2 v) {
+        this(v.x, v.y);
+    }
+
     public boolean isZero() {
         return x ==0 && y == 0;
     }

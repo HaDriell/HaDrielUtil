@@ -12,10 +12,11 @@ import fr.hadriel.math.Vec2;
 public class Widget implements HLRenderable {
 
     public boolean enabled;
+    public boolean hovered;
     public final Vec2 size;
 
-    protected Matrix3f transform;
-    protected Matrix3f transformInverse;
+    protected final Matrix3f transform;
+    protected final Matrix3f transformInverse;
 
     protected Widget() {
         this.transform = new Matrix3f();
@@ -25,8 +26,8 @@ public class Widget implements HLRenderable {
     }
 
     public void setTransform(Matrix3f transform) {
-        this.transform = transform.copy();
-        this.transformInverse = transform.copy().invert();
+        this.transform.set(transform.elements);
+        this.transformInverse.set(transform.elements).invert();
     }
 
     public boolean onMouseMoved(MouseMovedEvent event) {
@@ -51,12 +52,16 @@ public class Widget implements HLRenderable {
 
     public void onRender(HLGraphics graphics) {}
 
-
     public void onUpdate(float delta) {}
 
     public boolean hit(Vec2 v) {
         Vec2 point = v.copy();
         transformInverse.transform(point);
+        hovered = isHit(point);
+        return hovered;
+    }
+
+    protected boolean isHit(Vec2 point) {
         return !(point.x < 0 || point.x > size.x || point.y < 0 || point.y > size.y);
     }
 
