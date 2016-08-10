@@ -1,13 +1,15 @@
-package fr.hadriel.serialization;
+package fr.hadriel.serialization.struct;
+
+import fr.hadriel.serialization.Serial;
 
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StBool extends StEntry {
+public class StBoolean extends StEntry {
 
     public boolean value;
 
-    public StBool(boolean value) {
+    public StBoolean(boolean value) {
         super(TYPE_BOOL);
         this.value = value;
     }
@@ -20,10 +22,14 @@ public class StBool extends StEntry {
         return Serial.write(buffer, pointer, value);
     }
 
-    public static StBool deserialize(byte[] buffer, int pointer) {
+    public static StBoolean deserialize(byte[] buffer, int pointer) {
         if(buffer[pointer] != TYPE_BOOL) return null;
         pointer++;
         boolean value = Serial.readBoolean(buffer, pointer);
-        return new StBool(value);
+        return new StBoolean(value);
+    }
+
+    public String toString() {
+        return "StBoolean(" + value + ")";
     }
 }

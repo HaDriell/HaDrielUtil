@@ -1,9 +1,6 @@
 package fr.hadriel;
 
-import fr.hadriel.serialization.StEntry;
-import fr.hadriel.serialization.StFloat;
-import fr.hadriel.serialization.StList;
-import fr.hadriel.serialization.StString;
+import fr.hadriel.serialization.struct.*;
 
 /**
  * Created by glathuiliere on 09/08/2016.
@@ -11,15 +8,18 @@ import fr.hadriel.serialization.StString;
 public class TestSerial {
 
     public static void main(String[] args) {
+        StObject object = new StObject();
         StList list = new StList();
         list.add(new StString("Helloworld"));
-        list.add(new StFloat(3.14f));
+        list.add(new StInt(66));
 
-        byte[] buffer = new byte[list.getSize()];
-        list.serialize(buffer, 0);
-        list = (StList) StEntry.deserialize(buffer, 0);
-        for(StEntry entry : list) {
-            System.out.println(entry);
-        }
+        object.put("list", list);
+        object.put("sinus", "sinus");
+        object.put("pi", 3.14f);
+
+        byte[] buffer = new byte[object.getSize()];
+        object.serialize(buffer, 0);
+        object = (StObject) StEntry.deserialize(buffer, 0);
+        System.out.println(object);
     }
 }

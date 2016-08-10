@@ -1,29 +1,26 @@
 package fr.hadriel.graphics;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by glathuiliere on 22/07/2016.
  */
-public class TextureAtlas {
+public class SpriteSheet {
 
     private BufferedImage atlas;
 
-    public TextureAtlas(BufferedImage atlas) {
+    public SpriteSheet(BufferedImage atlas) {
         this.atlas = atlas;
     }
 
-    public TextureAtlas(File file) throws IOException {
+    public SpriteSheet(File file) throws IOException {
         this(ImageIO.read(file));
     }
 
-    public TextureAtlas(String filename) throws IOException {
+    public SpriteSheet(String filename) throws IOException {
         this(new File(filename));
     }
 

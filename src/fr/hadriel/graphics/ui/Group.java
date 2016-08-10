@@ -55,9 +55,10 @@ public class Group extends Widget implements IEventListener {
     }
 
     public boolean onMouseMoved(MouseMovedEvent event) {
-        Vec2 mouse = transformInverse.transform(new Vec2(event.x, event.y));
+        Vec2 mouse = new Vec2(event.x, event.y);
+        transform.transform(mouse);
         for(Widget widget : widgets) {
-            if (widget.enabled && widget.hit(mouse) && widget.onMouseMoved(event)) {
+            if (widget.enabled && widget.hit(mouse) && widget.onMouseMoved(new MouseMovedEvent(mouse.x, mouse.y, event.dragged))) {
                 return true;
             }
         }
@@ -65,9 +66,10 @@ public class Group extends Widget implements IEventListener {
     }
 
     public boolean onMousePressed(MousePressedEvent event) {
-        Vec2 mouse = transformInverse.transform(new Vec2(event.x, event.y));
+        Vec2 mouse = new Vec2(event.x, event.y);
+        transform.transform(mouse);
         for(Widget widget : widgets) {
-            if (widget.enabled && widget.hit(mouse) && widget.onMousePressed(event)) {
+            if (widget.enabled && widget.hit(mouse) && widget.onMousePressed(new MousePressedEvent(mouse.x, mouse.y, event.button))) {
                 return true;
             }
         }
@@ -75,9 +77,10 @@ public class Group extends Widget implements IEventListener {
     }
     
     public boolean onMouseReleased(MouseReleasedEvent event) {
-        Vec2 mouse = transformInverse.transform(new Vec2(event.x, event.y));
+        Vec2 mouse = new Vec2(event.x, event.y);
+        transform.transform(mouse);
         for(Widget widget : widgets) {
-            if (widget.enabled && widget.hit(mouse) && widget.onMouseReleased(event)) {
+            if (widget.enabled && widget.hit(mouse) && widget.onMouseReleased(new MouseReleasedEvent(mouse.x, mouse.y, event.button))) {
                 return true;
             }
         }

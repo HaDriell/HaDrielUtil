@@ -1,4 +1,6 @@
-package fr.hadriel.serialization;
+package fr.hadriel.serialization.struct;
+
+import fr.hadriel.serialization.Serial;
 
 /**
  * Created by glathuiliere on 09/08/2016.
@@ -25,5 +27,9 @@ public class StLong extends StEntry {
         pointer++;
         long value = Serial.readLong(buffer, pointer);
         return new StLong(value);
+    }
+
+    public String toString() {
+        return "StList(" + value + ")";
     }
 }

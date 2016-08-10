@@ -1,4 +1,6 @@
-package fr.hadriel.serialization;
+package fr.hadriel.serialization.struct;
+
+import fr.hadriel.serialization.Serial;
 
 /**
  * Created by glathuiliere on 09/08/2016.
@@ -28,10 +30,11 @@ public class StString extends StEntry {
         short length = Serial.readShort(buffer, pointer);
         pointer += 2;
         byte[] string = new byte[length];
-        for(int i = 0; i < string.length; i++) {
-            string[i] = Serial.readByte(buffer, pointer);
-            pointer++;
-        }
+        Serial.readByteArray(buffer, pointer, string, length);
         return new StString(new String(string));
+    }
+
+    public String toString() {
+        return "StString(" + value + ")";
     }
 }

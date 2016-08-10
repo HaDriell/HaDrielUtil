@@ -14,8 +14,8 @@ public class HLGraphics {
 
     public HLGraphics(Graphics2D g) {
         this.g = g;
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         this.stack = new MatrixStack();
     }
 
@@ -81,9 +81,9 @@ public class HLGraphics {
     public void drawString(String str, Font font, float size, Color color) {
         if(font.getSize() != 100)
             font = font.deriveFont(100f);
-        Shape shape = font.layoutGlyphVector(g.getFontRenderContext(), str.toCharArray(), 0, str.length(), 0).getOutline();
+        Shape shape = font.createGlyphVector(g.getFontRenderContext(), str).getOutline();
         g.setColor(color);
-        scale(size / 100f, size / 100f);
+        push(Matrix3f.Scale(size / 100f, size / 100f));
         g.fill(shape);
         pop();
     }
@@ -91,9 +91,9 @@ public class HLGraphics {
     public void drawOutline(String str, Font font, float size, Color color) {
         if(font.getSize() != 100)
             font = font.deriveFont(100f);
-        Shape shape = font.layoutGlyphVector(g.getFontRenderContext(), str.toCharArray(), 0, str.length(), 0).getOutline();
+        Shape shape = font.createGlyphVector(g.getFontRenderContext(), str).getOutline();
         g.setColor(color);
-        scale(size / 100f, size / 100f);
+        push(Matrix3f.Scale(size / 100f, size / 100f));
         g.draw(shape);
         pop();
     }
@@ -102,8 +102,16 @@ public class HLGraphics {
         g.drawImage(img, 0, 0, null);
     }
 
+    public void drawImageStretched(Image img, int width, int height) {
+        g.drawImage(img, 0, 0, width, height, null);
+    }
+
     public void draw(HLRenderable renderable) {
         renderable.render(this);
+    }
+
+    public void draw(Shape shape) {
+        g.draw(shape);
     }
 
     public void dispose() {

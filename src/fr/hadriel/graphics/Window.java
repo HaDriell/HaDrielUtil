@@ -5,9 +5,13 @@ import fr.hadriel.events.*;
 import fr.hadriel.graphics.ui.Group;
 import fr.hadriel.threading.TickedLoop;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by glathuiliere on 22/07/2016.
@@ -16,17 +20,16 @@ public class Window extends TickedLoop {
 
     private JFrame frame;
     private Canvas canvas;
-    private Group root;
 
+    private List<Group> roots;
+    private Lock lock = new ReentrantLock();
     private HLRenderer renderer;
-    private Transform transform;
 
     public Window(WindowConfiguration configuration) {
         this.frame = null;
-        this.root = new Group();
+        this.roots = new ArrayList<>();
         this.canvas = new Canvas();
         this.renderer = new HLRenderer(canvas);
-        this.transform = new Transform();
         initCanvas();
         configure(configuration);
     }
@@ -38,29 +41,47 @@ public class Window extends TickedLoop {
     private void initCanvas() {
         canvas.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                root.onEvent(new MousePressedEvent(e.getX(), e.getY(), e.getButton()));
+                lock.lock();
+                for(int i = roots.size() - 1; i >= 0; i--)
+                    roots.get(i).onEvent(new MousePressedEvent(e.getX(), e.getY(), e.getButton()));
+                lock.unlock();
             }
 
             public void mouseReleased(MouseEvent e) {
-                root.onEvent(new MouseReleasedEvent(e.getX(), e.getY(), e.getButton()));
+                lock.lock();
+                for(int i = roots.size() - 1; i >= 0; i--)
+                    roots.get(i).onEvent(new MouseReleasedEvent(e.getX(), e.getY(), e.getButton()));
+                lock.unlock();
             }
         });
         canvas.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseDragged(MouseEvent e) {
-                root.onEvent(new MouseMovedEvent(e.getX(), e.getY(), true));
+                lock.lock();
+                for(int i = roots.size() - 1; i >= 0; i--)
+                    roots.get(i).onEvent(new MouseMovedEvent(e.getX(), e.getY(), true));
+                lock.unlock();
             }
 
             public void mouseMoved(MouseEvent e) {
-                root.onEvent(new MouseMovedEvent(e.getX(), e.getY(), false));
+                lock.lock();
+                for(int i = roots.size() - 1; i >= 0; i--)
+                    roots.get(i).onEvent(new MouseMovedEvent(e.getX(), e.getY(), false));
+                lock.unlock();
             }
         });
         canvas.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                root.onEvent(new KeyPressedEvent(e.getKeyCode()));
+                lock.lock();
+                for (int i = roots.size() - 1; i >= 0; i--)
+                    roots.get(i).onEvent(new KeyPressedEvent(e.getKeyCode()));
+                lock.unlock();
             }
 
             public void keyReleased(KeyEvent e) {
-                root.onEvent(new KeyReleasedEvent(e.getKeyCode()));
+                lock.lock();
+                for (int i = roots.size() - 1; i >= 0; i--)
+                    roots.get(i).onEvent(new KeyReleasedEvent(e.getKeyCode()));
+                lock.unlock();
             }
         });
     }
@@ -102,22 +123,30 @@ public class Window extends TickedLoop {
     }
 
     public void dispose() {
+        if(frame != null)
+            frame.dispose();
         frame = null;
         try {
             stop();
         } catch (InterruptedException ignore) {}
     }
 
-    public Transform getTransform() {
-        return transform;
+    public void addRoot(Group group) {
+        lock.lock();
+        roots.add(group);
+        lock.unlock();
     }
 
-    public void setTransform(Transform transform) {
-        this.transform = transform;
+    public void removeRoot(Group group) {
+        lock.lock();
+        roots.remove(group);
+        lock.unlock();
     }
 
-    public Group getRoot() {
-        return root;
+    public void clearRoots() {
+        lock.lock();
+        roots.clear();
+        lock.unlock();
     }
 
     public Dimension getSize() {
@@ -136,9 +165,11 @@ public class Window extends TickedLoop {
         renderer.begin();
         HLGraphics g = renderer.getGraphics();
         g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight(), Color.black);
-        g.push(transform.toMatrix());
-        g.draw(root);
-        g.pop();
+        lock.lock();
+        for(Group root : roots) {
+            g.draw(root);
+        }
+        lock.unlock();
         g.dispose();
         renderer.end();
     }

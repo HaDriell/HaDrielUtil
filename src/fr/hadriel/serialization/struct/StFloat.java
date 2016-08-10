@@ -1,4 +1,6 @@
-package fr.hadriel.serialization;
+package fr.hadriel.serialization.struct;
+
+import fr.hadriel.serialization.Serial;
 
 /**
  * Created by glathuiliere on 09/08/2016.
@@ -25,5 +27,9 @@ public class StFloat extends StEntry {
         pointer++;
         float value = Serial.readFloat(buffer, pointer);
         return new StFloat(value);
+    }
+
+    public String toString() {
+        return "StFloat(" + value + ")";
     }
 }

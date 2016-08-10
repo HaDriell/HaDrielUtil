@@ -164,4 +164,65 @@ public class Serial {
         long bits = readLong(buffer, pointer);
         return Double.longBitsToDouble(bits);
     }
+
+    public static int readByteArray(byte[] buffer, int pointer, byte[] array, int length) {
+        System.arraycopy(buffer, pointer, array, 0, length);
+        return length;
+    }
+
+    public static int readBooleanArray(byte[] buffer, int pointer, boolean[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readBoolean(buffer, pointer);
+            pointer += 1;
+        }
+        return pointer;
+    }
+
+    public static int readShortArray(byte[] buffer, int pointer, short[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readShort(buffer, pointer);
+            pointer += 2;
+        }
+        return pointer;
+    }
+
+    public static int readCharArray(byte[] buffer, int pointer, char[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readChar(buffer, pointer);
+            pointer += 2;
+        }
+        return pointer;
+    }
+
+    public static int readIntArray(byte[] buffer, int pointer, int[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readInt(buffer, pointer);
+            pointer += 4;
+        }
+        return pointer;
+    }
+
+    public static int readFloatArray(byte[] buffer, int pointer, float[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readFloat(buffer, pointer);
+            pointer += 4;
+        }
+        return pointer;
+    }
+
+    public static int readLongArray(byte[] buffer, int pointer, long[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readLong(buffer, pointer);
+            pointer += 8;
+        }
+        return pointer;
+    }
+
+    public static int readDoubleArray(byte[] buffer, int pointer, double[] array, int length) {
+        for(int i = 0; i < length; i++) {
+            array[i] = Serial.readDouble(buffer, pointer);
+            pointer += 8;
+        }
+        return pointer;
+    }
 }

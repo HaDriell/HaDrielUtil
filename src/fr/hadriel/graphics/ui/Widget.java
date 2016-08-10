@@ -3,7 +3,7 @@ package fr.hadriel.graphics.ui;
 import fr.hadriel.events.*;
 import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.graphics.HLRenderable;
-import fr.hadriel.math.Matrix3f;
+import fr.hadriel.graphics.Transform;
 import fr.hadriel.math.Vec2;
 
 /**
@@ -13,21 +13,30 @@ public class Widget implements HLRenderable {
 
     public boolean enabled;
     public boolean hovered;
-    public final Vec2 size;
 
-    protected final Matrix3f transform;
-    protected final Matrix3f transformInverse;
+    protected final Vec2 size;
+    protected final Transform transform;
 
     protected Widget() {
-        this.transform = new Matrix3f();
-        this.transformInverse = new Matrix3f();
+        this.transform = new Transform();
         this.size = new Vec2();
         this.enabled = true;
     }
 
-    public void setTransform(Matrix3f transform) {
-        this.transform.set(transform.elements);
-        this.transformInverse.set(transform.elements).invert();
+    public Transform getTransform() {
+        return transform;
+    }
+
+    public float getWidth() {
+        return size.x;
+    }
+
+    public float getHeight() {
+        return size.y;
+    }
+
+    public void setSize(float x, float y) {
+        size.set(x, y);
     }
 
     public boolean onMouseMoved(MouseMovedEvent event) {
@@ -56,7 +65,7 @@ public class Widget implements HLRenderable {
 
     public boolean hit(Vec2 v) {
         Vec2 point = v.copy();
-        transformInverse.transform(point);
+        transform.transform(point);
         hovered = isHit(point);
         return hovered;
     }
@@ -66,7 +75,7 @@ public class Widget implements HLRenderable {
     }
 
     public final void render(HLGraphics graphics) {
-        graphics.push(transform);
+        graphics.push(transform.toMatrix());
         onRender(graphics);
         graphics.pop();
     }

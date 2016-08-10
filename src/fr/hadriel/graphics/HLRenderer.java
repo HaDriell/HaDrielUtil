@@ -23,7 +23,6 @@ public class HLRenderer {
             bs = canvas.getBufferStrategy(); // force assign
         }
         graphics = new HLGraphics((Graphics2D) bs.getDrawGraphics());
-        graphics.fillRect(0, 0, canvas.getWidth(), canvas.getHeight(), Color.white);
     }
 
     public synchronized HLGraphics getGraphics() {
