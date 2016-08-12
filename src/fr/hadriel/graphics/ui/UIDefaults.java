@@ -2,10 +2,13 @@ package fr.hadriel.graphics.ui;
 
 import fr.hadriel.graphics.Texture;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 /**
  * Created by glathuiliere on 11/08/2016.
@@ -43,6 +46,26 @@ public final class UIDefaults {
 
     }
 
+    //Slider Defaults
+    public static final Texture DEFAULT_SLIDER_BACKGROUND;
+    public static final Texture DEFAULT_SLIDER_BUTTON;
+    static {
+        BufferedImage sliderBackground = new BufferedImage(128, 32, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage sliderButton = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g;
+
+        g = sliderBackground.createGraphics();
+        g.setPaint(new GradientPaint(0, 0, new Color(92, 92, 92), 0, 8, new Color(32, 32, 32)));
+        g.fillRect(0, 0, sliderBackground.getWidth(), sliderBackground.getHeight());
+        g.dispose();
+
+        g = sliderButton.createGraphics();
+        g.setColor(Color.lightGray.darker());
+        g.fillRect(0, 0, sliderButton.getWidth() - 1, sliderButton.getHeight() - 1);
+        g.dispose();
+        DEFAULT_SLIDER_BACKGROUND = new Texture(sliderBackground);
+        DEFAULT_SLIDER_BUTTON = new Texture(sliderButton);
+    }
 
     //Text defaults
     public static final FontRenderContext HQ_FRC = new FontRenderContext(null, true, true);
