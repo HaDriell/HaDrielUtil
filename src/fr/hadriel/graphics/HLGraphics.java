@@ -10,47 +10,51 @@ import java.awt.*;
 public class HLGraphics {
 
     private Graphics2D g;
-    private MatrixStack stack;
+    private MatrixStack matrixStack;
+    private ClipStack clipStack;
 
     public HLGraphics(Graphics2D g) {
         this.g = g;
         g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        this.stack = new MatrixStack();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        this.matrixStack = new MatrixStack();
+        this.clipStack = new ClipStack(g.getClip());
     }
 
-    public void push(Matrix3f matrix) {
-        stack.push(matrix);
-        g.setTransform(stack.top().toAffineTransform());
+    public void pushClip(Shape shape) {
+        clipStack.push(shape);
+        g.setClip(clipStack.top());
     }
 
-    public void pop() {
-        stack.pop();
-        g.setTransform(stack.top().toAffineTransform());
+    public void popClip() {
+        clipStack.pop();
+        g.setClip(clipStack.top());
     }
 
-    public void showStackInfo() {
-        System.out.println(stack.top());
+    public void pushTransform(Matrix3f matrix) {
+        matrixStack.push(matrix);
+        g.setTransform(matrixStack.top().toAffineTransform());
     }
 
-    public void setToIdentity() {
-        stack.clear();
-        g.setTransform(stack.top().toAffineTransform());
+    public void popTransform() {
+        matrixStack.pop();
+        g.setTransform(matrixStack.top().toAffineTransform());
     }
 
     public void translate(float x, float y) {
-        stack.top().translate(x, y);
-        g.setTransform(stack.top().toAffineTransform());
+        matrixStack.top().translate(x, y);
+        g.setTransform(matrixStack.top().toAffineTransform());
     }
 
     public void rotate(float angle) {
-        stack.top().rotate(angle);
-        g.setTransform(stack.top().toAffineTransform());
+        matrixStack.top().rotate(angle);
+        g.setTransform(matrixStack.top().toAffineTransform());
     }
 
     public void scale(float x, float y) {
-        stack.top().scale(x, y);
-        g.setTransform(stack.top().toAffineTransform());
+        matrixStack.top().scale(x, y);
+        g.setTransform(matrixStack.top().toAffineTransform());
     }
 
     public void drawLine(int x1, int y1, int x2, int y2, Color color) {
@@ -83,9 +87,9 @@ public class HLGraphics {
             font = font.deriveFont(100f);
         Shape shape = font.createGlyphVector(g.getFontRenderContext(), str).getOutline();
         g.setColor(color);
-        push(Matrix3f.Scale(size / 100f, size / 100f));
+        pushTransform(Matrix3f.Scale(size / 100f, size / 100f));
         g.fill(shape);
-        pop();
+        popTransform();
     }
 
     public void drawOutline(String str, Font font, float size, Color color) {
@@ -93,9 +97,9 @@ public class HLGraphics {
             font = font.deriveFont(100f);
         Shape shape = font.createGlyphVector(g.getFontRenderContext(), str).getOutline();
         g.setColor(color);
-        push(Matrix3f.Scale(size / 100f, size / 100f));
+        pushTransform(Matrix3f.Scale(size / 100f, size / 100f));
         g.draw(shape);
-        pop();
+        popTransform();
     }
 
     public void drawImage(Image img) {

@@ -6,6 +6,8 @@ import fr.hadriel.graphics.HLRenderable;
 import fr.hadriel.graphics.Transform;
 import fr.hadriel.math.Vec2;
 
+import java.awt.*;
+
 /**
  * Created by glathuiliere on 08/08/2016.
  */
@@ -59,6 +61,16 @@ public class Widget implements HLRenderable {
         return false;
     }
 
+    /**
+     * Called when mouse hits returns true for the first time on the Widget
+     */
+    public void onMouseEntered() {}
+
+    /**
+     * Called when mouse hits returns false for the first time on the Widget
+     */
+    public void onMouseExited() {}
+
     public void onRender(HLGraphics graphics) {}
 
     public void onUpdate(float delta) {}
@@ -66,7 +78,10 @@ public class Widget implements HLRenderable {
     public boolean hit(Vec2 v) {
         Vec2 point = v.copy();
         transform.transform(point);
-        hovered = isHit(point);
+        boolean hit = isHit(point);
+        if(hit && !hovered) onMouseEntered();
+        if(!hit && hovered) onMouseExited();
+        hovered = hit;
         return hovered;
     }
 
@@ -75,8 +90,10 @@ public class Widget implements HLRenderable {
     }
 
     public final void render(HLGraphics graphics) {
-        graphics.push(transform.toMatrix());
+        graphics.pushTransform(transform.toMatrix());
+        graphics.pushClip(new Rectangle(0, 0, (int) size.x, (int) size.y));
         onRender(graphics);
-        graphics.pop();
+        graphics.popClip();
+        graphics.popTransform();
     }
 }

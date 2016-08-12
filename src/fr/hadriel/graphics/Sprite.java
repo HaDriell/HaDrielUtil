@@ -25,9 +25,9 @@ public abstract class Sprite implements HLRenderable {
         Vec2 translation = position.copy().sub(anchorOffset);
         Matrix3f matrix = new Matrix3f();
         matrix.setToTransform(scale.x, scale.y, rotation, translation.x, translation.y);
-        g.push(matrix);
+        g.pushTransform(matrix);
         onRender(g);
-        g.pop();
+        g.popTransform();
     }
 
     public abstract float getWidth();
