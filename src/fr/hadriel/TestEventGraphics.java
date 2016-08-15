@@ -20,8 +20,8 @@ public class TestEventGraphics {
         //SLIDER STUFF
         Slider slider = new Slider(0f);
         slider.setSize(500, 10);
+        slider.getTransform().rotate(45f);
         root.add(slider);
-
         //END SLIDER STUFF
 
         //BUTTON STUFF
@@ -30,10 +30,9 @@ public class TestEventGraphics {
 //        NinePatch pressedPatch = new NinePatch("res/button-pressed-patch.png", 25, 25, 25, 25);
 //
 //        root.add(new Button("Fucking nice looking Button",
-//                idlePatch.createTexture(300, 100),
-//                hoveredPatch.createTexture(300, 100),
-//                pressedPatch.createTexture(300, 100)));
-//        root.add(button);
+//                idlePatch.createTexture(900, 100),
+//                hoveredPatch.createTexture(900, 100),
+//                pressedPatch.createTexture(900, 100)));
         //END BUTTON STUFF
         window.addRoot(root);
     }

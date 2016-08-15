@@ -38,7 +38,7 @@ public class Slider extends Widget {
 
     private void changeValue(float x, float y) {
         float buttonWidth = getButtonScale() * button.getWidth();
-        float distance = x - buttonWidth / 2;
+        float distance = Mathf.sqrt(x * x + y * y) - buttonWidth / 2;
         float internalWidth = size.x - buttonWidth;
         setValue(distance / internalWidth);
     }
