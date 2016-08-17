@@ -1,5 +1,7 @@
 package fr.hadriel.graphics;
 
+import fr.hadriel.math.Vec2;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -140,6 +142,10 @@ public class NinePatch {
         }
     }
 
+    public Texture createTexture(Vec2 size) {
+        return createTexture((int) size.x, (int) size.y);
+    }
+
     public Texture createTexture(int width, int height) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         HLGraphics g = new HLGraphics(image.createGraphics());
@@ -152,6 +158,8 @@ public class NinePatch {
         for(int x = 0; x < 3; x++) {
             for(int y = 0; y < 3; y++) {
                 int textureID = x + y * 3;
+                if(textures[textureID] == null)
+                    continue;
                 int dx = getX(textureID, width);
                 int dy = getY(textureID, height);
                 int dw = getWidth(textureID, width);

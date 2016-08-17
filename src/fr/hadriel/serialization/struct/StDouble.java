@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StDouble extends StEntry {
+public class StDouble extends StructEntry {
 
     public double value;
 

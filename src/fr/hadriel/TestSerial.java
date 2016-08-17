@@ -19,7 +19,7 @@ public class TestSerial {
 
         byte[] buffer = new byte[object.getSize()];
         object.serialize(buffer, 0);
-        object = (StObject) StEntry.deserialize(buffer, 0);
+        object = (StObject) StructEntry.deserialize(buffer, 0);
         System.out.println(object);
     }
 }

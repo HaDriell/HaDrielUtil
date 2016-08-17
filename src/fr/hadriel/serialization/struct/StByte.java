@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StByte extends StEntry {
+public class StByte extends StructEntry {
 
     public byte value;
 

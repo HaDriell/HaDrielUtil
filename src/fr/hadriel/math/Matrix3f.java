@@ -68,7 +68,7 @@ public class Matrix3f {
 
     public Matrix3f set(float[] flatMatrix) {
         if(flatMatrix.length != 9)
-            throw new IllegalArgumentException("Invalid flat Matrix size");
+            throw new IllegalArgumentException("Invalid flat Matrix sizeProperty");
         System.arraycopy(flatMatrix, 0, elements, 0, flatMatrix.length);
         return this;
     }

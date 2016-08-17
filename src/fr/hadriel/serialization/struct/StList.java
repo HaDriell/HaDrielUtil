@@ -9,20 +9,20 @@ import java.util.List;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StList extends StEntry implements Iterable<StEntry> {
+public class StList extends StructEntry implements Iterable<StructEntry> {
 
-    private List<StEntry> entries;
+    private List<StructEntry> entries;
 
     public StList() {
         super(TYPE_LIST);
         this.entries = new ArrayList<>();
     }
 
-    public StEntry get(int index) {
+    public StructEntry get(int index) {
         return entries.get(index);
     }
 
-    public void add(StEntry entry) {
+    public void add(StructEntry entry) {
         entries.add(entry);
     }
 
@@ -62,7 +62,7 @@ public class StList extends StEntry implements Iterable<StEntry> {
         entries.add(new StString(value));
     }
 
-    public void remove(StEntry entry) {
+    public void remove(StructEntry entry) {
         entries.remove(entry);
     }
 
@@ -76,20 +76,20 @@ public class StList extends StEntry implements Iterable<StEntry> {
 
     protected int getSizeImpl() {
         int size = 2;
-        for(StEntry entry : entries)
+        for(StructEntry entry : entries)
             size += entry.getSize();
         return size;
     }
 
     protected int serializeImpl(byte[] buffer, int pointer) {
         pointer = Serial.write(buffer, pointer, (short) entries.size());
-        for(StEntry entry : entries) {
+        for(StructEntry entry : entries) {
             pointer = entry.serialize(buffer, pointer);
         }
         return pointer;
     }
 
-    public Iterator<StEntry> iterator() {
+    public Iterator<StructEntry> iterator() {
         return entries.iterator();
     }
 
@@ -100,7 +100,7 @@ public class StList extends StEntry implements Iterable<StEntry> {
         short count = Serial.readShort(buffer, pointer);
         pointer += 2;
         for(int i = 0; i < count; i++) {
-            StEntry entry = StEntry.deserialize(buffer, pointer);
+            StructEntry entry = StructEntry.deserialize(buffer, pointer);
             pointer += entry.getSize();
             list.add(entry);
         }
@@ -111,7 +111,7 @@ public class StList extends StEntry implements Iterable<StEntry> {
         StringBuilder sb = new StringBuilder();
         sb.append("StList(");
         boolean firstStatement = true;
-        for(StEntry entry : entries) {
+        for(StructEntry entry : entries) {
             if(firstStatement)
                 firstStatement = false;
             else

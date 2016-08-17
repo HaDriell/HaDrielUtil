@@ -3,8 +3,6 @@ package fr.hadriel;
 
 import fr.hadriel.graphics.*;
 import fr.hadriel.graphics.ui.*;
-import fr.hadriel.math.Mathf;
-import fr.hadriel.time.Timer;
 
 /**
  * Created by glathuiliere on 08/08/2016.
@@ -18,22 +16,33 @@ public class TestEventGraphics {
         root.getTransform().translate(50, 50);
 
         //SLIDER STUFF
-        Slider slider = new Slider(0f);
-        slider.setSize(500, 10);
-        slider.getTransform().rotate(45f);
+        Slider slider = new Slider(300, 12);
         root.add(slider);
         //END SLIDER STUFF
 
         //BUTTON STUFF
+        Button defaultButton = new Button("Epic Button");
+        defaultButton.getTransform().translate(0, 150);
+        defaultButton.setSize(150, 50);
+        root.add(defaultButton);
+
 //        NinePatch idlePatch = new NinePatch("res/button-idle-patch.png", 25, 25, 25, 25);
 //        NinePatch hoveredPatch = new NinePatch("res/button-hovered-patch.png", 25, 25, 25, 25);
 //        NinePatch pressedPatch = new NinePatch("res/button-pressed-patch.png", 25, 25, 25, 25);
-//
-//        root.add(new Button("Fucking nice looking Button",
-//                idlePatch.createTexture(900, 100),
-//                hoveredPatch.createTexture(900, 100),
-//                pressedPatch.createTexture(900, 100)));
+//        Button texturedButton = new Button("Click me !");
+//        texturedButton.setSize(300, 50);
+//        texturedButton.setOnIdleTexture(idlePatch);
+//        texturedButton.setOnHoveredTexture(hoveredPatch);
+//        texturedButton.setOnPressedTexture(pressedPatch);
+//        texturedButton.getTransform().translate(0, 40);
+//        root.add(texturedButton);
+
         //END BUTTON STUFF
+
+        //LABEL STUFF
+        Label label = new Label("Texte");
+        root.add(label);
+        //END LABEL STUFF
         window.addRoot(root);
     }
 }

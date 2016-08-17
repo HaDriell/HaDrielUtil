@@ -32,12 +32,12 @@ public class Group extends Widget implements IEventListener {
         widgets.clear();
     }
 
-    public void onEvent(IEvent event) {
-        IEvent.dispatch(event, MousePressedEvent.class, this::onMousePressed);
-        IEvent.dispatch(event, MouseReleasedEvent.class, this::onMouseReleased);
-        IEvent.dispatch(event, MouseMovedEvent.class, this::onMouseMoved);
-        IEvent.dispatch(event, KeyPressedEvent.class, this::onKeyPressed);
-        IEvent.dispatch(event, KeyReleasedEvent.class, this::onKeyReleased);
+    public boolean onEvent(IEvent event) {
+        return IEvent.dispatch(event, MousePressedEvent.class, this::onMousePressed) ||
+                IEvent.dispatch(event, MouseReleasedEvent.class, this::onMouseReleased) ||
+                IEvent.dispatch(event, MouseMovedEvent.class, this::onMouseMoved) ||
+                IEvent.dispatch(event, KeyPressedEvent.class, this::onKeyPressed) ||
+                IEvent.dispatch(event, KeyReleasedEvent.class, this::onKeyReleased);
     }
 
     public boolean onKeyPressed(KeyPressedEvent event) {

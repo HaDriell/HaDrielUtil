@@ -24,6 +24,11 @@ public class Timer {
         anchor = System.nanoTime();
     }
 
+
+    public void set(float elapsedMilliseconds) {
+        anchor = (long) (System.nanoTime() - elapsedMilliseconds * 1_000_000F);
+    }
+
     /**
      * sets the timer anchor to the time value, so the elapsed() method will be relative to that anchor.
      * @param time the anchor value.

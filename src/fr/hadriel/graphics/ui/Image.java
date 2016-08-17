@@ -2,30 +2,37 @@ package fr.hadriel.graphics.ui;
 
 import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.graphics.Texture;
+import fr.hadriel.util.Property;
 
 /**
  * Created by glathuiliere on 11/08/2016.
  */
 public class Image extends Widget {
 
-    private Texture texture;
+    private Property<Texture> textureProperty;
 
     public Image(Texture texture) {
-        setTexture(texture);
+        this.textureProperty = new Property<>(texture);
+
+        this.textureProperty.addCallback((tex) -> {
+            if(tex == null)
+                setSize(0, 0);
+            else
+                setSize(tex.getWidth(), tex.getHeight());
+        });
     }
 
     public Texture getTexture() {
-        return texture;
+        return textureProperty.get();
     }
 
     public void setTexture(Texture texture) {
-        this.texture = texture;
-        if(texture != null) setSize(texture.getWidth(), texture.getHeight());
-        else setSize(0, 0);
+        textureProperty.set(texture);
     }
 
     public void onRender(HLGraphics g) {
-        if(texture != null)
-            texture.render(g);
+        Texture t = textureProperty.get();
+        if(t != null)
+            t.render(g);
     }
 }

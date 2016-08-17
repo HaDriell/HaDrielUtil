@@ -1,5 +1,8 @@
 package fr.hadriel.net;
 
+import fr.hadriel.event.MultiEventListener;
+import fr.hadriel.events.ConnectEvent;
+import fr.hadriel.events.DataEvent;
 import fr.hadriel.threading.Loop;
 
 import java.io.IOException;
@@ -8,27 +11,46 @@ import java.net.*;
 /**
  * Created by glathuiliere on 08/08/2016.
  */
-public abstract class UDPSocket extends Loop {
+public class UDPSocket extends Loop {
 
+    public static final int DEFAULT_BUFFER_SIZE = 1400;
+
+    public final MultiEventListener listener;
     public final InetAddress address;
     public final int port;
+
     private DatagramSocket socket;
+    private UDPConnectionManager manager;
 
     //Receive buffer system
     private DatagramPacket receivePacket;
 
     public UDPSocket(InetAddress address, int port, int bufferSize) {
+        this.listener = new MultiEventListener();
+        this.manager = new UDPConnectionManager(this);
         this.address = address;
         this.port = port;
+        setBufferSize(bufferSize);
+    }
+
+    public UDPSocket(InetAddress address, int port) {
+        this(address, port, DEFAULT_BUFFER_SIZE);
+    }
+
+    public UDPSocket(int port) {
+        this(null, port);
+    }
+
+    public UDPSocket() {
+        this(0);
+    }
+
+    public void setBufferSize(int bufferSize) {
         this.receivePacket = new DatagramPacket(new byte[bufferSize], bufferSize);
     }
 
-    public UDPSocket(int port, int bufferSize) {
-        this(null, port, bufferSize);
-    }
-
-    public UDPSocket(int bufferSize) {
-        this(0, bufferSize);
+    public int getBufferSize() {
+        return receivePacket.getData().length;
     }
 
     protected void onStart() {
@@ -47,17 +69,27 @@ public abstract class UDPSocket extends Loop {
             return;
         }
 
+        //Update connections
+        manager.updateConnections();
         //Listen over the network
         try {
             socket.receive(receivePacket);
         } catch (IOException ignore) {
-            return; // no data received
+            return;
         }
 
-        //copy data (useful ?)
-        byte[] buffer = new byte[receivePacket.getLength()];
-        System.arraycopy(receivePacket.getData(), receivePacket.getOffset(), buffer, 0, receivePacket.getLength());
-        onReceive(buffer); //fire Event
+        //Process Data
+        InetAddress address = receivePacket.getAddress();
+        int port = receivePacket.getPort();
+        UDPConnection connection = manager.getConnection(address, port);
+
+        //Connection detected
+        if(connection == null) {
+            connection = manager.createConnection(address, port);
+            listener.onEvent(new ConnectEvent(connection));
+        }
+        connection.refresh();
+        listener.onEvent(new DataEvent(connection, receivePacket.getData(), receivePacket.getOffset(), receivePacket.getLength()));
     }
 
     protected void onStop() {
@@ -66,12 +98,14 @@ public abstract class UDPSocket extends Loop {
     }
 
     public void send(byte[] data, InetAddress address, int port) {
+        send(data, 0, data.length, address, port);
+    }
+
+    public void send(byte[] data, int offset, int length, InetAddress address, int port) {
         try {
-            socket.send(new DatagramPacket(data, 0, data.length, address, port));
+            socket.send(new DatagramPacket(data, offset, length, address, port));
         } catch (IOException ignore) {
             ignore.printStackTrace();
         }
     }
-
-    public abstract void onReceive(byte[] data);
 }

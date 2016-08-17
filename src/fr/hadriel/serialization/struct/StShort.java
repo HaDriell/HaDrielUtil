@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StShort extends StEntry {
+public class StShort extends StructEntry {
 
     public short value;
 

@@ -1,12 +1,13 @@
 package fr.hadriel.graphics.ui;
 
-import fr.hadriel.events.MouseMovedEvent;
 import fr.hadriel.events.MousePressedEvent;
 import fr.hadriel.events.MouseReleasedEvent;
 import fr.hadriel.graphics.HLGraphics;
+import fr.hadriel.graphics.NinePatch;
 import fr.hadriel.graphics.Text;
 import fr.hadriel.graphics.Texture;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.util.Property;
 
 /**
  * Created by glathuiliere on 10/08/2016.
@@ -16,26 +17,49 @@ public class Button extends Widget {
     private boolean pressed;
 
     private Text text;
-    private Texture idleTexture;
+    private Property<String> textProperty;
+
+    private Property<NinePatch> onIdlePatchProperty;
+    private Property<NinePatch> onHoveredPatchProperty;
+    private Property<NinePatch> onPressedPatchProperty;
+
+    private Texture onIdleTexture;
     private Texture onHoveredTexture;
     private Texture onPressedTexture;
 
-    public Button(String text, Texture idleTexture, Texture onHoveredTexture, Texture onPressedTexture) {
-        this.text = new Text(text);
-        this.idleTexture = idleTexture;
-        this.onHoveredTexture = onHoveredTexture;
-        this.onPressedTexture = onPressedTexture;
-        setSize(idleTexture.getWidth(), idleTexture.getHeight());
-    }
-
     public Button(String text) {
-        this(text, UIDefaults.DEFAULT_IDLE_TEXTURE, UIDefaults.DEFAULT_HOVERED_TEXTURE, UIDefaults.DEFAULT_PRESSED_TEXTURE);
+        this.text = new Text(text);
+        this.textProperty = new Property<>(text);
+        this.textProperty.addCallback(this.text::setText);
+
+        this.onIdlePatchProperty = new Property<>(null, UIDefaults.DEFAULT_IDLE_PATCH);
+        this.onHoveredPatchProperty = new Property<>(null, UIDefaults.DEFAULT_HOVERED_PATCH);
+        this.onPressedPatchProperty = new Property<>(null, UIDefaults.DEFAULT_PRESSED_PATCH);
+
+        //on patch change, regenerate the texture
+        this.onIdlePatchProperty.addCallback((patch) -> onIdleTexture = patch.createTexture(sizeProperty.get()));
+        this.onHoveredPatchProperty.addCallback((patch) -> onHoveredTexture = patch.createTexture(sizeProperty.get()));
+        this.onPressedPatchProperty.addCallback((patch) -> onPressedTexture = patch.createTexture(sizeProperty.get()));
+
+        //on size change, regenerate the texture
+        super.sizeProperty.addCallback((size) -> onIdleTexture = onIdlePatchProperty.get().createTexture(size));
+        super.sizeProperty.addCallback((size) -> onHoveredTexture = onHoveredPatchProperty.get().createTexture(size));
+        super.sizeProperty.addCallback((size) -> onPressedTexture = onPressedPatchProperty.get().createTexture(size));
+
         Vec2 textSize = this.text.getSize();
-        setSize(textSize.x, textSize.y);
+        sizeProperty.set(textSize);
     }
 
-    public Text getText() {
-        return text;
+    public String getText() {
+        return textProperty.get();
+    }
+
+    public void setText(String text) {
+        textProperty.set(text);
+    }
+
+    public void setOnIdleTexture(Texture texture) {
+        onIdlePatchProperty.set(new NinePatch(texture, 0, 0, 0, 0));
     }
 
     public void onMouseExited() {
@@ -61,13 +85,13 @@ public class Button extends Widget {
         Texture texture = null;
         if(pressed && onPressedTexture != null) texture = onPressedTexture;
         else if(hovered && onHoveredTexture != null) texture = onHoveredTexture;
-        else if(idleTexture != null) texture = idleTexture;
+        else if(onIdleTexture != null) texture = onIdleTexture;
 
         if(texture != null) {
-            texture.renderStretched(g, (int) size.x, (int) size.y);
+            texture.renderStretched(g, sizeProperty.get());
         }
 
-        Vec2 tr = size.copy().sub(text.getSize()).scale(.5f, .5f);
+        Vec2 tr = sizeProperty.get().copy().sub(text.getSize()).scale(.5f, .5f);
 
         g.translate(tr.x, tr.y);
         text.render(g);

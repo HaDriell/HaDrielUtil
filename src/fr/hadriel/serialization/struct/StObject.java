@@ -9,20 +9,20 @@ import java.util.Map;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StObject extends StEntry implements Iterable<Map.Entry<String, StEntry>> {
+public class StObject extends StructEntry implements Iterable<Map.Entry<String, StructEntry>> {
 
-    private Map<String, StEntry> members;
+    private Map<String, StructEntry> members;
 
     public StObject() {
         super(TYPE_OBJECT);
         this.members = new HashMap<>();
     }
 
-    public StEntry get(String name) {
+    public StructEntry get(String name) {
         return members.get(name);
     }
 
-    public void put(String name, StEntry entry) {
+    public void put(String name, StructEntry entry) {
         members.put(name, entry);
     }
 
@@ -72,7 +72,7 @@ public class StObject extends StEntry implements Iterable<Map.Entry<String, StEn
 
     protected int getSizeImpl() {
         int size = 2;
-        for(Map.Entry<String, StEntry> e : members.entrySet()) {
+        for(Map.Entry<String, StructEntry> e : members.entrySet()) {
             size += 2 + e.getKey().length() + e.getValue().getSize();
         }
         return size;
@@ -80,7 +80,7 @@ public class StObject extends StEntry implements Iterable<Map.Entry<String, StEn
 
     protected int serializeImpl(byte[] buffer, int pointer) {
         pointer = Serial.write(buffer, pointer, (short) members.size()); // member count < 65535
-        for(Map.Entry<String, StEntry> e : members.entrySet()) {
+        for(Map.Entry<String, StructEntry> e : members.entrySet()) {
             pointer = Serial.write(buffer, pointer, (short) e.getKey().length());
             pointer = Serial.write(buffer, pointer, e.getKey().getBytes());
             pointer = e.getValue().serialize(buffer, pointer);
@@ -88,7 +88,7 @@ public class StObject extends StEntry implements Iterable<Map.Entry<String, StEn
         return pointer;
     }
 
-    public Iterator<Map.Entry<String, StEntry>> iterator() {
+    public Iterator<Map.Entry<String, StructEntry>> iterator() {
         return members.entrySet().iterator();
     }
 
@@ -104,7 +104,7 @@ public class StObject extends StEntry implements Iterable<Map.Entry<String, StEn
             byte[] string = new byte[length];
             pointer += Serial.readByteArray(buffer, pointer, string, length);
             String key = new String(string);
-            StEntry value = StEntry.deserialize(buffer, pointer);
+            StructEntry value = StructEntry.deserialize(buffer, pointer);
             pointer += value.getSize();
             object.put(key, value);
         }
@@ -115,7 +115,7 @@ public class StObject extends StEntry implements Iterable<Map.Entry<String, StEn
         StringBuilder sb = new StringBuilder();
         sb.append("StObject(");
         boolean firstStatement = true;
-        for(Map.Entry<String, StEntry> e : members.entrySet()) {
+        for(Map.Entry<String, StructEntry> e : members.entrySet()) {
             if(firstStatement)
                 firstStatement = false;
             else

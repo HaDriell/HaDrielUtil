@@ -34,8 +34,8 @@ public class Text implements HLRenderable {
     }
 
     private void computeSizeAndTransform() {
-        GlyphVector glyph = font.createGlyphVector(UIDefaults.HQ_FRC, text);
-        Rectangle r = glyph.getPixelBounds(UIDefaults.HQ_FRC, 0, 0);
+        GlyphVector glyph = font.createGlyphVector(UIDefaults.HIGH_QUALITY_FONT_RENDER_CONTEXT, text);
+        Rectangle r = glyph.getPixelBounds(UIDefaults.HIGH_QUALITY_FONT_RENDER_CONTEXT, 0, 0);
         float scale = fontSize / 100f;
         textTransform.setToTranslation(-r.x * scale, -r.y * scale);
         size.set(r.width, r.height).scale(scale, scale);

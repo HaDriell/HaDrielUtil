@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public abstract class StEntry {
+public abstract class StructEntry {
 
     //Primitives
     public static final byte TYPE_BOOL      = 1;
@@ -41,7 +41,7 @@ public abstract class StEntry {
 
     private byte dataType;
 
-    protected StEntry(byte type) {
+    protected StructEntry(byte type) {
         this.dataType = type;
     }
 
@@ -58,7 +58,7 @@ public abstract class StEntry {
 
     protected abstract int serializeImpl(byte[] buffer, int pointer);
 
-    public static StEntry deserialize(byte[] buffer, int pointer) {
+    public static StructEntry deserialize(byte[] buffer, int pointer) {
         byte b = buffer[pointer];
         switch (b) {
             case TYPE_BOOL: return StBoolean.deserialize(buffer, pointer);

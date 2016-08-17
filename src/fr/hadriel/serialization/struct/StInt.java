@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StInt extends StEntry {
+public class StInt extends StructEntry {
 
     public int value;
 

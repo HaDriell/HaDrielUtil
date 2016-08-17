@@ -9,11 +9,12 @@ public class TestTimer {
 
     public static void main(String[] args) {
         Timer timer = new Timer();
-        timer.reset();
+        timer.set(2000f);
         System.out.println(timer.elapsed());
         try {
             Thread.sleep(1000);
-        } catch (InterruptedException ignore) {}
+        } catch (InterruptedException ignore) {
+        }
         System.out.println(timer.elapsed());
     }
 }

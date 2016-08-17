@@ -1,5 +1,7 @@
 package fr.hadriel.graphics;
 
+import fr.hadriel.math.Vec2;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -41,6 +43,8 @@ public class Texture implements HLRenderable {
      * @return a Texture instance representing the region queried
      */
     public Texture createTexture(int x, int y, int width, int height) {
+        if(width == 0 || height == 0)
+            return null;
         BufferedImage child = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics g = child.createGraphics();
         g.translate(-x, -y);
@@ -55,5 +59,9 @@ public class Texture implements HLRenderable {
 
     public void renderStretched(HLGraphics g, int width, int height) {
         g.drawImageStretched(image, width, height);
+    }
+
+    public void renderStretched(HLGraphics g, Vec2 size) {
+        renderStretched(g, (int) size.x, (int) size.y);
     }
 }

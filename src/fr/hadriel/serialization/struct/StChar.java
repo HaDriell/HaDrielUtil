@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StChar extends StEntry {
+public class StChar extends StructEntry {
 
     public char value;
 

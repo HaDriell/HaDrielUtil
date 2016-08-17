@@ -1,14 +1,15 @@
 package fr.hadriel.graphics.ui;
 
+import fr.hadriel.graphics.NinePatch;
 import fr.hadriel.graphics.Texture;
+import fr.hadriel.util.Callback;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.Image;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 /**
  * Created by glathuiliere on 11/08/2016.
@@ -16,60 +17,66 @@ import java.io.File;
 public final class UIDefaults {
     private UIDefaults(){}
 
-    //Button defaults
-    public static final Texture DEFAULT_IDLE_TEXTURE;
-    public static final Texture DEFAULT_HOVERED_TEXTURE;
-    public static final Texture DEFAULT_PRESSED_TEXTURE;
-
-    static {
-        BufferedImage idle = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage hovered = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage pressed = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        Graphics g;
-        g = idle.createGraphics();
-        g.setColor(new Color(128, 128, 128));
-        g.fillRect(0, 0, 64, 64);
-        g.dispose();
-
-        g = hovered.createGraphics();
-        g.setColor(new Color(172, 172, 172));
-        g.fillRect(0, 0, 64, 64);
-        g.dispose();
-
-        g = pressed.createGraphics();
-        g.setColor(new Color(72, 72, 72));
-        g.fillRect(0, 0, 64, 64);
-        g.dispose();
-        DEFAULT_IDLE_TEXTURE = new Texture(idle);
-        DEFAULT_HOVERED_TEXTURE = new Texture(hovered);
-        DEFAULT_PRESSED_TEXTURE = new Texture(pressed);
-
+    public static BufferedImage loadImageInternal(String path) {
+        try {
+            return ImageIO.read(UIDefaults.class.getResourceAsStream(path));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    //Slider Defaults
-    public static final Texture DEFAULT_SLIDER_BACKGROUND;
-    public static final Texture DEFAULT_SLIDER_BUTTON;
-    static {
-        BufferedImage sliderBackground = new BufferedImage(128, 32, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage sliderButton = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g;
-
-        g = sliderBackground.createGraphics();
-        g.setPaint(new GradientPaint(0, 0, new Color(92, 92, 92), 0, 8, new Color(32, 32, 32)));
-        g.fillRect(0, 0, sliderBackground.getWidth(), sliderBackground.getHeight());
-        g.dispose();
-
-        g = sliderButton.createGraphics();
-        g.setColor(Color.lightGray.darker());
-        g.fillRect(0, 0, sliderButton.getWidth() - 1, sliderButton.getHeight() - 1);
-        g.dispose();
-        DEFAULT_SLIDER_BACKGROUND = new Texture(sliderBackground);
-        DEFAULT_SLIDER_BUTTON = new Texture(sliderButton);
+    public static Font loadFontInternal(int format, String path) {
+        try {
+            return Font.createFont(format, UIDefaults.class.getResourceAsStream(path));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    //Text defaults
-    public static final FontRenderContext HQ_FRC = new FontRenderContext(null, true, true);
-    public static final Font DEFAULT_FONT = new JLabel().getFont(); // bullshit work but functionnal
+    public static BufferedImage copyOf(BufferedImage image, Callback<BufferedImage> imageCallback) {
+        ColorModel cm = image.getColorModel();
+        boolean isAlphaPremultiplied = image.isAlphaPremultiplied();
+        WritableRaster raster = image.copyData(null);
+        BufferedImage copy = new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+        if(imageCallback != null) imageCallback.execute(copy);
+        return copy;
+    }
+
+    //Embedded resources:
+    private static final Font BERYLIUM_REGULAR = loadFontInternal(Font.TRUETYPE_FONT, "/defaults/berylium rg.ttf");
+
+    private static final BufferedImage BACKGROUND = loadImageInternal("/defaults/background.png");
+    private static final BufferedImage CORNER = loadImageInternal("/defaults/corner.png");
+    private static final BufferedImage SLIDER_BUTTON = loadImageInternal("/defaults/sliderButton.png");
+    private static final BufferedImage SLIDER_BACKGROUND = loadImageInternal("/defaults/sliderBackground.png");
+
+    // UI DEFAULT RESOURCES
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //Text
+    public static final Font DEFAULT_FONT = BERYLIUM_REGULAR;
+    public static final FontRenderContext HIGH_QUALITY_FONT_RENDER_CONTEXT = new FontRenderContext(null, true, true);
     public static final float DEFAULT_FONTSIZE = 20f;
     public static final Color DEFAULT_COLOR = Color.white;
+
+    //Button
+    public static final NinePatch DEFAULT_IDLE_PATCH = new NinePatch(BACKGROUND, 8, 8, 8, 8);
+    public static final NinePatch DEFAULT_HOVERED_PATCH = new NinePatch(copyOf(BACKGROUND, (image) -> {
+        Graphics2D g = image.createGraphics();
+        g.setColor(new Color(255, 255, 255, 15)); // change alpha to change lighting ?
+        g.fillRect(8, 8, image.getWidth() - 9, image.getHeight() - 9);
+        g.dispose();
+    }), 8, 8, 8, 8);
+    public static final NinePatch DEFAULT_PRESSED_PATCH = new NinePatch(copyOf(BACKGROUND, (image) -> {
+        Graphics2D g = image.createGraphics();
+        g.setColor(new Color(0, 0, 0, 15)); // change alpha to change lighting ?
+        g.fillRect(8, 8, image.getWidth() - 9, image.getHeight() - 9);
+        g.dispose();
+    }), 8, 8, 8, 8);
+
+    //Slider
+    public static final NinePatch DEFAULT_SLIDER_BACKGROUND_PATCH = new NinePatch(SLIDER_BACKGROUND, 3, 10, 3, 10);
+    public static final NinePatch DEFAULT_SLIDER_BUTTON_PATCH = new NinePatch(SLIDER_BUTTON, 0, 0, 0, 0);
 }

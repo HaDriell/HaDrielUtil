@@ -5,6 +5,7 @@ import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.graphics.HLRenderable;
 import fr.hadriel.graphics.Transform;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.util.Property;
 
 import java.awt.*;
 
@@ -16,12 +17,12 @@ public class Widget implements HLRenderable {
     public boolean enabled;
     public boolean hovered;
 
-    protected final Vec2 size;
+    protected Property<Vec2> sizeProperty;
     protected final Transform transform;
 
     protected Widget() {
         this.transform = new Transform();
-        this.size = new Vec2();
+        this.sizeProperty = new Property<>(new Vec2(), new Vec2());
         this.enabled = true;
     }
 
@@ -30,15 +31,15 @@ public class Widget implements HLRenderable {
     }
 
     public float getWidth() {
-        return size.x;
+        return sizeProperty.get().x;
     }
 
     public float getHeight() {
-        return size.y;
+        return sizeProperty.get().y;
     }
 
     public void setSize(float x, float y) {
-        size.set(x, y);
+        sizeProperty.set(new Vec2(x, y));
     }
 
     public boolean onMouseMoved(MouseMovedEvent event) {
@@ -86,12 +87,12 @@ public class Widget implements HLRenderable {
     }
 
     protected boolean isHit(Vec2 point) {
-        return !(point.x < 0 || point.x > size.x || point.y < 0 || point.y > size.y);
+        return !(point.x < 0 || point.x > sizeProperty.get().x || point.y < 0 || point.y > sizeProperty.get().y);
     }
 
     public final void render(HLGraphics graphics) {
         graphics.pushTransform(transform.toMatrix());
-        graphics.pushClip(new Rectangle(0, 0, (int) size.x, (int) size.y));
+        graphics.pushClip(new Rectangle(0, 0, (int) sizeProperty.get().x, (int) sizeProperty.get().y));
         onRender(graphics);
         graphics.popClip();
         graphics.popTransform();
