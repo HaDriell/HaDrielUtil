@@ -11,15 +11,13 @@ public class Image extends Widget {
 
     private Property<Texture> textureProperty;
 
-    public Image(Texture texture) {
+    public Image(Texture texture, int width, int height) {
         this.textureProperty = new Property<>(texture);
+        setSize(width, height);
+    }
 
-        this.textureProperty.addCallback((tex) -> {
-            if(tex == null)
-                setSize(0, 0);
-            else
-                setSize(tex.getWidth(), tex.getHeight());
-        });
+    public Image(Texture texture) {
+        this(texture, texture.getWidth(), texture.getHeight());
     }
 
     public Texture getTexture() {
@@ -33,6 +31,6 @@ public class Image extends Widget {
     public void onRender(HLGraphics g) {
         Texture t = textureProperty.get();
         if(t != null)
-            t.render(g);
+            t.renderStretched(g, sizeProperty.get());
     }
 }

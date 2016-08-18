@@ -42,6 +42,10 @@ public class Widget implements HLRenderable {
         sizeProperty.set(new Vec2(x, y));
     }
 
+    public Vec2 getSize() {
+        return sizeProperty.get();
+    }
+
     public boolean onMouseMoved(MouseMovedEvent event) {
         return false;
     }

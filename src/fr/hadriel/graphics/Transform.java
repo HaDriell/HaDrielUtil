@@ -40,6 +40,11 @@ public class Transform {
         computeInverse();
     }
 
+    public void setMatrix(Matrix3f matrix) {
+        this.matrix.set(matrix.elements);
+        computeInverse();
+    }
+
     public void translate(float x, float y) {
         matrix.translate(x, y);
         computeInverse();
@@ -66,4 +71,5 @@ public class Transform {
     public void untransform(Vec2 v) {
         matrix.transform(v);
     }
+
 }

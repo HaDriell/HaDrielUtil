@@ -7,6 +7,7 @@ import fr.hadriel.graphics.NinePatch;
 import fr.hadriel.graphics.Texture;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Matrix3f;
+import fr.hadriel.math.Vec2;
 import fr.hadriel.util.Property;
 
 /**
@@ -38,17 +39,24 @@ public class Slider extends ProgressBar {
     }
 
     private void changeValue(float x) {
-        setValue(Mathf.sqrt(x * x) / (sizeProperty.get().x - buttonTexture.getWidth()) );
+        float value = Mathf.sqrt(x * x) / (sizeProperty.get().x - buttonTexture.getWidth() / 2);
+        System.out.println(value);
+        setValue(value);
     }
 
     public boolean onMousePressed(MousePressedEvent event) {
-        changeValue(event.x);
+        Vec2 point = new Vec2(event.x, event.y);
+        transform.transform(point);
+        changeValue(point.x);
         return true;
     }
 
     public boolean onMouseMoved(MouseMovedEvent event) {
-        if(event.dragged)
-            changeValue(event.x);
+        if(event.dragged){
+            Vec2 point = new Vec2(event.x, event.y);
+            transform.transform(point);
+            changeValue(point.x);
+        }
         return true;
     }
 
@@ -64,5 +72,6 @@ public class Slider extends ProgressBar {
         super.onRender(graphics);
         graphics.pushTransform(Matrix3f.Translation((sizeProperty.get().x - buttonTexture.getWidth()) * getValue(), 0));
         buttonTexture.render(graphics);
+        graphics.popTransform();
     }
 }

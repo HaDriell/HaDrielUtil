@@ -17,6 +17,8 @@ public class Label extends Widget {
         this.textProperty = new Property<>(label);
         this.text = new Text(label);
         this.textProperty.addCallback(text::setText);
+        Vec2 textSize = text.getSize();
+        setSize(textSize.x, textSize.y);
     }
 
     private void syncSize() {

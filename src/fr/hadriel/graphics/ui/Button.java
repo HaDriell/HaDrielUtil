@@ -46,7 +46,7 @@ public class Button extends Widget {
         super.sizeProperty.addCallback((size) -> onHoveredTexture = onHoveredPatchProperty.get().createTexture(size));
         super.sizeProperty.addCallback((size) -> onPressedTexture = onPressedPatchProperty.get().createTexture(size));
 
-        Vec2 textSize = this.text.getSize();
+        Vec2 textSize = this.text.getSize().copy().add(20, 20);
         sizeProperty.set(textSize);
     }
 

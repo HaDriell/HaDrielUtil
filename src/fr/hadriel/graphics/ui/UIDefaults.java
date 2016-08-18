@@ -44,22 +44,21 @@ public final class UIDefaults {
     }
 
     //Embedded resources:
-    private static final Font BERYLIUM_REGULAR = loadFontInternal(Font.TRUETYPE_FONT, "/defaults/berylium rg.ttf");
-
-    private static final BufferedImage DARK_RED = loadImageInternal("/defaults/darkRed.png");
-    private static final BufferedImage BACKGROUND = loadImageInternal("/defaults/background.png");
-    private static final BufferedImage CORNER = loadImageInternal("/defaults/corner.png");
-    private static final BufferedImage SLIDER_BUTTON = loadImageInternal("/defaults/sliderButton.png");
-    private static final BufferedImage SLIDER_BACKGROUND = loadImageInternal("/defaults/sliderBackground.png");
+    public static final Font BERYLIUM_REGULAR = loadFontInternal(Font.TRUETYPE_FONT, "/defaults/berylium rg.ttf");
+    public static final BufferedImage DARK_RED = loadImageInternal("/defaults/darkRed.png");
+    public static final BufferedImage BACKGROUND = loadImageInternal("/defaults/background.png");
+    public static final BufferedImage CORNER = loadImageInternal("/defaults/corner.png");
+    public static final BufferedImage SLIDER_BUTTON = loadImageInternal("/defaults/sliderButton.png");
+    public static final BufferedImage SLIDER_BACKGROUND = loadImageInternal("/defaults/sliderBackground.png");
 
     // UI DEFAULT RESOURCES
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Text
-    public static final Font DEFAULT_FONT = BERYLIUM_REGULAR;
     public static final FontRenderContext HIGH_QUALITY_FONT_RENDER_CONTEXT = new FontRenderContext(null, true, true);
-    public static final float DEFAULT_FONTSIZE = 20f;
-    public static final Color DEFAULT_COLOR = Color.white;
+    public static final Font DEFAULT_TEXT_FONT = BERYLIUM_REGULAR;
+    public static final float DEFAULT_TEXT_FONTSIZE = 20f;
+    public static final Color DEFAULT_TEXT_COLOR = Color.white;
 
     //Button
     public static final NinePatch DEFAULT_IDLE_PATCH = new NinePatch(BACKGROUND, 8, 8, 8, 8);

@@ -1,8 +1,5 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.graphics.HLGraphics;
-import fr.hadriel.graphics.HLRenderable;
-import fr.hadriel.graphics.Transform;
 import fr.hadriel.graphics.ui.*;
 import fr.hadriel.math.Vec2;
 
@@ -33,7 +30,7 @@ public class Text implements HLRenderable {
     }
 
     public Text(String text) {
-        this(text, UIDefaults.DEFAULT_FONT, UIDefaults.DEFAULT_FONTSIZE, UIDefaults.DEFAULT_COLOR);
+        this(text, UIDefaults.DEFAULT_TEXT_FONT, UIDefaults.DEFAULT_TEXT_FONTSIZE, UIDefaults.DEFAULT_TEXT_COLOR);
     }
 
     private void computeSizeAndTransform() {
@@ -54,7 +51,7 @@ public class Text implements HLRenderable {
     }
 
     public void setFont(Font font) {
-        this.font = font == null ? UIDefaults.DEFAULT_FONT : font.deriveFont(100f);
+        this.font = font == null ? UIDefaults.DEFAULT_TEXT_FONT : font.deriveFont(100f);
         computeSizeAndTransform();
     }
 
@@ -74,7 +71,7 @@ public class Text implements HLRenderable {
     }
 
     public void setColor(Color color) {
-        this.color = color == null ? UIDefaults.DEFAULT_COLOR : color;
+        this.color = color == null ? UIDefaults.DEFAULT_TEXT_COLOR : color;
     }
 
     public Color getColor() {
