@@ -64,4 +64,8 @@ public class Texture implements HLRenderable {
     public void renderStretched(HLGraphics g, Vec2 size) {
         renderStretched(g, (int) size.x, (int) size.y);
     }
+
+    public void renderRegion(HLGraphics g, int x, int y, int width, int height) {
+        g.drawImageRegion(image, x, y, width, height);
+    }
 }

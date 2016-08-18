@@ -59,7 +59,27 @@ public class Button extends Widget {
     }
 
     public void setOnIdleTexture(Texture texture) {
-        onIdlePatchProperty.set(new NinePatch(texture, 0, 0, 0, 0));
+        setOnIdleTexture(texture, 0, 0, 0, 0);
+    }
+
+    public void setOnIdleTexture(Texture texture, int top, int left, int bottom, int right) {
+        onIdlePatchProperty.set(new NinePatch(texture, top, left, bottom, right));
+    }
+
+    public void setOnHoveredTexture(Texture texture) {
+        setOnIdleTexture(texture, 0, 0, 0, 0);
+    }
+
+    public void setOnHoveredTexture(Texture texture, int top, int left, int bottom, int right) {
+        onHoveredPatchProperty.set(new NinePatch(texture, top, left, bottom, right));
+    }
+
+    public void setOnPressedTexture(Texture texture) {
+        setOnIdleTexture(texture, 0, 0, 0, 0);
+    }
+
+    public void setOnPressedTexture(Texture texture, int top, int left, int bottom, int right) {
+        onPressedPatchProperty.set(new NinePatch(texture, top, left, bottom, right));
     }
 
     public void onMouseExited() {

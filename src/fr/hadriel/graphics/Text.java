@@ -1,5 +1,8 @@
 package fr.hadriel.graphics;
 
+import fr.hadriel.graphics.HLGraphics;
+import fr.hadriel.graphics.HLRenderable;
+import fr.hadriel.graphics.Transform;
 import fr.hadriel.graphics.ui.*;
 import fr.hadriel.math.Vec2;
 

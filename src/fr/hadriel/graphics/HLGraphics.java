@@ -111,6 +111,10 @@ public class HLGraphics {
         g.drawImage(img, 0, 0, width, height, null);
     }
 
+    public void drawImageRegion(Image img, int x, int y, int width, int height) {
+        g.drawImage(img, 0, 0, width, height, x, y, width, height, null);
+    }
+
     public void draw(HLRenderable renderable) {
         renderable.render(this);
     }

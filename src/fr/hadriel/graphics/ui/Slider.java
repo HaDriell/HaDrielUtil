@@ -12,62 +12,33 @@ import fr.hadriel.util.Property;
 /**
  * Created by glathuiliere on 12/08/2016.
  */
-public class Slider extends Widget {
+public class Slider extends ProgressBar {
 
-    /*
-    TODO : rework Slider so there is way more customisability:
-    TODO : background
-    TODO : button (independent in size !)
-    TODO : left "fill"
-    TODO : right "fill"
-    TODO : render method
-    */
 
-    private Property<Float> valueProperty;
     private Property<NinePatch> buttonPatchProperty;
-    private Property<NinePatch> backgroundPatchProperty;
+
+    private Property<Float> buttonWidthProperty;
 
     private Texture buttonTexture;
-    private Texture backgroundTexture;
-
-    public Slider(float value, int width, int height) {
-        this.valueProperty = new Property<>(value);
-        setSize(width, height);
-        this.buttonPatchProperty = new Property<>(null, UIDefaults.DEFAULT_SLIDER_BUTTON_PATCH);
-        this.backgroundPatchProperty = new Property<>(null, UIDefaults.DEFAULT_SLIDER_BACKGROUND_PATCH);
-
-        this.buttonPatchProperty.addCallback((patch) -> buttonTexture = patch.createTexture(sizeProperty.get()));
-        this.backgroundPatchProperty.addCallback((patch) -> buttonTexture = patch.createTexture(sizeProperty.get()));
-        super.sizeProperty.addCallback((size) -> backgroundTexture = backgroundPatchProperty.get().createTexture(size));
-
-        this.buttonTexture = buttonPatchProperty.get().createTexture((int) sizeProperty.get().y, (int) sizeProperty.get().y);
-        this.backgroundTexture = backgroundPatchProperty.get().createTexture(sizeProperty.get());
-    }
 
     public Slider(int width, int height) {
-        this(0.5f, width, height);
+        this(0f, width, height);
     }
 
-    public float getValue() {
-        return valueProperty.get();
+    public Slider(float value, int width, int height) {
+        super(value, width, height);
+        this.buttonWidthProperty = new Property<>(0.2f); // relative to the slider's full size
+
+        this.buttonPatchProperty = new Property<>(null, UIDefaults.DEFAULT_SLIDER_BUTTON_PATCH);
+
+        this.buttonPatchProperty.addCallback((patch) -> buttonTexture = patch.createTexture(getButtonWidth(), getButtonHeight()));
+
+        super.sizeProperty.addCallback((size) -> buttonTexture = buttonPatchProperty.get().createTexture(getButtonWidth(), getButtonHeight()));
+        setSize(width, height);
     }
 
-    public void setValue(float value) {
-        valueProperty.set(Mathf.clamp(0, 1, value));
-    }
-
-    private void changeValue(float positionFromLeft) {
-        float buttonWidth = getButtonScale() * buttonTexture.getWidth();
-        float distance = Mathf.sqrt(positionFromLeft * positionFromLeft) - buttonWidth / 2;
-        float internalWidth = sizeProperty.get().x - buttonWidth;
-        setValue(distance / internalWidth);
-    }
-
-    public boolean onMouseMoved(MouseMovedEvent event) {
-        if(event.dragged) {
-            changeValue(event.x);
-        }
-        return true;
+    private void changeValue(float x) {
+        setValue(Mathf.sqrt(x * x) / (sizeProperty.get().x - buttonTexture.getWidth()) );
     }
 
     public boolean onMousePressed(MousePressedEvent event) {
@@ -75,23 +46,23 @@ public class Slider extends Widget {
         return true;
     }
 
-    private float getButtonScale() {
-        return sizeProperty.get().y / buttonTexture.getHeight();
+    public boolean onMouseMoved(MouseMovedEvent event) {
+        if(event.dragged)
+            changeValue(event.x);
+        return true;
     }
 
-    private float getInternalWidth() {
-        return sizeProperty.get().x - buttonTexture.getWidth() * getButtonScale();
+    private int getButtonWidth() {
+        return (int) (sizeProperty.get().x * buttonWidthProperty.get());
     }
 
-    public void onRender(HLGraphics g) {
-        backgroundTexture.renderStretched(g, sizeProperty.get());
-        float scale = getButtonScale();
-        float scaledHeight = buttonTexture.getHeight() * scale;
-        float scaledWidth = buttonTexture.getWidth() * scale;
+    private int getButtonHeight() {
+        return (int) sizeProperty.get().y;
+    }
 
-        float trX = valueProperty.get() * (sizeProperty.get().x - scaledWidth);
-        g.pushTransform(Matrix3f.Translation(trX, 0));
-        buttonTexture.renderStretched(g, (int) scaledWidth, (int) scaledHeight);
-        g.popTransform();
+    public void onRender(HLGraphics graphics) {
+        super.onRender(graphics);
+        graphics.pushTransform(Matrix3f.Translation((sizeProperty.get().x - buttonTexture.getWidth()) * getValue(), 0));
+        buttonTexture.render(graphics);
     }
 }

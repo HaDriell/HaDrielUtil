@@ -1,7 +1,6 @@
 package fr.hadriel.graphics.ui;
 
 import fr.hadriel.graphics.NinePatch;
-import fr.hadriel.graphics.Texture;
 import fr.hadriel.util.Callback;
 
 import javax.imageio.ImageIO;
@@ -47,6 +46,7 @@ public final class UIDefaults {
     //Embedded resources:
     private static final Font BERYLIUM_REGULAR = loadFontInternal(Font.TRUETYPE_FONT, "/defaults/berylium rg.ttf");
 
+    private static final BufferedImage DARK_RED = loadImageInternal("/defaults/darkRed.png");
     private static final BufferedImage BACKGROUND = loadImageInternal("/defaults/background.png");
     private static final BufferedImage CORNER = loadImageInternal("/defaults/corner.png");
     private static final BufferedImage SLIDER_BUTTON = loadImageInternal("/defaults/sliderButton.png");
@@ -66,17 +66,25 @@ public final class UIDefaults {
     public static final NinePatch DEFAULT_HOVERED_PATCH = new NinePatch(copyOf(BACKGROUND, (image) -> {
         Graphics2D g = image.createGraphics();
         g.setColor(new Color(255, 255, 255, 15)); // change alpha to change lighting ?
-        g.fillRect(8, 8, image.getWidth() - 9, image.getHeight() - 9);
+        g.fillRect(8, 8, image.getWidth() - 1 - 16, image.getHeight() - 1 - 16);
         g.dispose();
     }), 8, 8, 8, 8);
     public static final NinePatch DEFAULT_PRESSED_PATCH = new NinePatch(copyOf(BACKGROUND, (image) -> {
         Graphics2D g = image.createGraphics();
         g.setColor(new Color(0, 0, 0, 15)); // change alpha to change lighting ?
-        g.fillRect(8, 8, image.getWidth() - 9, image.getHeight() - 9);
+        g.fillRect(8, 8, image.getWidth() - 1 - 16, image.getHeight() - 1 - 16);
+        g.dispose();
+    }), 8, 8, 8, 8);
+
+    //ProgressBar
+    public static final NinePatch DEFAULT_PROGRESSBAR_FILLED_PATCH = new NinePatch(DARK_RED, 0, 0, 0, 0);
+    public static final NinePatch DEFAULT_PROGRESSBAR_BACKGROUND_PATCH = new NinePatch(copyOf(BACKGROUND, (image) -> {
+        Graphics2D g = image.createGraphics();
+        g.setColor(new Color(0, 0, 0));
+        g.fillRect(8, 8, image.getWidth() - 1 - 16, image.getHeight() - 1 - 16); // default background is black
         g.dispose();
     }), 8, 8, 8, 8);
 
     //Slider
-    public static final NinePatch DEFAULT_SLIDER_BACKGROUND_PATCH = new NinePatch(SLIDER_BACKGROUND, 3, 10, 3, 10);
     public static final NinePatch DEFAULT_SLIDER_BUTTON_PATCH = new NinePatch(SLIDER_BUTTON, 0, 0, 0, 0);
 }
