@@ -19,7 +19,7 @@ public class JsObject implements JsonType, Iterable<Map.Entry<String, JsonType>>
         if(name == null)
             throw new IllegalArgumentException("null member key not allowed");
         Json.checkJsonValidType(obj);
-        members.put(name, JsonType.class.isInstance(obj) ? (JsonType) obj : new JsPrimitiv(obj));
+        members.put(name, JsonType.class.isInstance(obj) ? (JsonType) obj : new JsPrimitive(obj));
     }
 
     public void remove(String name) {

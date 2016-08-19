@@ -17,7 +17,7 @@ public class JsArray implements JsonType, Iterable<JsonType> {
 
     public void add(Object object) {
         Json.checkJsonValidType(object);
-        array.add(JsonType.class.isInstance(object) ? (JsonType) object : new JsPrimitiv(object));
+        array.add(JsonType.class.isInstance(object) ? (JsonType) object : new JsPrimitive(object));
     }
 
     public void remove(Object object) {
@@ -28,7 +28,7 @@ public class JsArray implements JsonType, Iterable<JsonType> {
         } else {
             for (int i = 0; i < array.size(); i++) {
                 JsonType entry = array.get(i);
-                if (JsPrimitiv.class.isInstance(entry) && ((JsPrimitiv) entry).get() == object) {
+                if (JsPrimitive.class.isInstance(entry) && ((JsPrimitive) entry).get() == object) {
                     array.remove(entry);
                     return; // quick exit
                 }
