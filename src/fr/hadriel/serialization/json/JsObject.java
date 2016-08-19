@@ -1,7 +1,5 @@
 package fr.hadriel.serialization.json;
 
-import fr.hadriel.serialization.JsPrimitive;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
