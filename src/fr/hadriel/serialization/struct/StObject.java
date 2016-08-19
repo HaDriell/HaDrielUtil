@@ -14,7 +14,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
     private Map<String, StructEntry> members;
 
     public StObject() {
-        super(TYPE_OBJECT);
+        super(Struct.TYPE_OBJECT);
         this.members = new HashMap<>();
     }
 
@@ -93,7 +93,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
     }
 
     public static StObject deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_OBJECT) return null;
+        if(buffer[pointer] != Struct.TYPE_OBJECT) return null;
         pointer++;
         StObject object = new StObject();
         short count = Serial.readShort(buffer, pointer);
@@ -104,7 +104,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
             byte[] string = new byte[length];
             pointer += Serial.readByteArray(buffer, pointer, string, length);
             String key = new String(string);
-            StructEntry value = StructEntry.deserialize(buffer, pointer);
+            StructEntry value = Struct.deserialize(buffer, pointer);
             pointer += value.getSize();
             object.put(key, value);
         }

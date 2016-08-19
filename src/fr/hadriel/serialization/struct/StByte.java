@@ -10,7 +10,7 @@ public class StByte extends StructEntry {
     public byte value;
 
     public StByte(byte value) {
-        super(TYPE_BYTE);
+        super(Struct.TYPE_BYTE);
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public class StByte extends StructEntry {
     }
 
     public static StByte deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_BYTE) return null;
+        if(buffer[pointer] != Struct.TYPE_BYTE) return null;
         pointer++;
         byte value = Serial.readByte(buffer, pointer);
         return new StByte(value);

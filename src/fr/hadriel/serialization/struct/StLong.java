@@ -10,7 +10,7 @@ public class StLong extends StructEntry {
     public long value;
 
     public StLong(long value) {
-        super(TYPE_LONG);
+        super(Struct.TYPE_LONG);
         this.value = value;
     }
 
@@ -23,13 +23,13 @@ public class StLong extends StructEntry {
     }
 
     public static StLong deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_LONG) return null;
+        if(buffer[pointer] != Struct.TYPE_LONG) return null;
         pointer++;
         long value = Serial.readLong(buffer, pointer);
         return new StLong(value);
     }
 
     public String toString() {
-        return "StList(" + value + ")";
+        return "StArray(" + value + ")";
     }
 }

@@ -10,7 +10,7 @@ public class StShort extends StructEntry {
     public short value;
 
     public StShort(short value) {
-        super(TYPE_SHORT);
+        super(Struct.TYPE_SHORT);
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public class StShort extends StructEntry {
     }
 
     public static StShort deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_SHORT) return null;
+        if(buffer[pointer] != Struct.TYPE_SHORT) return null;
         pointer++;
         short value = Serial.readShort(buffer, pointer);
         return new StShort(value);

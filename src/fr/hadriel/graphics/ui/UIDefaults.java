@@ -49,7 +49,6 @@ public final class UIDefaults {
     public static final BufferedImage BACKGROUND = loadImageInternal("/defaults/background.png");
     public static final BufferedImage CORNER = loadImageInternal("/defaults/corner.png");
     public static final BufferedImage SLIDER_BUTTON = loadImageInternal("/defaults/sliderButton.png");
-    public static final BufferedImage SLIDER_BACKGROUND = loadImageInternal("/defaults/sliderBackground.png");
 
     // UI DEFAULT RESOURCES
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,7 @@ public class StInt extends StructEntry {
     public int value;
 
     public StInt(int value) {
-        super(TYPE_INT);
+        super(Struct.TYPE_INT);
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public class StInt extends StructEntry {
     }
 
     public static StInt deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_INT) return null;
+        if(buffer[pointer] != Struct.TYPE_INT) return null;
         pointer++;
         int value = Serial.readInt(buffer, pointer);
         return new StInt(value);

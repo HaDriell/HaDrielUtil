@@ -9,12 +9,12 @@ import java.util.List;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StList extends StructEntry implements Iterable<StructEntry> {
+public class StArray extends StructEntry implements Iterable<StructEntry> {
 
     private List<StructEntry> entries;
 
-    public StList() {
-        super(TYPE_LIST);
+    public StArray() {
+        super(Struct.TYPE_ARRAY);
         this.entries = new ArrayList<>();
     }
 
@@ -93,14 +93,14 @@ public class StList extends StructEntry implements Iterable<StructEntry> {
         return entries.iterator();
     }
 
-    public static StList deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_LIST) return null;
+    public static StArray deserialize(byte[] buffer, int pointer) {
+        if(buffer[pointer] != Struct.TYPE_ARRAY) return null;
         pointer++;
-        StList list = new StList();
+        StArray list = new StArray();
         short count = Serial.readShort(buffer, pointer);
         pointer += 2;
         for(int i = 0; i < count; i++) {
-            StructEntry entry = StructEntry.deserialize(buffer, pointer);
+            StructEntry entry = Struct.deserialize(buffer, pointer);
             pointer += entry.getSize();
             list.add(entry);
         }
@@ -109,7 +109,7 @@ public class StList extends StructEntry implements Iterable<StructEntry> {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("StList(");
+        sb.append("StArray(");
         boolean firstStatement = true;
         for(StructEntry entry : entries) {
             if(firstStatement)

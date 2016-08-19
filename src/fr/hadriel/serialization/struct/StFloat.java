@@ -10,7 +10,7 @@ public class StFloat extends StructEntry {
     public float value;
 
     public StFloat(float value) {
-        super(TYPE_FLOAT);
+        super(Struct.TYPE_FLOAT);
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public class StFloat extends StructEntry {
     }
 
     public static StFloat deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_FLOAT) return null;
+        if(buffer[pointer] != Struct.TYPE_FLOAT) return null;
         pointer++;
         float value = Serial.readFloat(buffer, pointer);
         return new StFloat(value);

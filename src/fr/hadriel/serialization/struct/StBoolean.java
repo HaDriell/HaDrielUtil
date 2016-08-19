@@ -10,7 +10,7 @@ public class StBoolean extends StructEntry {
     public boolean value;
 
     public StBoolean(boolean value) {
-        super(TYPE_BOOL);
+        super(Struct.TYPE_BOOL);
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public class StBoolean extends StructEntry {
     }
 
     public static StBoolean deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_BOOL) return null;
+        if(buffer[pointer] != Struct.TYPE_BOOL) return null;
         pointer++;
         boolean value = Serial.readBoolean(buffer, pointer);
         return new StBoolean(value);

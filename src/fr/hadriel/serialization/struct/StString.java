@@ -10,7 +10,7 @@ public class StString extends StructEntry {
     public String value;
 
     public StString(String value) {
-        super(TYPE_STRING);
+        super(Struct.TYPE_STRING);
         this.value = value;
     }
 
@@ -25,7 +25,7 @@ public class StString extends StructEntry {
     }
 
     public static StString deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_STRING) return null;
+        if(buffer[pointer] != Struct.TYPE_STRING) return null;
         pointer++;
         short length = Serial.readShort(buffer, pointer);
         pointer += 2;

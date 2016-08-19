@@ -10,7 +10,7 @@ public class StDouble extends StructEntry {
     public double value;
 
     public StDouble(double value) {
-        super(TYPE_DOUBLE);
+        super(Struct.TYPE_DOUBLE);
         this.value = value;
     }
 
@@ -23,7 +23,7 @@ public class StDouble extends StructEntry {
     }
 
     public static StDouble deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != TYPE_DOUBLE) return null;
+        if(buffer[pointer] != Struct.TYPE_DOUBLE) return null;
         pointer++;
         double value = Serial.readDouble(buffer, pointer);
         return new StDouble(value);
