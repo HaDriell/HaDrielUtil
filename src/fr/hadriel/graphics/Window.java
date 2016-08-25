@@ -1,7 +1,7 @@
 package fr.hadriel.graphics;
 
 
-import fr.hadriel.events.*;
+import fr.hadriel.events.input.*;
 import fr.hadriel.graphics.ui.Group;
 import fr.hadriel.threading.TickedLoop;
 

@@ -1,6 +1,6 @@
 package fr.hadriel.graphics.ui;
 
-import fr.hadriel.events.*;
+import fr.hadriel.events.input.*;
 import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.graphics.HLRenderable;
 import fr.hadriel.graphics.Transform;

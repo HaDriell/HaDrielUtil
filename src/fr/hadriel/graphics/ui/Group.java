@@ -2,7 +2,7 @@ package fr.hadriel.graphics.ui;
 
 import fr.hadriel.event.IEvent;
 import fr.hadriel.event.IEventListener;
-import fr.hadriel.events.*;
+import fr.hadriel.events.input.*;
 import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.math.Vec2;
 

@@ -23,7 +23,7 @@ public class MultiEventListener implements IEventListener {
         return result;
     }
 
-    public synchronized <T extends IEvent> void addHandler(Class<T> type, IEventHandler<T> handler) {
+    public synchronized <T extends IEvent> void setHandler(Class<T> type, IEventHandler<T> handler) {
         SimpleEventListener listener = getOrCreateListener(type);
         listener.addHandler(type, handler);
     }

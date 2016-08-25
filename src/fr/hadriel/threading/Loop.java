@@ -8,6 +8,15 @@ public abstract class Loop {
     private Thread thread;
     private boolean running;
 
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void requireRunning() {
+        if(!running)
+            throw new IllegalStateException(this + " must be running to call this method!");
+    }
+
     public synchronized void start() {
         if(running)
             return;

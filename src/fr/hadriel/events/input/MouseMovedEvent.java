@@ -1,4 +1,4 @@
-package fr.hadriel.events;
+package fr.hadriel.events.input;
 
 import fr.hadriel.event.IEvent;
 import fr.hadriel.math.Vec2;

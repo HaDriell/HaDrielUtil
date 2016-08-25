@@ -1,7 +1,7 @@
 package fr.hadriel.graphics.ui;
 
-import fr.hadriel.events.MouseMovedEvent;
-import fr.hadriel.events.MousePressedEvent;
+import fr.hadriel.events.input.MouseMovedEvent;
+import fr.hadriel.events.input.MousePressedEvent;
 import fr.hadriel.graphics.HLGraphics;
 import fr.hadriel.graphics.NinePatch;
 import fr.hadriel.graphics.Texture;
