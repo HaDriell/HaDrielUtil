@@ -21,13 +21,15 @@ public abstract class Sprite implements HLRenderable {
     }
 
     public void render(HLGraphics g) {
-        Vec2 anchorOffset = anchor.copy().scale(getWidth(), getHeight());
-        Vec2 translation = position.copy().sub(anchorOffset);
-        Matrix3f matrix = new Matrix3f();
-        matrix.setToTransform(scale.x, scale.y, rotation, translation.x, translation.y);
-        g.pushTransform(matrix);
+        g.pushTransform(getMatrix());
         onRender(g);
         g.popTransform();
+    }
+
+    public Matrix3f getMatrix() {
+        Vec2 anchorOffset = anchor.copy().scale(getWidth(), getHeight());
+        Vec2 translation = position.copy().sub(anchorOffset);
+        return new Matrix3f().setToTransform(scale.x, scale.y, rotation, translation.x, translation.y);
     }
 
     public abstract float getWidth();

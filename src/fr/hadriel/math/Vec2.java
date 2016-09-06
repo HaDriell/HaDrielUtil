@@ -5,6 +5,10 @@ package fr.hadriel.math;
  */
 public class Vec2 {
 
+    public static final Vec2 X = new Vec2(1, 0);
+    public static final Vec2 Y = new Vec2(0, 1);
+    public static final Vec2 ZERO = new Vec2(0, 0);
+
     public float x;
     public float y;
 
@@ -105,6 +109,7 @@ public class Vec2 {
         return (float) Math.atan2(cross(v), dot(v));
     }
 
+    //Rotates counter clockwise
     public Vec2 rotate(float angle) {
         double rad = Math.toRadians(angle);
         float cos = (float) Math.cos(rad);
@@ -125,8 +130,18 @@ public class Vec2 {
 
     public Vec2 normalize() {
         float invLen = 1f / len();
-        scale(invLen, invLen);
+        if(invLen != 0)
+            scale(invLen, invLen);
         return this;
+    }
+
+    public Vec2 transform(Matrix3f matrix) {
+        set(matrix.getTransformed(this));
+        return this;
+    }
+
+    public Vec2 getTransformed(Matrix3f matrix) {
+        return matrix.getTransformed(this);
     }
 
     public Vec2 copy() {

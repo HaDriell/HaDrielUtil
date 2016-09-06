@@ -1,7 +1,5 @@
 package fr.hadriel.event;
 
-import fr.hadriel.events.unet.DataEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +9,15 @@ import java.util.List;
 public class EventHandlerChain<T extends IEvent> implements IEventHandler<T> {
 
     private List<IEventHandler<T>> handlers;
+    private boolean checkReturnValue;
+
+    public EventHandlerChain(boolean checkReturnValue) {
+        this.handlers = new ArrayList<>();
+        this.checkReturnValue = checkReturnValue;
+    }
 
     public EventHandlerChain() {
-        this.handlers = new ArrayList<>();
+        this(true);
     }
 
     public synchronized void add(IEventHandler<T> handler) {
@@ -27,7 +31,7 @@ public class EventHandlerChain<T extends IEvent> implements IEventHandler<T> {
 
     public synchronized boolean handle(T event) {
         for(IEventHandler<T> listener : handlers) {
-            if(listener.handle(event))
+            if(checkReturnValue && listener.handle(event))
                 return true;
         }
         return false;

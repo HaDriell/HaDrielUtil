@@ -198,10 +198,11 @@ public class Matrix3f {
         return this;
     }
 
-    public Vec2 transform(Vec2 v) {
-        float dx = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
-        float dy = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
-        return v.set(dx, dy);
+    public Vec2 getTransformed(Vec2 v) {
+        Vec2 tr = new Vec2();
+        tr.x = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
+        tr.y = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
+        return tr;
     }
 
     public static Matrix3f Scale(float sx, float sy) {
@@ -214,6 +215,10 @@ public class Matrix3f {
 
     public static Matrix3f Translation(float x, float y) {
         return new Matrix3f().setToTranslation(x, y);
+    }
+
+    public static Matrix3f Transform(float scaleX, float scaleY, float rotation, float positionX, float positionY) {
+        return new Matrix3f().setToTransform(scaleX, scaleY, rotation, positionX, positionY);
     }
 
     public String toString() {

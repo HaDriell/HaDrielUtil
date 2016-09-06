@@ -1,16 +1,19 @@
 package fr.hadriel.events.unet;
 
 import fr.hadriel.event.IEvent;
-import fr.hadriel.unet.Connection;
+
+import java.net.InetAddress;
 
 /**
  * Created by glathuiliere on 22/08/2016.
  */
 public class ConnectionEvent implements IEvent {
 
-    public Connection connection;
+    public InetAddress address;
+    public int port;
 
-    public ConnectionEvent(Connection connection) {
-        this.connection = connection;
+    public ConnectionEvent(InetAddress address, int port) {
+        this.address = address;
+        this.port = port;
     }
 }

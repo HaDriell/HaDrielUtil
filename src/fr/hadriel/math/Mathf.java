@@ -27,6 +27,10 @@ public class Mathf {
         return value;
     }
 
+    public static boolean contains(float value, float min, float max) {
+        return value >= min && value <= max;
+    }
+
     public static float cos(float radians) {
         return (float) Math.cos(radians);
     }

@@ -65,11 +65,11 @@ public class Transform {
     }
 
     public void transform(Vec2 v) {
-        matrixInverse.transform(v);
+        v.transform(matrixInverse);
     }
 
     public void untransform(Vec2 v) {
-        matrix.transform(v);
+        v.transform(matrix);
     }
 
 }

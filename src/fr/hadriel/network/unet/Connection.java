@@ -1,4 +1,6 @@
-package fr.hadriel.unet;
+package fr.hadriel.network.unet;
+
+import fr.hadriel.network.UDPSocket;
 
 import java.net.InetAddress;
 
@@ -12,14 +14,14 @@ public class Connection {
     private int timeout;
     private int idleTime;
 
-    private UNetSocket socket;
+    private UDPSocket socket;
 
-    public Connection(InetAddress address, int port, UNetSocket socket, int timeout) {
+    public Connection(InetAddress address, int port, UDPSocket socket, int timeout) {
         this.address = address;
         this.port = port;
         this.socket = socket;
         this.timeout = timeout;
-        this.idleTime = timeout / 2; // force instant KeepAlive stuff !
+        this.idleTime = timeout / 2; // force instant KeepAliveChannel stuff !
     }
 
     public void setTimeout(int timeout) {
@@ -36,7 +38,7 @@ public class Connection {
 
     public void send(byte[] data, int offset, int length, int channel) {
         if(!isClosed())
-            socket.send(this, data, offset, length, channel);
+            socket.send(address, port, data, offset, length, channel);
     }
 
     public boolean isTargeting(InetAddress address, int port) {

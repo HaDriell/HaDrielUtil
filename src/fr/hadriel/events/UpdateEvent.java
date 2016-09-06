@@ -1,4 +1,4 @@
-package fr.hadriel.events.input;
+package fr.hadriel.events;
 
 import fr.hadriel.event.IEvent;
 
@@ -8,4 +8,10 @@ import fr.hadriel.event.IEvent;
  * This event is used to simulate loops in event systems, by getting fired frequently
  */
 public class UpdateEvent implements IEvent {
+
+    public float delta;
+
+    public UpdateEvent(float delta) {
+        this.delta = delta;
+    }
 }

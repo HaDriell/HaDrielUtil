@@ -68,6 +68,16 @@ public class HLGraphics {
         g.drawOval(x, y, width, height);
     }
 
+    public void drawPolygon(int[] xPoints, int[] yPoints, int count, Color color) {
+        g.setColor(color);
+        g.drawPolygon(xPoints, yPoints, count);
+    }
+
+    public void fillPolygon(int[] xPoints, int[] yPoints, int count, Color color) {
+        g.setColor(color);
+        g.fillPolygon(xPoints, yPoints, count);
+    }
+
     public void fillOval(int x, int y, int width, int height, Color color) {
         g.setColor(color);
         g.fillOval(x, y, width, height);
