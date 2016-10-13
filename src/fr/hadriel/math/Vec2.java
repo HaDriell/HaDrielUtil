@@ -135,6 +135,14 @@ public class Vec2 {
         return this;
     }
 
+    public Vec2 getNormalLeft() {
+        return new Vec2(y, -x).normalize();
+    }
+
+    public Vec2 getNormalRight() {
+        return new Vec2(-y, x).normalize();
+    }
+
     public Vec2 transform(Matrix3f matrix) {
         set(matrix.getTransformed(this));
         return this;

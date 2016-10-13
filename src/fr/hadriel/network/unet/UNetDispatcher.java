@@ -6,7 +6,6 @@ import fr.hadriel.events.DataEvent;
 import fr.hadriel.events.UpdateEvent;
 import fr.hadriel.events.unet.ConnectionEvent;
 import fr.hadriel.events.unet.DisconnectionEvent;
-import fr.hadriel.network.UDPSocket;
 
 /**
  * Created by glathuiliere on 29/08/2016.

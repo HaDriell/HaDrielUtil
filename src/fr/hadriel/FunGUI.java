@@ -51,6 +51,7 @@ public class FunGUI {
         musicSoundLabel.getTransform().setMatrix(masterSoundLabel.getTransform().toMatrix());
         musicSoundLabel.getTransform().translate(0, 20 + masterSoundLabel.getHeight());
         root.add(musicSoundLabel);
+
         Slider musicSoundSlider = new Slider(1f, 300, 20);
         musicSoundSlider.getTransform().setMatrix(masterSoundLabel.getTransform().toMatrix());
         musicSoundSlider.getTransform().translate(0, 20 + masterSoundLabel.getHeight());

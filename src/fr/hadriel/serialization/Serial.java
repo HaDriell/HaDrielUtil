@@ -1,5 +1,7 @@
 package fr.hadriel.serialization;
 
+import java.io.*;
+
 /**
  * Created by glathuiliere on 09/08/2016.
  */
@@ -7,6 +9,231 @@ public class Serial {
 
     public static final byte FALSE = 0x0;
     public static final byte TRUE = 0x1;
+
+    // DataIO
+    public static void write(DataOutput out, byte[] data, int offset, int length) throws IOException {
+        out.write(data, offset, length);
+    }
+
+    public static void write(DataOutput out, byte[] data) throws IOException {
+        out.write(data);
+    }
+
+    public static void write(DataOutput out, byte data) throws IOException {
+        out.write(data);
+    }
+
+    public static void write(DataOutput out, boolean data) throws IOException {
+        out.write(data ? TRUE : FALSE);
+    }
+
+    public static void write(DataOutput out, short data) throws IOException {
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(DataOutput out, char data) throws IOException {
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(DataOutput out, int data) throws IOException {
+        out.write((byte) ((data >> 24) & 0xFF));
+        out.write((byte) ((data >> 16) & 0xFF));
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(DataOutput out, long data) throws IOException {
+        out.write((byte) ((data >> 56) & 0xFF));
+        out.write((byte) ((data >> 48) & 0xFF));
+        out.write((byte) ((data >> 40) & 0xFF));
+        out.write((byte) ((data >> 32) & 0xFF));
+        out.write((byte) ((data >> 24) & 0xFF));
+        out.write((byte) ((data >> 16) & 0xFF));
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(DataOutput out, float data) throws IOException {
+        write(out, Float.floatToIntBits(data));
+    }
+
+    public static void write(DataOutput out, double data) throws IOException {
+        write(out, Double.doubleToLongBits(data));
+    }
+
+    public static void readBytes(DataInput in, byte[] buffer, int offset, int length) throws IOException {
+        in.readFully(buffer, offset, length);
+    }
+
+    public static void readBytes(DataInput in, byte[] buffer) throws IOException {
+        in.readFully(buffer);
+    }
+
+    public static byte[] readBytes(DataInput in, int count) throws IOException {
+        byte[] buffer = new byte[count];
+        in.readFully(buffer);
+        return buffer;
+    }
+
+    public static byte readByte(DataInput in) throws IOException {
+        return in.readByte();
+    }
+
+    public static boolean readBoolean(DataInput in) throws IOException {
+        return in.readByte() != FALSE;
+    }
+
+    public static short readShort(DataInput in) throws IOException {
+        return (short) (
+                ((in.readByte() & 0xFF) << 8)
+                        | ((in.readByte() & 0xFF) << 0));
+    }
+
+    public static char readChar(DataInput in) throws IOException {
+        return (char) (
+                ((in.readByte() & 0xFF) << 8)
+                        | ((in.readByte() & 0xFF) << 0)
+        );
+    }
+
+    public static int readInt(DataInput in) throws IOException {
+        return (int) (((in.readByte() & 0xFF) << 24)
+                | ((in.readByte() & 0xFF) << 16)
+                | ((in.readByte() & 0xFF) << 8)
+                | ((in.readByte() & 0xFF) << 0)
+        );
+    }
+    public static long readLong(DataInput in) throws IOException {
+        return (long) (((in.readByte() & 0xFFL) << 56)
+                | ((in.readByte() & 0xFFL) << 48)
+                | ((in.readByte() & 0xFFL) << 40)
+                | ((in.readByte() & 0xFFL) << 32)
+                | ((in.readByte() & 0xFFL) << 24)
+                | ((in.readByte() & 0xFFL) << 16)
+                | ((in.readByte() & 0xFFL) << 8)
+                | ((in.readByte() & 0xFFL) << 0)
+        );
+    }
+    public static float readFloat(DataInput in) throws IOException {
+        return Float.intBitsToFloat(readInt(in));
+    }
+
+    public static double readDouble(DataInput in) throws IOException {
+        return Double.longBitsToDouble(readLong(in));
+    }
+
+    // Streams
+
+    public static void write(OutputStream out, byte[] data, int offset, int length) throws IOException {
+        out.write(data, offset, length);
+    }
+
+    public static void write(OutputStream out, byte[] data) throws IOException {
+        out.write(data);
+    }
+
+    public static void write(OutputStream out, byte data) throws IOException {
+        out.write(data);
+    }
+
+    public static void write(OutputStream out, boolean data) throws IOException {
+        out.write(data ? TRUE : FALSE);
+    }
+
+    public static void write(OutputStream out, short data) throws IOException {
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(OutputStream out, char data) throws IOException {
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(OutputStream out, int data) throws IOException {
+        out.write((byte) ((data >> 24) & 0xFF));
+        out.write((byte) ((data >> 16) & 0xFF));
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(OutputStream out, long data) throws IOException {
+        out.write((byte) ((data >> 56) & 0xFF));
+        out.write((byte) ((data >> 48) & 0xFF));
+        out.write((byte) ((data >> 40) & 0xFF));
+        out.write((byte) ((data >> 32) & 0xFF));
+        out.write((byte) ((data >> 24) & 0xFF));
+        out.write((byte) ((data >> 16) & 0xFF));
+        out.write((byte) ((data >> 8) & 0xFF));
+        out.write((byte) ((data >> 0) & 0xFF));
+    }
+
+    public static void write(OutputStream out, float data) throws IOException {
+        write(out, Float.floatToIntBits(data));
+    }
+
+    public static void write(OutputStream out, double data) throws IOException {
+        write(out, Double.doubleToLongBits(data));
+    }
+
+    public static int readBytes(InputStream in, byte[] buffer, int offset, int length) throws IOException {
+        return in.read(buffer, offset, length);
+    }
+
+    public static int readBytes(InputStream in, byte[] buffer) throws IOException {
+        return in.read(buffer);
+    }
+
+    public static byte readByte(InputStream in) throws IOException {
+        return (byte) in.read();
+    }
+
+    public static boolean readBoolean(InputStream in) throws IOException {
+        return in.read() != FALSE;
+    }
+
+    public static short readShort(InputStream in) throws IOException {
+        return (short) (
+                ((in.read() & 0xFF) << 8)
+                | ((in.read() & 0xFF) << 0));
+    }
+
+    public static char readChar(InputStream in) throws IOException {
+        return (char) (
+                ((in.read() & 0xFF) << 8)
+                | ((in.read() & 0xFF) << 0)
+        );
+    }
+
+    public static int readInt(InputStream in) throws IOException {
+        return (int) (((in.read() & 0xFF) << 24)
+                | ((in.read() & 0xFF) << 16)
+                | ((in.read() & 0xFF) << 8)
+                | ((in.read() & 0xFF) << 0)
+        );
+    }
+    public static long readLong(InputStream in) throws IOException {
+        return (long) (((in.read() & 0xFFL) << 56)
+                | ((in.read() & 0xFFL) << 48)
+                | ((in.read() & 0xFFL) << 40)
+                | ((in.read() & 0xFFL) << 32)
+                | ((in.read() & 0xFFL) << 24)
+                | ((in.read() & 0xFFL) << 16)
+                | ((in.read() & 0xFFL) << 8)
+                | ((in.read() & 0xFFL) << 0)
+        );
+    }
+    public static float readFloat(InputStream in) throws IOException {
+        return Float.intBitsToFloat(readInt(in));
+    }
+
+    public static double readDouble(InputStream in) throws IOException {
+        return Double.longBitsToDouble(readLong(in));
+    }
+
+    //Byte Buffer
 
     public static int write(byte[] buffer, int pointer, byte data) {
         buffer[pointer++] = data;
@@ -167,7 +394,7 @@ public class Serial {
 
     public static int readByteArray(byte[] buffer, int pointer, byte[] array, int length) {
         System.arraycopy(buffer, pointer, array, 0, length);
-        return length;
+        return pointer + length;
     }
 
     public static int readBooleanArray(byte[] buffer, int pointer, boolean[] array, int length) {

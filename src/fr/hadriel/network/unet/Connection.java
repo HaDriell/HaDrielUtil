@@ -1,7 +1,5 @@
 package fr.hadriel.network.unet;
 
-import fr.hadriel.network.UDPSocket;
-
 import java.net.InetAddress;
 
 /**

@@ -1,4 +1,4 @@
-package fr.hadriel.network;
+package fr.hadriel.network.unet;
 
 import fr.hadriel.event.IEvent;
 import fr.hadriel.event.IEventListener;

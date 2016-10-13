@@ -2,7 +2,6 @@ package fr.hadriel.network.unet;
 
 import fr.hadriel.events.DataEvent;
 import fr.hadriel.events.UpdateEvent;
-import fr.hadriel.network.UDPSocket;
 import fr.hadriel.util.Callback;
 
 import java.net.InetAddress;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
 
 /**
  * Created by glathuiliere on 22/08/2016.
