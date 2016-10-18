@@ -9,20 +9,20 @@ import java.util.List;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StArray extends StructEntry implements Iterable<StructEntry> {
+public class StArray extends StPrimitive implements Iterable<StPrimitive> {
 
-    private List<StructEntry> entries;
+    private List<StPrimitive> entries;
 
     public StArray() {
         super(Struct.TYPE_ARRAY);
         this.entries = new ArrayList<>();
     }
 
-    public StructEntry get(int index) {
+    public StPrimitive get(int index) {
         return entries.get(index);
     }
 
-    public void add(StructEntry entry) {
+    public void add(StPrimitive entry) {
         entries.add(entry);
     }
 
@@ -62,7 +62,7 @@ public class StArray extends StructEntry implements Iterable<StructEntry> {
         entries.add(new StString(value));
     }
 
-    public void remove(StructEntry entry) {
+    public void remove(StPrimitive entry) {
         entries.remove(entry);
     }
 
@@ -76,20 +76,20 @@ public class StArray extends StructEntry implements Iterable<StructEntry> {
 
     protected int getSizeImpl() {
         int size = 2;
-        for(StructEntry entry : entries)
+        for(StPrimitive entry : entries)
             size += entry.getSize();
         return size;
     }
 
     protected int serializeImpl(byte[] buffer, int pointer) {
         pointer = Serial.write(buffer, pointer, (short) entries.size());
-        for(StructEntry entry : entries) {
+        for(StPrimitive entry : entries) {
             pointer = entry.serialize(buffer, pointer);
         }
         return pointer;
     }
 
-    public Iterator<StructEntry> iterator() {
+    public Iterator<StPrimitive> iterator() {
         return entries.iterator();
     }
 
@@ -100,7 +100,7 @@ public class StArray extends StructEntry implements Iterable<StructEntry> {
         short count = Serial.readShort(buffer, pointer);
         pointer += 2;
         for(int i = 0; i < count; i++) {
-            StructEntry entry = Struct.deserialize(buffer, pointer);
+            StPrimitive entry = Struct.deserialize(buffer, pointer);
             pointer += entry.getSize();
             list.add(entry);
         }
@@ -111,7 +111,7 @@ public class StArray extends StructEntry implements Iterable<StructEntry> {
         StringBuilder sb = new StringBuilder();
         sb.append("StArray(");
         boolean firstStatement = true;
-        for(StructEntry entry : entries) {
+        for(StPrimitive entry : entries) {
             if(firstStatement)
                 firstStatement = false;
             else
@@ -120,5 +120,42 @@ public class StArray extends StructEntry implements Iterable<StructEntry> {
         }
         sb.append(')');
         return sb.toString();
+    }
+
+
+    public byte asByte() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean asBoolean() {
+        throw new UnsupportedOperationException();
+    }
+
+    public short asShort() {
+        throw new UnsupportedOperationException();
+    }
+
+    public char asChar() {
+        throw new UnsupportedOperationException();
+    }
+
+    public int asInt() {
+        throw new UnsupportedOperationException();
+    }
+
+    public long asLong() {
+        throw new UnsupportedOperationException();
+    }
+
+    public float asFloat() {
+        throw new UnsupportedOperationException();
+    }
+
+    public double asDouble() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String asString() {
+        throw new UnsupportedOperationException();
     }
 }

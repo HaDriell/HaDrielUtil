@@ -1,15 +1,16 @@
 package fr.hadriel.serialization.struct;
 
+import fr.hadriel.serialization.Primitive;
 import fr.hadriel.serialization.Serial;
 
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public abstract class StructEntry {
+public abstract class StPrimitive implements Primitive {
 
     private byte dataType;
 
-    protected StructEntry(byte type) {
+    protected StPrimitive(byte type) {
         this.dataType = type;
     }
 
@@ -25,6 +26,4 @@ public abstract class StructEntry {
     protected abstract int getSizeImpl();
 
     protected abstract int serializeImpl(byte[] buffer, int pointer);
-
-
 }

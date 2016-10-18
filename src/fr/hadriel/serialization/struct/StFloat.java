@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StFloat extends StructEntry {
+public class StFloat extends StPrimitive {
 
     public float value;
 
@@ -31,5 +31,50 @@ public class StFloat extends StructEntry {
 
     public String toString() {
         return "StFloat(" + value + ")";
+    }
+
+    @Override
+    public byte asByte() {
+        return (byte) value;
+    }
+
+    @Override
+    public boolean asBoolean() {
+        return value != Serial.FALSE;
+    }
+
+    @Override
+    public short asShort() {
+        return (short) value;
+    }
+
+    @Override
+    public char asChar() {
+        return (char) value;
+    }
+
+    @Override
+    public int asInt() {
+        return (int) value;
+    }
+
+    @Override
+    public long asLong() {
+        return (long) value;
+    }
+
+    @Override
+    public float asFloat() {
+        return (float) value;
+    }
+
+    @Override
+    public double asDouble() {
+        return (double) value;
+    }
+
+    @Override
+    public String asString() {
+        return "" + value;
     }
 }

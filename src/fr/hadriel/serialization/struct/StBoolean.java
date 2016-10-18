@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StBoolean extends StructEntry {
+public class StBoolean extends StPrimitive {
 
     public boolean value;
 
@@ -31,5 +31,50 @@ public class StBoolean extends StructEntry {
 
     public String toString() {
         return "StBoolean(" + value + ")";
+    }
+
+    @Override
+    public byte asByte() {
+        return value ? Serial.TRUE : Serial.FALSE;
+    }
+
+    @Override
+    public boolean asBoolean() {
+        return value;
+    }
+
+    @Override
+    public short asShort() {
+        return value ? Serial.TRUE : Serial.FALSE;
+    }
+
+    @Override
+    public char asChar() {
+        return (char) (value ? Serial.TRUE : Serial.FALSE);
+    }
+
+    @Override
+    public int asInt() {
+        return value ? Serial.TRUE : Serial.FALSE;
+    }
+
+    @Override
+    public long asLong() {
+        return value ? Serial.TRUE : Serial.FALSE;
+    }
+
+    @Override
+    public float asFloat() {
+        return value ? Serial.TRUE : Serial.FALSE;
+    }
+
+    @Override
+    public double asDouble() {
+        return value ? Serial.TRUE : Serial.FALSE;
+    }
+
+    @Override
+    public String asString() {
+        return Boolean.toString(value);
     }
 }

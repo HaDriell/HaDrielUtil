@@ -37,7 +37,7 @@ public final class Struct {
         return "UNKNOWN";
     }
 
-    public static StructEntry deserialize(byte[] buffer, int pointer) {
+    public static StPrimitive deserialize(byte[] buffer, int pointer) {
         byte b = buffer[pointer];
         switch (b) {
             case TYPE_BOOL: return StBoolean.deserialize(buffer, pointer);

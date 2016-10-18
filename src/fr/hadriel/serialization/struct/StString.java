@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StString extends StructEntry {
+public class StString extends StPrimitive {
 
     public String value;
 
@@ -36,5 +36,50 @@ public class StString extends StructEntry {
 
     public String toString() {
         return "StString(" + value + ")";
+    }
+
+    @Override
+    public byte asByte() {
+        return Byte.parseByte(value);
+    }
+
+    @Override
+    public boolean asBoolean() {
+        return Boolean.parseBoolean(value);
+    }
+
+    @Override
+    public short asShort() {
+        return Short.parseShort(value);
+    }
+
+    @Override
+    public char asChar() {
+        return value.charAt(0);
+    }
+
+    @Override
+    public int asInt() {
+        return Integer.parseInt(value);
+    }
+
+    @Override
+    public long asLong() {
+        return Long.parseLong(value);
+    }
+
+    @Override
+    public float asFloat() {
+        return Float.parseFloat(value);
+    }
+
+    @Override
+    public double asDouble() {
+        return Double.parseDouble(value);
+    }
+
+    @Override
+    public String asString() {
+        return "" + value;
     }
 }

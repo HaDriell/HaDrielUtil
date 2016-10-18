@@ -9,20 +9,20 @@ import java.util.Map;
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public class StObject extends StructEntry implements Iterable<Map.Entry<String, StructEntry>> {
+public class StObject extends StPrimitive implements Iterable<Map.Entry<String, StPrimitive>> {
 
-    private Map<String, StructEntry> members;
+    private Map<String, StPrimitive> members;
 
     public StObject() {
         super(Struct.TYPE_OBJECT);
         this.members = new HashMap<>();
     }
 
-    public StructEntry get(String name) {
+    public StPrimitive get(String name) {
         return members.get(name);
     }
 
-    public void put(String name, StructEntry entry) {
+    public void put(String name, StPrimitive entry) {
         members.put(name, entry);
     }
 
@@ -72,7 +72,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
 
     protected int getSizeImpl() {
         int size = 2;
-        for(Map.Entry<String, StructEntry> e : members.entrySet()) {
+        for(Map.Entry<String, StPrimitive> e : members.entrySet()) {
             size += 2 + e.getKey().length() + e.getValue().getSize();
         }
         return size;
@@ -80,7 +80,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
 
     protected int serializeImpl(byte[] buffer, int pointer) {
         pointer = Serial.write(buffer, pointer, (short) members.size()); // member count < 65535
-        for(Map.Entry<String, StructEntry> e : members.entrySet()) {
+        for(Map.Entry<String, StPrimitive> e : members.entrySet()) {
             pointer = Serial.write(buffer, pointer, (short) e.getKey().length());
             pointer = Serial.write(buffer, pointer, e.getKey().getBytes());
             pointer = e.getValue().serialize(buffer, pointer);
@@ -88,7 +88,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
         return pointer;
     }
 
-    public Iterator<Map.Entry<String, StructEntry>> iterator() {
+    public Iterator<Map.Entry<String, StPrimitive>> iterator() {
         return members.entrySet().iterator();
     }
 
@@ -104,7 +104,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
             byte[] string = new byte[length];
             pointer += Serial.readByteArray(buffer, pointer, string, length);
             String key = new String(string);
-            StructEntry value = Struct.deserialize(buffer, pointer);
+            StPrimitive value = Struct.deserialize(buffer, pointer);
             pointer += value.getSize();
             object.put(key, value);
         }
@@ -115,7 +115,7 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
         StringBuilder sb = new StringBuilder();
         sb.append("StObject(");
         boolean firstStatement = true;
-        for(Map.Entry<String, StructEntry> e : members.entrySet()) {
+        for(Map.Entry<String, StPrimitive> e : members.entrySet()) {
             if(firstStatement)
                 firstStatement = false;
             else
@@ -125,5 +125,42 @@ public class StObject extends StructEntry implements Iterable<Map.Entry<String, 
         }
         sb.append(')');
         return sb.toString();
+    }
+
+
+    public byte asByte() {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean asBoolean() {
+        throw new UnsupportedOperationException();
+    }
+
+    public short asShort() {
+        throw new UnsupportedOperationException();
+    }
+
+    public char asChar() {
+        throw new UnsupportedOperationException();
+    }
+
+    public int asInt() {
+        throw new UnsupportedOperationException();
+    }
+
+    public long asLong() {
+        throw new UnsupportedOperationException();
+    }
+
+    public float asFloat() {
+        throw new UnsupportedOperationException();
+    }
+
+    public double asDouble() {
+        throw new UnsupportedOperationException();
+    }
+
+    public String asString() {
+        throw new UnsupportedOperationException();
     }
 }

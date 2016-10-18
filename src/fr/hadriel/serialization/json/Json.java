@@ -1,72 +1,58 @@
 package fr.hadriel.serialization.json;
 
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+import java.util.regex.Pattern;
 
 /**
- * Created by glathuiliere on 19/08/2016.
+ * Created by glathuiliere on 18/10/2016.
  */
-public final class Json {
+public class Json {
 
-    private static final Class[] JSON_PRIMITIVE_TYPES = {
-            Byte.class,
-            Boolean.class,
-            Short.class,
-            Character.class,
-            Integer.class,
-            Long.class,
-            Float.class,
-            Double.class,
-            String.class
-    };
+    public static final Pattern P_QUOTED_STRING = Pattern.compile("^(\"(([^\"]|\")*)\"|'(([^']|')*)')$");
+    public static final Pattern P_ARRAY_CONTENT = Pattern.compile("^\\[(.*?)\\]$");
+    public static final Pattern P_OBJECT_CONTENT = Pattern.compile("^\\{(.*?)\\}$");
 
-    public static boolean isJsonValidType(Object reference) {
-        return JsonType.class.isInstance(reference) || isJsonValidPrimitiveType(reference);
-    }
+    public static List<String> splitjsonArray(String jsonArray) {
+        List<String> values = new ArrayList<>();
+        Stack<Character> stack = new Stack<>();
+        StringBuilder sb = new StringBuilder();
+        char c, p;
+        int depth;
+        int len = jsonArray.length();
+        for(int i = 0; i < len; i++) {
+            c = jsonArray.charAt(i);
+            if(Character.isWhitespace(c)) continue; //discard whitespaces
+            p = stack.empty() ? 0 : stack.peek();
+            depth = stack.size();
+            switch (c) {
+                //Push in Depth (will continue buffering but will ignore ',' if not in depth 1)
+                case '{':
+                case '[':
+                    stack.push(c);
+                    if(depth == 0) continue; //stack was empty
+                    break;
 
-    public static boolean isJsonValidPrimitiveType(Object reference) {
-        if(reference == null) return true;
-        for(Class type : JSON_PRIMITIVE_TYPES) {
-            if(type == reference.getClass())
-                return true;
-        }
-        return false;
-    }
+                //Pop depth if in accordance with the openning bracket type (else should throw errors !)
+                case '}':
+                case ']':
+                    if(c-2 == p) stack.pop(); // In ASCII Table, chars are ... { / } ... and ... [ \ ] ...
+                    if(depth == 1) continue; //stack is empty now
+                    break;
 
-    public static void checkJsonValidPrimitiveType(Object reference) {
-        if(!isJsonValidPrimitiveType(reference))
-            throw new IllegalArgumentException("Invalid JSON Primitive Type");
-    }
-
-    public static void checkJsonValidType(Object reference) {
-        if(!isJsonValidType(reference))
-            throw new IllegalArgumentException("Invalid JSON Type");
-    }
-
-    public static JsonType parse(ByteBuffer buffer) {
-        return null;
-    }
-
-    private static JsObject parseObject(ByteBuffer buffer) {
-        JsObject object = new JsObject();
-        byte b;
-        buffer.get(); // '{'
-        boolean done = false;
-        while(!done) {
-            b = buffer.get();
-            buffer.position(buffer.position() - 1); // rollback
-
-            if(Character.isWhitespace(b)) {
-                return null;
-            } else if(b == ',') {
-                buffer.get(); // advance
-            } else if(b == '}') {
-                buffer.get();
-                return object;
-            } else {
-                //TODO
+                //When ',' is encoutered, if depth is the toplevel Array peeked will push the value to the result list
+                case ',':
+                    if(depth == 1) {
+                        values.add(sb.toString());
+                        sb = new StringBuilder();
+                    }
+                    continue;
             }
+            sb.append(c);
         }
-
-        return object;
+        if(sb.length() > 0) // there was a last item (1/Last)
+            values.add(sb.toString());
+        return values;
     }
 }
