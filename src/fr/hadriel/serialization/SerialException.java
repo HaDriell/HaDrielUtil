@@ -1,0 +1,27 @@
+package fr.hadriel.serialization;
+
+/**
+ * Created by HaDriel on 19/10/2016.
+ */
+public class SerialException extends Exception {
+
+    public SerialException() {
+        super();
+    }
+
+    public SerialException(String message) {
+        super(message);
+    }
+
+    public SerialException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public SerialException(Throwable cause) {
+        super(cause);
+    }
+
+    protected SerialException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
+}

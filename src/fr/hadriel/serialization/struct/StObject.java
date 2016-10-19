@@ -92,25 +92,6 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
         return members.entrySet().iterator();
     }
 
-    public static StObject deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != Struct.TYPE_OBJECT) return null;
-        pointer++;
-        StObject object = new StObject();
-        short count = Serial.readShort(buffer, pointer);
-        pointer += 2;
-        for(int i = 0; i < count; i++) {
-            short length = Serial.readShort(buffer, pointer);
-            pointer += 2;
-            byte[] string = new byte[length];
-            pointer += Serial.readByteArray(buffer, pointer, string, length);
-            String key = new String(string);
-            StPrimitive value = Struct.deserialize(buffer, pointer);
-            pointer += value.getSize();
-            object.put(key, value);
-        }
-        return object;
-    }
-
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("StObject(");
@@ -127,10 +108,10 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
         return sb.toString();
     }
 
-
     public byte asByte() {
         throw new UnsupportedOperationException();
     }
+
 
     public boolean asBoolean() {
         throw new UnsupportedOperationException();
@@ -158,6 +139,25 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
 
     public double asDouble() {
         throw new UnsupportedOperationException();
+    }
+
+    public static StObject deserialize(byte[] buffer, int pointer) {
+        if(buffer[pointer] != Struct.TYPE_OBJECT) return null;
+        pointer++;
+        StObject object = new StObject();
+        short count = Serial.readShort(buffer, pointer);
+        pointer += 2;
+        for(int i = 0; i < count; i++) {
+            short length = Serial.readShort(buffer, pointer);
+            pointer += 2;
+            byte[] string = new byte[length];
+            pointer += Serial.readByteArray(buffer, pointer, string, length);
+            String key = new String(string);
+            StPrimitive value = Struct.deserialize(buffer, pointer);
+            pointer += value.getSize();
+            object.put(key, value);
+        }
+        return object;
     }
 
     public String asString() {
