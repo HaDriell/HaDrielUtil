@@ -1,4 +1,4 @@
-package fr.hadriel.serialization.hzip;
+package fr.hadriel.serialization.hzip.old;
 
 import fr.hadriel.serialization.Serial;
 

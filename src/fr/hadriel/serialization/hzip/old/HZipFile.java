@@ -1,7 +1,7 @@
-package fr.hadriel.serialization.hzip;
+package fr.hadriel.serialization.hzip.old;
 
 import fr.hadriel.serialization.Serial;
-import fr.hadriel.util.IO;
+import fr.hadriel.util.IOUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class HZipFile {
     //HZipFile Index data
     private List<Index> indices;
 
-    //HZipFile IO
+    //HZipFile IOUtils
     private RandomAccessFile access;
     private Lock lock = new ReentrantLock();
     private byte[] buffer;
@@ -35,9 +35,9 @@ public class HZipFile {
         this(1024 * 1024); // 1MB default buffer size
     }
 
-    public HZipFile(int operationBufferSize) {
+    public HZipFile(int ioBufferSize) {
         this.indices = new ArrayList<>();
-        this.buffer = new byte[operationBufferSize];
+        this.buffer = new byte[ioBufferSize];
     }
 
     //----------------------------------------------------------------------------------------------------------------//
@@ -205,11 +205,10 @@ public class HZipFile {
         }
     }
 
-
     private void allocate(long pointer, long count) throws IOException {
         lock.lock();
         try {
-            IO.insert(access, buffer, pointer, count);
+            IOUtils.insert(access, buffer, pointer, count);
         } finally {
             lock.unlock();
         }
@@ -218,7 +217,7 @@ public class HZipFile {
     private void deallocate(long pointer, long count) throws IOException {
         lock.lock();
         try {
-            IO.cut(access, buffer, pointer, count);
+            IOUtils.cut(access, buffer, pointer, count);
         } finally {
             lock.lock();
         }
@@ -245,7 +244,7 @@ public class HZipFile {
     }
 
     //----------------------------------------------------------------------------------------------------------------//
-    //BASIC INDEX IO FUNCTIONS
+    //BASIC INDEX IOUtils FUNCTIONS
     //----------------------------------------------------------------------------------------------------------------//
 
 
@@ -270,5 +269,14 @@ public class HZipFile {
         int readLength = (int) Math.min(length, index.length() - filePointer);
         readRaw(pointer, buffer, offset, readLength);
         return readLength;
+    }
+
+    public Space getSpace(String name) {
+        Index index = get(name);
+        return index == null ? null : new Space(this, index);
+    }
+
+    public Space createSpace(String name) throws IOException {
+     return new Space(this, create(name, 0));
     }
 }
