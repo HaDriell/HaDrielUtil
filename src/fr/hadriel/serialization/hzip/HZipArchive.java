@@ -1,115 +1,82 @@
 package fr.hadriel.serialization.hzip;
 
-import fr.hadriel.serialization.Serial;
-import fr.hadriel.util.IOUtils;
+import fr.hadriel.serialization.io.BoundedSerialAccess;
+import fr.hadriel.serialization.io.SerialFileChannel;
+import fr.hadriel.serialization.io.SerialInput;
+import fr.hadriel.serialization.io.SerialOutput;
+import fr.hadriel.util.memory.ContiguousMemoryManager;
+import fr.hadriel.util.memory.Pointer;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.util.*;
 
 /**
- * Created by HaDriel on 21/10/2016.
+ * Created by glathuiliere on 27/10/2016.
  */
 public class HZipArchive {
-    private static final byte[] EMPTY_HZIP = {
-            'H','Z','I','P', // PREFIX
-            0, 0, 0, 0, 0, 0, 0, HZipHeader.MEMSIZE, //MapPointer
-            0, 0 //MapCount
-    };
 
-    private HZipHeader header = new HZipHeader();
-    private HZipMap map = new HZipMap();
-    private long serializedMapLength;
+    private SerialFileChannel channel;
+    private ContiguousMemoryManager manager;
+    private Map<String, Pointer> nameMap;
 
-    private byte[] operationBuffer = new byte[1024 * 1024];
-    private RandomAccessFile io;
+    public HZipArchive(File file) throws IOException {
+        this.nameMap = new HashMap<>();
+        this.manager = new ContiguousMemoryManager();
+        this.channel = new SerialFileChannel(file);
 
-    public void open(String filename) throws IOException {
-        open(new File(filename));
+        //TODO : make the callbacks implementations
+
+        if(channel.length() == 0) writeMap();
+        readMap();
     }
 
-    public void open(File file) throws IOException {
-        if(io != null) throw new IOException("Already opened");
-        io = new RandomAccessFile(file, "rw");
-        if(io.length() == 0) { // Init if empty file
-            io.write(EMPTY_HZIP);
+    private long getMapAllocationSize() {
+        long size = 2; //count
+        for(Map.Entry<String, Pointer> e : nameMap.entrySet()) { // only target the named pointers
+            size += 2 + e.getKey().length() + 8; // short + nameBytes + long;
         }
-        io.seek(0);
-        header.read(io);
-        io.seek(header.mapPointer);
-        map.read(io);
+        return size;
     }
 
-    public void close() {
-        if(io == null) return;
-        try { io.close(); } catch (IOException ignore) {}
-        io = null;
-    }
+    private void readMap() throws IOException {
+        SerialInput in;
 
-    private void updateMap() throws IOException {
-        long mapPointer = map.getMapPointer();
-        long memsize = map.memsize();
-        long delta = memsize - serializedMapLength; // get the old map size
-        if(delta > 0) IOUtils.insert(io, operationBuffer, mapPointer, delta);
-        if(delta < 0) IOUtils.cut(io, operationBuffer, mapPointer + delta, -delta); // d is negative
-        serializedMapLength = memsize;
-        io.seek(mapPointer);
-        map.write(io);
-    }
+        //Read the file Header
+        in = new BoundedSerialAccess(channel, 0, 12);
+        byte[] prefix = new byte[4];
+        in.readBytes(prefix);
+        if(!Arrays.equals(prefix, HZip.HEADER_PREFIX))
+            throw new IOException("Invalid File Header '" + new String(prefix) + "'");
+        long mapAllocationSize = in.readLong();
 
-    public HZipEntry getEntry(String name) {
-        return map.find(name);
-    }
-
-    public HZipEntry createEntry(String name) throws IOException {
-        HZipEntry entry = map.create(name);
-        if(entry == null) return null; //nothing changed, entry already exists
-        updateMap();
-        return entry;
-    }
-
-    public boolean deleteEntry(String name) throws IOException {
-        HZipEntry entry = map.find(name);
-        if(entry == null) return false; // nothing changed, entry doesn't exist
-        long pointer = map.getAbsolutePointer(entry);
-        IOUtils.cut(io, operationBuffer, pointer, entry.length());
-        map.delete(entry);
-        updateMap();
-        return true;
-    }
-
-    public void setEntryLength(HZipEntry entry, long length) throws IOException {
-        resizeEntry(entry, length - entry.length());
-    }
-
-    public void resizeEntry(HZipEntry entry, long delta) throws IOException {
-        System.out.println("Delta:" + delta);
-        if(delta > 0) IOUtils.insert(io, operationBuffer, entry.length(), delta);
-        if(delta < 0) IOUtils.cut(io, operationBuffer, entry.length() + delta, -delta); // d is negative
-    }
-
-    public void write(HZipEntry entry, long filePointer, byte[] buffer) throws IOException {
-        write(entry, filePointer, buffer, 0, buffer.length);
-    }
-
-    public void write(HZipEntry entry, long filePointer, byte[] buffer, int offset, int length) throws IOException {
-        long pointer = map.getAbsolutePointer(entry) + filePointer;
-        System.out.println(pointer);
-        long deltaLength = filePointer + length - entry.length();
-        if(deltaLength > 0) {
-            resizeEntry(entry, deltaLength); //make sure the file is big enough for the write operation
+        //Read the Map
+        nameMap.clear();
+        in = new BoundedSerialAccess(channel, 12, mapAllocationSize);
+        List<Pointer> pointers = new ArrayList<>();
+        pointers.add(new Pointer(12)); //push the Headerpointer (unreferenced)
+        short count = in.readShort();
+        for(int i = 0; i < count; i++) {
+            short nl = in.readShort();
+            byte[] nb = new byte[nl];
+            in.readBytes(nb);
+            long size = in.readLong();
+            String name = new String(nb);
+            Pointer p = new Pointer(size);
+            pointers.add(p);
+            nameMap.put(name, p);
         }
-        io.seek(pointer);
-        Serial.write(io, buffer, offset, length);
+
+        //apply map
+        manager.initialize(pointers);
     }
 
-    public int read(HZipEntry entry, long filePointer, byte[] buffer) throws IOException {
-        return read(entry, filePointer, buffer, 0, buffer.length);
-    }
-
-    public int read(HZipEntry entry, long filePointer, byte[] buffer, int offset, int length) throws IOException {
-        int readCount = (int) Math.min(entry.length(), filePointer + length); // find what will be reached first : file's end or read setLength
-        Serial.readBytes(io, buffer, offset, readCount);
-        return readCount;
+    private void writeMap() throws IOException {
+        SerialOutput out;
+        long mapAllocationSize = getMapAllocationSize();
+        //Write Header
+        out = new BoundedSerialAccess(channel, 0, 12);
+        out.write(HZip.HEADER_PREFIX);
+        out.write(mapAllocationSize);
     }
 }

@@ -9,23 +9,21 @@ import java.nio.file.StandardOpenOption;
 /**
  * Created by HaDriel on 23/10/2016.
  */
-public class SerialAccessFile {
+public class SerialFileChannel {
 
     private FileChannel channel;
     private byte[] copyBuffer = new byte[1024 * 1024]; // 1MB copy buffer
 
+    public SerialFileChannel(String filename) throws IOException {
+        this(new File(filename));
+    }
+
+    public SerialFileChannel(File file) throws IOException {
+        channel = FileChannel.open(file.toPath(), StandardOpenOption.READ, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
+    }
+
     public boolean isOpen() {
         return channel != null;
-    }
-
-    public synchronized void open(String filename) throws IOException {
-        open(new File(filename));
-    }
-
-    public synchronized void open(File file) throws IOException {
-        if(isOpen())
-            throw new IOException("already opened");
-        channel = FileChannel.open(file.toPath(), StandardOpenOption.READ, StandardOpenOption.WRITE, StandardOpenOption.CREATE);
     }
 
     public synchronized void close() {
