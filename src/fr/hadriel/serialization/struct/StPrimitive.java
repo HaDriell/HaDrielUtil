@@ -1,12 +1,12 @@
 package fr.hadriel.serialization.struct;
 
-import fr.hadriel.serialization.Primitive;
+import fr.hadriel.serialization.IPrimitive;
 import fr.hadriel.serialization.Serial;
 
 /**
  * Created by glathuiliere on 09/08/2016.
  */
-public abstract class StPrimitive implements Primitive {
+public abstract class StPrimitive implements IPrimitive {
 
     private byte dataType;
 

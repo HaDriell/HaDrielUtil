@@ -2,6 +2,9 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by glathuiliere on 09/08/2016.
  */
@@ -27,6 +30,11 @@ public class StBoolean extends StPrimitive {
         pointer++;
         boolean value = Serial.readBoolean(buffer, pointer);
         return new StBoolean(value);
+    }
+
+    public static StBoolean deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_BOOL) return null;
+        return new StBoolean(Serial.readBoolean(in));
     }
 
     public String toString() {

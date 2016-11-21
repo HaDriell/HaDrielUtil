@@ -2,6 +2,8 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -102,6 +104,17 @@ public class StArray extends StPrimitive implements Iterable<StPrimitive> {
         for(int i = 0; i < count; i++) {
             StPrimitive entry = Struct.deserialize(buffer, pointer);
             pointer += entry.getSize();
+            list.add(entry);
+        }
+        return list;
+    }
+
+    public static StArray deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_ARRAY) return null;
+        StArray list = new StArray();
+        short count = Serial.readShort(in);
+        for(int i = 0; i < count; i++) {
+            StPrimitive entry = Struct.deserialize(in);
             list.add(entry);
         }
         return list;

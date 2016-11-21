@@ -2,6 +2,9 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by glathuiliere on 09/08/2016.
  */
@@ -27,6 +30,11 @@ public class StLong extends StPrimitive {
         pointer++;
         long value = Serial.readLong(buffer, pointer);
         return new StLong(value);
+    }
+
+    public static StLong deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_LONG) return null;
+        return new StLong(Serial.readInt(in));
     }
 
     public String toString() {

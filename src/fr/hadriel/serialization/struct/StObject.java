@@ -2,6 +2,8 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -108,10 +110,44 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
         return sb.toString();
     }
 
+    public static StObject deserialize(byte[] buffer, int pointer) {
+        if(buffer[pointer] != Struct.TYPE_OBJECT) return null;
+        pointer++;
+        StObject object = new StObject();
+        short count = Serial.readShort(buffer, pointer);
+        pointer += 2;
+        for(int i = 0; i < count; i++) {
+            short length = Serial.readShort(buffer, pointer);
+            pointer += 2;
+            byte[] string = new byte[length];
+            pointer += Serial.readByteArray(buffer, pointer, string, length);
+            String key = new String(string);
+            StPrimitive value = Struct.deserialize(buffer, pointer);
+            pointer += value.getSize();
+            object.put(key, value);
+        }
+        return object;
+    }
+
+    public static StObject deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_OBJECT) return null;
+        StObject object = new StObject();
+        short count = Serial.readShort(in);
+        for(int i = 0; i < count ; i++) {
+            short length = Serial.readShort(in);
+            byte[] string = new byte[length];
+            Serial.readBytes(in, string);
+            String key = new String(string);
+            StPrimitive value = Struct.deserialize(in);
+            object.put(key, value);
+        }
+        return object;
+    }
+
+
     public byte asByte() {
         throw new UnsupportedOperationException();
     }
-
 
     public boolean asBoolean() {
         throw new UnsupportedOperationException();
@@ -139,25 +175,6 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
 
     public double asDouble() {
         throw new UnsupportedOperationException();
-    }
-
-    public static StObject deserialize(byte[] buffer, int pointer) {
-        if(buffer[pointer] != Struct.TYPE_OBJECT) return null;
-        pointer++;
-        StObject object = new StObject();
-        short count = Serial.readShort(buffer, pointer);
-        pointer += 2;
-        for(int i = 0; i < count; i++) {
-            short length = Serial.readShort(buffer, pointer);
-            pointer += 2;
-            byte[] string = new byte[length];
-            pointer += Serial.readByteArray(buffer, pointer, string, length);
-            String key = new String(string);
-            StPrimitive value = Struct.deserialize(buffer, pointer);
-            pointer += value.getSize();
-            object.put(key, value);
-        }
-        return object;
     }
 
     public String asString() {

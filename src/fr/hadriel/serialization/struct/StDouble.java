@@ -2,6 +2,9 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by glathuiliere on 09/08/2016.
  */
@@ -27,6 +30,11 @@ public class StDouble extends StPrimitive {
         pointer++;
         double value = Serial.readDouble(buffer, pointer);
         return new StDouble(value);
+    }
+
+    public static StDouble deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_DOUBLE) return null;
+        return new StDouble(Serial.readDouble(in));
     }
 
     public String toString() {

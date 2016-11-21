@@ -2,6 +2,9 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by glathuiliere on 09/08/2016.
  */
@@ -31,6 +34,14 @@ public class StString extends StPrimitive {
         pointer += 2;
         byte[] string = new byte[length];
         Serial.readByteArray(buffer, pointer, string, length);
+        return new StString(new String(string));
+    }
+
+    public static StString deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_STRING) return null;
+        short length = Serial.readShort(in);
+        byte[] string = new byte[length];
+        Serial.readBytes(in, string);
         return new StString(new String(string));
     }
 

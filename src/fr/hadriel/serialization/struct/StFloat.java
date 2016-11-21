@@ -2,6 +2,9 @@ package fr.hadriel.serialization.struct;
 
 import fr.hadriel.serialization.Serial;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Created by glathuiliere on 09/08/2016.
  */
@@ -27,6 +30,11 @@ public class StFloat extends StPrimitive {
         pointer++;
         float value = Serial.readFloat(buffer, pointer);
         return new StFloat(value);
+    }
+
+    public static StFloat deserialize(byte dataType, InputStream in) throws IOException {
+        if(dataType != Struct.TYPE_FLOAT) return null;
+        return new StFloat(Serial.readFloat(in));
     }
 
     public String toString() {
