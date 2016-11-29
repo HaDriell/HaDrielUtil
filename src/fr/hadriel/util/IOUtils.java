@@ -1,6 +1,8 @@
 package fr.hadriel.util;
 
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -8,6 +10,21 @@ import java.io.RandomAccessFile;
  * Created by HaDriel on 13/10/2016.
  */
 public class IOUtils {
+
+    public static String readFileAsString(String filename) throws IOException {
+        return readFileAsString(new File(filename));
+    }
+
+    public static String readFileAsString(File file) throws IOException {
+        FileInputStream in = new FileInputStream(file);
+        StringBuilder sb = new StringBuilder();
+        byte[] buffer = new byte[8192];
+        int len;
+        while((len = in.read(buffer)) > 0) {
+            sb.append(new String(buffer, 0, len));
+        }
+        return sb.toString();
+    }
 
     public static void insert(RandomAccessFile access, byte[] operationBuffer, long pointer, long count) throws IOException {
         long position = access.length();
