@@ -1,12 +1,12 @@
 package fr.hadriel.hgl.core;
 
 import fr.hadriel.event.MultiEventListener;
-import fr.hadriel.hgl.WindowConfig;
-import fr.hadriel.hgl.core.events.HGLContextCreated;
-import fr.hadriel.hgl.core.events.HGLContextDestroyed;
-import fr.hadriel.hgl.core.events.HGLEvent;
+import fr.hadriel.hgl.core.configuration.WindowConfig;
+import fr.hadriel.hgl.core.events.*;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.opengl.GLUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
@@ -29,6 +30,7 @@ public class HGL {
 
     // -------------------- ENVIRONMENT ---------------------------- //
 
+    private GLCapabilities capabilities;
     private List<HGLContext> contexts;
 
     private MultiEventListener listener;
@@ -39,14 +41,12 @@ public class HGL {
     private boolean running = false;
 
     private HGL() {
-        if(!glfwInit()) {
-            throw new IllegalStateException("Unable to setup GLFW Environnement");
-        }
         contexts = new ArrayList<>();
         events = new LinkedList<>();
         listener = new MultiEventListener();
-        listener.setHandler(HGLContextCreated.class, this::onContextCreated);
-        listener.setHandler(HGLContextDestroyed.class, this::onContextDestroyed);
+        //GL Contexts support
+        listener.setHandler(ContextCreate.class, this::onEvent);
+        listener.setHandler(ContextDestroy.class, this::onEvent);
     }
 
     public void queueEvent(HGLEvent event) {
@@ -70,7 +70,8 @@ public class HGL {
     }
 
     private void update() {
-        do {
+        glfwInit();
+        while(running) {
             eventLock.lock();
             while (events.size() > 0) {
                 HGLEvent event = events.poll();
@@ -82,19 +83,20 @@ public class HGL {
             glfwPollEvents();
             for (HGLContext context : contexts) {
                 if(glfwWindowShouldClose(context.getWindow())) {
-                    queueEvent(new HGLContextDestroyed(context)); // auto destroy this context on next update
+                    queueEvent(new ContextDestroy(context)); // auto destroy this context on next update
                     continue;
                 }
                 glfwMakeContextCurrent(context.getWindow());
                 GL.setCapabilities(context.getCapabilities());
                 context.onRender();
+                glfwSwapBuffers(context.getWindow());
             }
-        } while (contexts.size() > 0);
+        }
+        glfwTerminate();
     }
 
-
-    //Context initialization
-    private boolean onContextCreated(HGLContextCreated event) {
+    //ContextCreate
+    private boolean onEvent(ContextCreate event) {
         if(!contexts.contains(event.context)) {
             GLFWVidMode screen = glfwGetVideoMode(glfwGetPrimaryMonitor());
             glfwDefaultWindowHints();
@@ -113,10 +115,19 @@ public class HGL {
 
             //Bind OpenGL backend to this GLFW Window
             glfwMakeContextCurrent(window);
+
+            //Lazy context creation (only one Context per Thread)
+            if(capabilities == null) {
+                capabilities = GL.createCapabilities();
+                GLUtil.setupDebugMessageCallback(System.err);
+            }
+
             context.setWindow(window);
-            context.setCapabilities(GL.createCapabilities());
+            context.setCapabilities(capabilities);
+
             context.onInit();
 
+            //Bind Callbacks
             //Input Callbacks
             glfwSetKeyCallback(window, (w, key, scancode, action, mods) -> {
                 if (w == window) context.onKey(key, scancode, action, mods);
@@ -161,7 +172,8 @@ public class HGL {
         return true;
     }
 
-    private boolean onContextDestroyed(HGLContextDestroyed event) {
+    //ContextDestroy
+    private boolean onEvent(ContextDestroy event) {
         if(contexts.remove(event.context)) {
             glfwMakeContextCurrent(event.context.getWindow());
             GL.setCapabilities(event.context.getCapabilities());
@@ -170,6 +182,7 @@ public class HGL {
             glfwDestroyWindow(event.context.getWindow());
             event.context.setWindow(0);
             event.context.setCapabilities(null);
+            running = contexts.size() != 0;
         }
         return true;
     }

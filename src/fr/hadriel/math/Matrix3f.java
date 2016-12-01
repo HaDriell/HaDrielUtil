@@ -28,10 +28,9 @@ public class Matrix3f {
             0, 0, 1
     };
 
-    public final float[] elements;
+    public final float[] elements = new float[3 * 3];
 
     public Matrix3f(float[] flatMatrix) {
-        this.elements = new float[3 * 3];
         set(flatMatrix);
     }
 

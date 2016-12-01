@@ -22,11 +22,11 @@ public class ContiguousMemoryManager extends AbstractMemoryManager {
 
     public void initialize(Collection<Pointer> pointers) {
         this.pointers.clear();
-        if(pointers != null)
-            this.pointers.addAll(pointers);
         for(Pointer p : this.pointers) {
             p.initialize(this, p.size());
         }
+        if(pointers != null)
+            this.pointers.addAll(pointers);
     }
 
     public List<Pointer> getPointers() {

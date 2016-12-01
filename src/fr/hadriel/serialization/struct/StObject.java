@@ -120,7 +120,7 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
             short length = Serial.readShort(buffer, pointer);
             pointer += 2;
             byte[] string = new byte[length];
-            pointer += Serial.readByteArray(buffer, pointer, string, length);
+            pointer = Serial.readByteArray(buffer, pointer, string, length);
             String key = new String(string);
             StPrimitive value = Struct.deserialize(buffer, pointer);
             pointer += value.getSize();

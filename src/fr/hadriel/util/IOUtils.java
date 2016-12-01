@@ -1,10 +1,7 @@
 package fr.hadriel.util;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 
 /**
  * Created by HaDriel on 13/10/2016.
@@ -12,11 +9,14 @@ import java.io.RandomAccessFile;
 public class IOUtils {
 
     public static String readFileAsString(String filename) throws IOException {
-        return readFileAsString(new File(filename));
+        return readStreamAsString(new FileInputStream(filename));
     }
 
     public static String readFileAsString(File file) throws IOException {
-        FileInputStream in = new FileInputStream(file);
+        return readStreamAsString(new FileInputStream(file));
+    }
+
+    public static String readStreamAsString(InputStream in) throws IOException {
         StringBuilder sb = new StringBuilder();
         byte[] buffer = new byte[8192];
         int len;
@@ -33,7 +33,7 @@ public class IOUtils {
             int size = (int) Math.min(position - pointer, operationBuffer.length); // find the buffer size to use
             access.seek(position - size); //place the pointer
             access.read(operationBuffer, 0, size); // copy data
-            access.seek(position - size + count); //replace to the destination
+            access.seek(position - size + count); //replace to the sender
             access.write(operationBuffer, 0, size); // paste data
             position -= size; //shift position back
         } //continue

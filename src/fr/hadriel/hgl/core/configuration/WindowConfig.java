@@ -1,4 +1,4 @@
-package fr.hadriel.hgl;
+package fr.hadriel.hgl.core.configuration;
 
 /**
  * Created by glathuiliere on 22/07/2016.

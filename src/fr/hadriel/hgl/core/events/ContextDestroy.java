@@ -5,11 +5,11 @@ import fr.hadriel.hgl.core.HGLContext;
 /**
  * Created by glathuiliere on 28/11/2016.
  */
-public class HGLContextDestroyed extends HGLEvent {
+public class ContextDestroy extends HGLEvent {
 
     public final HGLContext context;
 
-    public HGLContextDestroyed(HGLContext context) {
+    public ContextDestroy(HGLContext context) {
         this.context = context;
     }
 }

@@ -71,7 +71,7 @@ public class Serial {
         in.readFully(buffer);
     }
 
-    public static byte[] readBytes(DataInput in, int count) throws IOException {
+    public static byte[] readByteArray(DataInput in, int count) throws IOException {
         byte[] buffer = new byte[count];
         in.readFully(buffer);
         return buffer;

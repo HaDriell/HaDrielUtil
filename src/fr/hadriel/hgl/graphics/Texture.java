@@ -22,7 +22,6 @@ public class Texture {
 
     public Texture(Image image, boolean glNearest) {
         this.image = image;
-        glEnable(GL_TEXTURE_2D);
         id = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glNearest ? GL_NEAREST : GL_LINEAR);

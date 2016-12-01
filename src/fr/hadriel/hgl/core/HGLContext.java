@@ -1,7 +1,8 @@
 package fr.hadriel.hgl.core;
 
-import fr.hadriel.hgl.WindowConfig;
-import fr.hadriel.hgl.core.events.HGLContextCreated;
+import fr.hadriel.hgl.core.configuration.WindowConfig;
+import fr.hadriel.hgl.core.events.ContextCreate;
+import fr.hadriel.hgl.core.events.HGLEvent;
 import org.lwjgl.opengl.GLCapabilities;
 
 /**
@@ -16,7 +17,9 @@ public abstract class HGLContext {
     }
 
     public HGLContext(WindowConfig config) {
-        HGL.submitEvent(new HGLContextCreated(this, config));
+        HGLEvent event = new ContextCreate(this, config);
+        HGL.submitEvent(event);
+        try { event.await(); } catch (InterruptedException ignore) {}
     }
 
     public GLCapabilities getCapabilities() {

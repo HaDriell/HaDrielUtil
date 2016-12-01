@@ -17,12 +17,16 @@ public class Pointer {
         this.size = size;
     }
 
+    public boolean isInitialized() {
+        return manager != null;
+    }
+
     public void initialize(MemoryManager manager) {
         initialize(manager, size);
     }
 
     public void initialize(MemoryManager manager, long size) {
-        if(manager != null) throw new IllegalStateException("Pointer already used");
+        if(isInitialized()) throw new IllegalStateException("Pointer already used");
         this.manager = manager;
         this.size = size;
     }
@@ -33,6 +37,10 @@ public class Pointer {
 
     void setSize(long size) {
         this.size = size;
+    }
+
+    public MemoryManager manager() {
+        return manager;
     }
 
     public long address() {

@@ -21,7 +21,6 @@ public abstract class Loop {
         if(running)
             return;
         running = true;
-        onStart();
         thread = new Thread(this::run);
         thread.start();
     }
@@ -41,15 +40,27 @@ public abstract class Loop {
         running = false;
         thread.interrupt();
         thread = null;
-        onStop();
     }
 
     private void run() {
+        onStart();
         while (running)
             onLoop();
+        onStop();
     }
 
+    /**
+     * this method is called when the thread started successfully
+     */
     protected abstract void onStart();
+
+    /**
+     * this method is called indefinitely while the Loop is running
+     */
     protected abstract void onLoop();
+
+    /**
+     * this method is called only when Thread terminates by a normal stop(); (not when interrupted !)
+     */
     protected abstract void onStop();
 }
