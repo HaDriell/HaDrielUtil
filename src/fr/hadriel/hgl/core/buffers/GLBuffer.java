@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.core;
+package fr.hadriel.hgl.core.buffers;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -22,6 +22,9 @@ public class GLBuffer {
         this.target = target;
         this.usage = usage;
         this.handle = glGenBuffers();
+        bind();
+        resize(size);
+        unbind();
     }
 
     public void destroy() {

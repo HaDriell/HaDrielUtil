@@ -3,8 +3,9 @@ package fr.hadriel;
 
 import fr.hadriel.hgl.core.*;
 import fr.hadriel.hgl.core.BufferLayout;
-import fr.hadriel.hgl.core.gl3.VertexArray;
-import fr.hadriel.hgl.core.IndexBuffer;
+import fr.hadriel.hgl.core.buffers.VertexArray;
+import fr.hadriel.hgl.core.buffers.IndexBuffer;
+import fr.hadriel.hgl.core.buffers.VertexBuffer;
 import fr.hadriel.hgl.graphics.Shader;
 import fr.hadriel.hgl.graphics.Texture;
 import fr.hadriel.hgl.stb.Image;
