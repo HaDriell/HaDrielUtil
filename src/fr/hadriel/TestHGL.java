@@ -2,9 +2,7 @@ package fr.hadriel;
 
 
 import fr.hadriel.hgl.core.*;
-import fr.hadriel.hgl.core.buffers.IndexBuffer;
-import fr.hadriel.hgl.core.buffers.IndexGenerator;
-import fr.hadriel.hgl.core.buffers.VertexArray;
+import fr.hadriel.hgl.core.buffers.*;
 import fr.hadriel.hgl.graphics.Shader;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.time.Timer;
@@ -36,45 +34,56 @@ public class TestHGL {
             Camera camera;
             VertexArray vao;
             ByteBuffer colors;
-            FloatBuffer positions;
+            ByteBuffer positions;
 
             public void onInit() {
                 camera = new Camera(Matrix4f.Orthographic(0, 800, 0, 450, -1, 1));
                 try { shader = new Shader(new File("simple.vert"), new File("simple.frag")); } catch (IOException ignore) {}
 
-                vao = new VertexArray();
+                vao = new VertexArray(Short.MAX_VALUE, IndexGenerator.QUADS);
                 vao.bind();
-                vao.setIndexation(new IndexBuffer(IndexGenerator.QUADS.getIndexBuffer(Short.MAX_VALUE)));
                 vao.enableVertexLayout(0, GLType.FLOAT, 3); // position
-                vao.enableVertexLayout(1, GLType.BYTE, 4, true); // color
+                vao.enableVertexLayout(1, GLType.FLOAT, 4); // color
                 vao.unbind();
 
-                positions = BufferUtils.createFloatBuffer(3 * MAX_ELEMENTS);
-                colors = BufferUtils.createByteBuffer(4 * MAX_ELEMENTS);
+                positions = BufferUtils.createByteBuffer(3 * MAX_ELEMENTS * 4);
+                colors = BufferUtils.createByteBuffer(4 * MAX_ELEMENTS * 4);
+                // Fill Data Buffers
+
+
+
             }
 
             public void onRender() {
-                // Fill Data Buffers
-                colors.clear();
-                positions.clear();
-                //poisitions  X      Y      Z
-                positions.put(0).put(0).put(0);
-                positions.put(0).put(450).put(0);
-                positions.put(800).put(450).put(0);
-                positions.put(800).put(0).put(0);
 
-                //colors RGBA
-                colors.put((byte)0xFF).put((byte)0x0).put((byte)0x0).put((byte)0xFF);
-                colors.put((byte)0xFF).put((byte)0x0).put((byte)0x0).put((byte)0xFF);
-                colors.put((byte)0xFF).put((byte)0x0).put((byte)0x0).put((byte)0xFF);
-                colors.put((byte)0xFF).put((byte)0x0).put((byte)0x0).put((byte)0xFF);
+                //positions
+                positions.clear();
+                positions.putFloat(0).putFloat(0).putFloat(0);
+                positions.putFloat(0).putFloat(450).putFloat(0);
+                positions.putFloat(800).putFloat(450).putFloat(0);
+                positions.putFloat(800).putFloat(0).putFloat(0);
                 positions.flip();
+
+                //colors
+                colors.clear();
+                colors.putFloat(1).putFloat(0).putFloat(0).putFloat(1);
+                colors.putFloat(0).putFloat(1).putFloat(0).putFloat(1);
+                colors.putFloat(0).putFloat(0).putFloat(1).putFloat(1);
+                colors.putFloat(1).putFloat(1).putFloat(1).putFloat(1);
                 colors.flip();
 
-                //Write buffers
-                vao.setLayoutSubData(0, 0, positions);
-                vao.setLayoutSubData(1, 0, colors);
-                //
+                positions.clear();
+                colors.clear();
+                //Write positions
+                vao.getBufferMap(0, GLMode.WRITE)
+                        .write(positions)
+                        .close();
+
+                //Write colors
+                vao.getBufferMap(1, GLMode.WRITE)
+                        .write(colors)
+                        .close();
+
                 glClearColor(0, 0, 0, 1);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 shader.bind();
@@ -96,7 +105,9 @@ public class TestHGL {
             }
 
             public void onDestroy() {}
-            public void onKey(int key, int scancode, int action, int mods) {}
+            public void onKey(int key, int scancode, int action, int mods) {
+
+            }
             public void onMouse(int button, int action, int mods) {}
             public void onScroll(double xOffset, double yOffset) {}
             public void onCursorPos(double xpos, double ypox) {}

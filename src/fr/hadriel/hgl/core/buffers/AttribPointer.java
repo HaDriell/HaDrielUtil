@@ -1,7 +1,5 @@
 package fr.hadriel.hgl.core.buffers;
 
-import fr.hadriel.hgl.core.GLType;
-
 /**
  * Created by HaDriel on 01/12/2016.
  *
@@ -20,7 +18,7 @@ class AttribPointer {
         this.normalized = normalized;
     }
 
-    public int getVertexBufferMinimumSize(int maxElementCount) {
-        return components * type.size * maxElementCount;
+    public int getLayoutSize() {
+        return components * type.size;
     }
 }

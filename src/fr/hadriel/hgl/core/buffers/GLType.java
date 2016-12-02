@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.core;
+package fr.hadriel.hgl.core.buffers;
 
 import static org.lwjgl.opengl.GL11.*;
 /**

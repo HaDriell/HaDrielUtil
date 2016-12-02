@@ -1,7 +1,5 @@
 package fr.hadriel.hgl.core.buffers;
 
-import org.omg.CORBA.UNKNOWN;
-
 import java.nio.*;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -15,6 +13,7 @@ public class GLBuffer {
     private int usage;
     private int target;
     private int size;
+    private GLBufferMap map;
 
     public GLBuffer(int target, int usage, int size) {
         if(size < 0) throw new IllegalArgumentException("Invalid Buffer size : " + size);
@@ -46,19 +45,27 @@ public class GLBuffer {
     }
 
     public void setData(Buffer buffer) {
-        if(buffer instanceof ByteBuffer) glBufferData(target, (ByteBuffer) buffer, usage);
-        else if(buffer instanceof ShortBuffer) glBufferData(target, (ShortBuffer) buffer, usage);
-        else if(buffer instanceof IntBuffer) glBufferData(target, (IntBuffer) buffer, usage);
-        else if(buffer instanceof FloatBuffer) glBufferData(target, (FloatBuffer) buffer, usage);
-        else throw new IllegalArgumentException("Unsupported Buffer Type");
-    }
-
-    public void setSubData(int offset, Buffer buffer) {
-        if(buffer instanceof ByteBuffer) glBufferSubData(target, offset, (ByteBuffer) buffer);
-        else if(buffer instanceof ShortBuffer) glBufferSubData(target, offset, (ShortBuffer) buffer);
-        else if(buffer instanceof IntBuffer) glBufferSubData(target, offset, (IntBuffer) buffer);
-        else if(buffer instanceof FloatBuffer) glBufferSubData(target, offset, (FloatBuffer) buffer);
-        else throw new IllegalArgumentException("Unsupported Buffer Type");
+        if(buffer instanceof ByteBuffer) {
+            size = buffer.remaining();
+            glBufferData(target, (ByteBuffer) buffer, usage);
+        }
+        else if(buffer instanceof ShortBuffer) {
+            size = buffer.remaining();
+            glBufferData(target, (ShortBuffer) buffer, usage);
+        }
+        else if(buffer instanceof IntBuffer) {
+            size = buffer.remaining() * 4;
+            glBufferData(target, (IntBuffer) buffer, usage);
+        }
+        else if(buffer instanceof FloatBuffer) {
+            size = buffer.remaining() * 4;
+            glBufferData(target, (FloatBuffer) buffer, usage);
+        }
+        else if(buffer instanceof DoubleBuffer) {
+            size = buffer.remaining() * 8;
+            glBufferData(target, (DoubleBuffer) buffer, usage);
+        }
+        else throw new IllegalArgumentException("Unsupported buffer type");
     }
 
     public void bind() {
@@ -83,5 +90,11 @@ public class GLBuffer {
 
     public String toString() {
         return String.format("GLBuffer(handle=%d target=%d usage=%d size=%d)",handle, target, usage, size);
+    }
+
+    public GLBufferMap open(GLMode mode) {
+        if(map == null) map = new GLBufferMap();
+        map.open(target, size, mode);
+        return map;
     }
 }

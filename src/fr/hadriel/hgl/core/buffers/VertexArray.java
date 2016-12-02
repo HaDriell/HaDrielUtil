@@ -1,13 +1,11 @@
 package fr.hadriel.hgl.core.buffers;
 
-import fr.hadriel.hgl.core.GLType;
+import fr.hadriel.util.Property;
 
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 /**
@@ -23,12 +21,45 @@ public class VertexArray {
 
     private int handle;
     private List<Binding> bindings;
-
     private IndexBuffer indexBuffer;
 
+    private Property<Integer> maxElementCountProperty;
+    private Property<IndexGenerator> generatorProperty;
+
     public VertexArray() {
+        this(1024);
+    }
+
+    public VertexArray(int elementCount) {
+        this(elementCount, IndexGenerator.TRIANGLES);
+    }
+
+    public VertexArray(int maxElementCount, IndexGenerator indexGenerator) {
+        this.maxElementCountProperty = new Property<>(maxElementCount, 1);
+        this.generatorProperty = new Property<>();
         this.bindings = new ArrayList<>();
         this.handle = glGenVertexArrays();
+        this.maxElementCountProperty.addCallback((nval) -> {
+            for(Binding b : bindings) {
+                b.vbo.setData(b.pointer.getLayoutSize() * nval);
+            }
+        });
+        this.maxElementCountProperty.addCallback((nval) -> {
+            IndexGenerator generator = generatorProperty.get();
+
+            //Indexation is enabled, regenerate indices for nval Elements support
+            if(generator != null) indexBuffer.setData(generator.getIndexBuffer(nval));
+        });
+        this.generatorProperty.addCallback((nval) -> {
+            if(nval == null) {
+                indexBuffer.destroy();
+                indexBuffer = null;
+            } else {
+                bind();
+                indexBuffer = new IndexBuffer(nval.getIndexBuffer(maxElementCountProperty.get()));
+            }
+        });
+        this.generatorProperty.set(indexGenerator);
     }
 
     public void destroy() {
@@ -69,20 +100,21 @@ public class VertexArray {
         return binding;
     }
 
-    //Indexation setup
+    public Property<IndexGenerator> generator() {
+        return generatorProperty;
+    }
 
-    public void setIndexation(IndexBuffer ibo) {
-        if(indexBuffer != null) indexBuffer.unbind();
-        indexBuffer = ibo;
-        if(indexBuffer != null) indexBuffer.bind();
+    public Property<Integer> maxElementCount() {
+        return maxElementCountProperty;
     }
 
     // VertexBuffer Access Methods
 
-    public void setLayoutSubData(int index, int offset, Buffer data) {
+    public GLBufferMap getBufferMap(int index, GLMode mode) {
         Binding b = get(index);
-        if(b == null) return;
-        b.vbo.setSubData(offset, data);
+        if(b == null) return null;
+        b.vbo.bind();
+        return b.vbo.open(mode);
     }
 
     public void enableVertexLayout(int index, GLType type, int count) {
@@ -94,7 +126,7 @@ public class VertexArray {
         Binding b = new Binding();
         b.index = index;
         b.pointer = new AttribPointer(type, components, normalized);
-        b.vbo = new VertexBuffer(GL_DYNAMIC_DRAW, 0);
+        b.vbo = new VertexBuffer(b.pointer.getLayoutSize() * maxElementCountProperty.get());
         enableVertexLayoutImpl(b);
     }
 
@@ -104,15 +136,15 @@ public class VertexArray {
     }
 
     private void enableVertexLayoutImpl(Binding b) {
-        glEnableVertexAttribArray(b.index);
         b.vbo.bind();
+        glEnableVertexAttribArray(b.index);
         glVertexAttribPointer(b.index, b.pointer.components, b.pointer.type.name, b.pointer.normalized, 0, 0);
         bindings.add(b);
     }
 
     private void disableVertexLayoutImpl(Binding b) {
-        bindings.remove(b);
         glDisableVertexAttribArray(b.index);
         b.vbo.destroy();
+        bindings.remove(b);
     }
 }

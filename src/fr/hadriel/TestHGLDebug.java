@@ -67,13 +67,13 @@ public class TestHGLDebug {
 
                 vboPosition = glGenBuffers();
                 glBindBuffer(GL_ARRAY_BUFFER, vboPosition);
-                glBufferData(GL_ARRAY_BUFFER, positions, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, positions, GL_STREAM_DRAW);
                 glEnableVertexAttribArray(0);
                 glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
                 vboColor = glGenBuffers();
                 glBindBuffer(GL_ARRAY_BUFFER, vboColor);
-                glBufferData(GL_ARRAY_BUFFER, colors, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, colors, GL_STREAM_DRAW);
                 glEnableVertexAttribArray(1);
                 glVertexAttribPointer(1, 4, GL_FLOAT, false, 0, 0);
 
