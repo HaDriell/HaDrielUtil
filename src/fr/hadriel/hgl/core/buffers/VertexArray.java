@@ -1,15 +1,14 @@
 package fr.hadriel.hgl.core.buffers;
 
 import fr.hadriel.hgl.core.GLType;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
 
-import java.nio.ByteBuffer;
-import java.nio.ShortBuffer;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 /**
  * Created by HaDriel on 30/11/2016.
@@ -25,50 +24,36 @@ public class VertexArray {
     private int handle;
     private List<Binding> bindings;
 
-    private int maxElementCount;
     private IndexBuffer indexBuffer;
 
-    public VertexArray(int maxElementCount) {
-        this(IndexGenerator.TRIANGLES, maxElementCount);
-    }
-
-    public VertexArray(IndexGenerator generator, int maxElementCount) {
-        this.maxElementCount = maxElementCount;
+    public VertexArray() {
         this.bindings = new ArrayList<>();
         this.handle = glGenVertexArrays();
-        ShortBuffer indices = generator.getIndexBuffer(maxElementCount);
-        bind();
-        indexBuffer = new IndexBuffer(GL15.GL_STATIC_DRAW, indices.remaining());
-        indexBuffer.setData(indices);
-        unbind();
     }
 
     public void destroy() {
+        if(indexBuffer != null) indexBuffer.destroy();
         for(Binding b : bindings) {
             b.vbo.destroy();
         }
         bindings.clear();
-        indexBuffer.destroy();
         glDeleteVertexArrays(handle);
-    }
-
-    public int getMaxElementCount() {
-        return maxElementCount;
     }
 
     public void bind() {
         glBindVertexArray(handle);
     }
 
-
     public void unbind() {
         glBindVertexArray(0);
     }
 
-    public void draw(int elementCount) {
-        bind();
-        GL11.glDrawElements(GL11.GL_TRIANGLES, elementCount, GL11.GL_UNSIGNED_SHORT, 0);
-        unbind();
+    public void draw(int mode, int elementCount) {
+        if(indexBuffer == null || bindings.size() == 0) {
+            System.err.println("VertexArray is deleted or not configured");
+            return;
+        }
+        glDrawElements(mode, elementCount, GL_UNSIGNED_SHORT, 0);
     }
 
     //Managed VertexBuffer API
@@ -84,18 +69,32 @@ public class VertexArray {
         return binding;
     }
 
-    public void setLayoutData(int index, ByteBuffer data) {
-        Binding b = get(index);
-        if(b == null) return;
-        b.vbo.setData(data);
+    //Indexation setup
+
+    public void setIndexation(IndexBuffer ibo) {
+        if(indexBuffer != null) indexBuffer.unbind();
+        indexBuffer = ibo;
+        if(indexBuffer != null) indexBuffer.bind();
     }
 
-    public void enableVertexLayout(int index, GLType type, int count, boolean normalized) {
-        disableVertexLayout(index);
+    // VertexBuffer Access Methods
+
+    public void setLayoutSubData(int index, int offset, Buffer data) {
+        Binding b = get(index);
+        if(b == null) return;
+        b.vbo.setSubData(offset, data);
+    }
+
+    public void enableVertexLayout(int index, GLType type, int count) {
+        enableVertexLayout(index, type, count, false);
+    }
+
+    public void enableVertexLayout(int index, GLType type, int components, boolean normalized) {
+        disableVertexLayout(index); // will remove any existing Binding at input index
         Binding b = new Binding();
         b.index = index;
-        b.pointer = new AttribPointer(type, count, normalized);
-        b.vbo = new VertexBuffer(GL15.GL_DYNAMIC_DRAW, b.pointer.getAttribSize() * maxElementCount);
+        b.pointer = new AttribPointer(type, components, normalized);
+        b.vbo = new VertexBuffer(GL_DYNAMIC_DRAW, 0);
         enableVertexLayoutImpl(b);
     }
 
@@ -105,13 +104,15 @@ public class VertexArray {
     }
 
     private void enableVertexLayoutImpl(Binding b) {
-        GL20.glEnableVertexAttribArray(b.index);
+        glEnableVertexAttribArray(b.index);
+        b.vbo.bind();
+        glVertexAttribPointer(b.index, b.pointer.components, b.pointer.type.name, b.pointer.normalized, 0, 0);
         bindings.add(b);
     }
 
     private void disableVertexLayoutImpl(Binding b) {
         bindings.remove(b);
-        GL20.glDisableVertexAttribArray(b.index);
+        glDisableVertexAttribArray(b.index);
         b.vbo.destroy();
     }
 }

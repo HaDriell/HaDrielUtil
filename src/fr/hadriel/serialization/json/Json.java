@@ -107,7 +107,7 @@ public final class Json {
                     if(depth == 0) continue; //stack was empty
                     break;
 
-                //Pop depth if in accordance with the openning bracket type (else should throw errors !)
+                //Pop depth if in accordance with the openning bracket name (else should throw errors !)
                 case '}':
                 case ']':
                     if(c-2 == top) stack.pop(); // In ASCII Table, chars are ... { / } ... and ... [ \ ] ...

@@ -15,11 +15,11 @@ public enum GLType {
     DOUBLE(GL_DOUBLE, 8),
     ;
 
-    public final int type;
+    public final int name;
     public final int size;
 
-    private GLType(int type, int size) {
-        this.type = type;
+    private GLType(int name, int size) {
+        this.name = name;
         this.size = size;
     }
 }

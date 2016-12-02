@@ -16,6 +16,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.Callbacks.*;
 
 /**
  * Created by glathuiliere on 28/11/2016.
@@ -177,8 +178,10 @@ public class HGL {
         if(contexts.remove(event.context)) {
             glfwMakeContextCurrent(event.context.getWindow());
             GL.setCapabilities(event.context.getCapabilities());
+
             event.context.onDestroy();
 
+            glfwFreeCallbacks(event.context.getWindow());
             glfwDestroyWindow(event.context.getWindow());
             event.context.setWindow(0);
             event.context.setCapabilities(null);

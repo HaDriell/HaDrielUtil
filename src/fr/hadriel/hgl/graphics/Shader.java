@@ -1,6 +1,7 @@
 package fr.hadriel.hgl.graphics;
 
 import fr.hadriel.math.Matrix4f;
+import fr.hadriel.util.ArrayMap;
 import fr.hadriel.util.IOUtils;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -21,8 +22,21 @@ public class Shader {
     private Map<String, Integer> locationCache;
 
     public Shader(String vertexSource, String fragmentSource) {
+        handle = compileShader(vertexSource, fragmentSource);
         locationCache = new HashMap<>();
-        handle = glCreateProgram();
+    }
+
+    public Shader(File vertexFile, File fragmentStream) throws IOException {
+        this(IOUtils.readFileAsString(vertexFile), IOUtils.readFileAsString(fragmentStream));
+    }
+
+    public Shader(InputStream vertexStream, InputStream fragmentStream) {
+        this(IOUtils.readStreamAsString(vertexStream), IOUtils.readStreamAsString(fragmentStream));
+    }
+
+    private int compileShader(String vertexSource, String fragmentSource) {
+        locationCache = new HashMap<>();
+        int handle = glCreateProgram();
         int vertex = glCreateShader(GL_VERTEX_SHADER);
         int fragment = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(vertex, vertexSource);
@@ -47,16 +61,7 @@ public class Shader {
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-    }
-
-    public Shader(File vertexStream, File fragmentStream) throws IOException {
-        this(IOUtils.readFileAsString(vertexStream),
-                IOUtils.readFileAsString(fragmentStream));
-    }
-
-    public Shader(InputStream vertexStream, InputStream fragmentStream) throws IOException {
-        this(IOUtils.readStreamAsString(vertexStream),
-                IOUtils.readStreamAsString(fragmentStream));
+        return handle;
     }
 
     public void bind() {

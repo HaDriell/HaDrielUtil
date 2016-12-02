@@ -18,7 +18,7 @@ public class SimpleEventListener implements IEventListener {
 
     public synchronized <T extends IEvent> void addHandler(Class<T> type, IEventHandler<T> handler) {
         if(this.type != type)
-            throw new IllegalArgumentException("Event type " + type.getSimpleName() + " is Unsupported for SimpleEventListener<" + this.type.getSimpleName() + ">");
+            throw new IllegalArgumentException("Event name " + type.getSimpleName() + " is Unsupported for SimpleEventListener<" + this.type.getSimpleName() + ">");
         handlers.add(handler);
     }
 

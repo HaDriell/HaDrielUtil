@@ -16,13 +16,15 @@ public class IOUtils {
         return readStreamAsString(new FileInputStream(file));
     }
 
-    public static String readStreamAsString(InputStream in) throws IOException {
+    public static String readStreamAsString(InputStream in) {
         StringBuilder sb = new StringBuilder();
         byte[] buffer = new byte[8192];
         int len;
-        while((len = in.read(buffer)) > 0) {
-            sb.append(new String(buffer, 0, len));
-        }
+        try {
+            while ((len = in.read(buffer)) > 0) {
+                sb.append(new String(buffer, 0, len));
+            }
+        } catch (IOException ignore) {}
         return sb.toString();
     }
 

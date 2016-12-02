@@ -57,7 +57,7 @@ public final class Struct {
             case TYPE_ARRAY: return StArray.deserialize(b, in);
             case TYPE_OBJECT: return StObject.deserialize(b, in);
         }
-        throw new RuntimeException(String.format("Corrupt buffer or unknown type 0x%x", b));
+        throw new RuntimeException(String.format("Corrupt buffer or unknown name 0x%x", b));
     }
 
     public static StPrimitive deserialize(byte[] buffer, int pointer) {
@@ -75,6 +75,6 @@ public final class Struct {
             case TYPE_ARRAY: return StArray.deserialize(buffer, pointer);
             case TYPE_OBJECT: return StObject.deserialize(buffer, pointer);
         }
-        throw new RuntimeException(String.format("Corrupt buffer or unknown type 0x%x", b));
+        throw new RuntimeException(String.format("Corrupt buffer or unknown name 0x%x", b));
     }
 }
