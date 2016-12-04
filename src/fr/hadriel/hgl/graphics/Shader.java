@@ -98,6 +98,6 @@ public class Shader {
     }
 
     public void setUniformMat4f(String name, Matrix4f matrix) {
-        glUniformMatrix4fv(getUniform(name), true, matrix.toFloatBuffer());
+        glUniformMatrix4fv(getUniform(name), false, matrix.toFloatBuffer());
     }
 }

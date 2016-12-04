@@ -4,6 +4,7 @@ import fr.hadriel.threading.Loop;
 import fr.hadriel.util.ArrayMap;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,11 @@ import static org.lwjgl.glfw.GLFW.*;
  */
 public class GLFWThread extends Loop {
     private static GLFWThread instance = new GLFWThread();
-    public static void create(GLFWWindow handle, WindowDefinition definition) {
+    public static void create(GLFWWindow handle, GLFWWindowHint definition) {
         instance.cacheCreationRequest(handle, definition);
     }
 
-    private Map<GLFWWindow, WindowDefinition> creationCache;
+    private Map<GLFWWindow, GLFWWindowHint> creationCache;
     private Lock cacheLock = new ReentrantLock();
 
     private List<GLFWWindow> windows;
@@ -39,12 +40,14 @@ public class GLFWThread extends Loop {
 
     protected void onStart() {
         if(!glfwInit()) interrupt();
+        glfwSwapInterval(GLFW_TRUE);
     }
 
     protected void onLoop() {
         createWindows();
         for(GLFWWindow window : windows) {
             if(glfwWindowShouldClose(window.handle)) { //Handle handle destruction
+                window.onDestroy();
                 glfwDestroyWindow(window.handle);
                 window.handle = null;
             }
@@ -53,11 +56,12 @@ public class GLFWThread extends Loop {
                 continue;
             }
             glfwMakeContextCurrent(window.handle);
+            GL.setCapabilities(window.capabilities);
 
             try { GL.getCapabilities(); }
             catch (Exception noCapabilities) { GL.createCapabilities(); }
 
-            window.onRefresh(window.handle);
+            window.onRender(window.handle);
             glfwSwapBuffers(window.handle);
             glfwPollEvents(); // not sure if best way to do this, but i'm safe for each handle here
         }
@@ -70,10 +74,10 @@ public class GLFWThread extends Loop {
         glfwTerminate();
     }
 
-    public void cacheCreationRequest(GLFWWindow handle, WindowDefinition definition) {
+    public void cacheCreationRequest(GLFWWindow handle, GLFWWindowHint definition) {
         if(handle == null) return;
         cacheLock.lock();
-        creationCache.put(handle, definition == null ? new WindowDefinition() : definition);
+        creationCache.put(handle, definition == null ? new GLFWWindowHint() : definition);
         cacheLock.unlock();
         //start GLFWThread if stoped
         if(!isRunning()) start();
@@ -81,22 +85,36 @@ public class GLFWThread extends Loop {
 
     private void createWindows() {
         cacheLock.lock();
-        for(Map.Entry<GLFWWindow, WindowDefinition> e : creationCache.entrySet()) {
-            GLFWWindow handle = e.getKey();
-            WindowDefinition def = e.getValue();
-            if(handle.handle != null) continue;
+        for(Map.Entry<GLFWWindow, GLFWWindowHint> e : creationCache.entrySet()) {
+            GLFWWindow window = e.getKey();
+            GLFWWindowHint def = e.getValue();
+            if(window.handle != null) continue;
             if(vidmode == null) vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
             glfwDefaultWindowHints();
             glfwWindowHint(GLFW_RESIZABLE, def.fullscreen ? GLFW_FALSE : def.resizable ? GLFW_TRUE : GLFW_FALSE);
             glfwWindowHint(GLFW_DECORATED, def.fullscreen ? GLFW_FALSE : def.decorated ? GLFW_TRUE : GLFW_FALSE);
             glfwWindowHint(GLFW_VISIBLE, def.visible ? GLFW_TRUE : GLFW_FALSE);
-            handle.handle = glfwCreateWindow(
+            window.handle = glfwCreateWindow(
                     def.fullscreen ? vidmode.width() : def.width,
                     def.fullscreen ? vidmode.height() : def.height,
                     def.title,
                     0,
                     0);
-            windows.add(handle);
+            glfwSetWindowPos(window.handle,
+                    (vidmode.width() - def.width) / 2,
+                    (vidmode.height() - def.height) / 2);
+            glfwSetKeyCallback(window.handle, window::onKey);
+            glfwSetMouseButtonCallback(window.handle, window::onMouseButton);
+            glfwSetCursorPosCallback(window.handle, window::onMousePos);
+            glfwSetCursorEnterCallback(window.handle, window::onCursorEnter);
+
+            glfwSetWindowFocusCallback(window.handle, window::onWindowFocus);
+            glfwSetWindowCloseCallback(window.handle, window::onWindowClose);
+            glfwSetWindowSizeCallback(window.handle, window::onWindowSize);
+            glfwMakeContextCurrent(window.handle);
+            window.capabilities = GL.createCapabilities();
+            window.onInit();
+            windows.add(window);
         }
         creationCache.clear();
         cacheLock.unlock();

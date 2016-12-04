@@ -1,5 +1,9 @@
 package fr.hadriel.hgl.opengl;
 
+import fr.hadriel.math.Vec2;
+import fr.hadriel.math.Vec3;
+import fr.hadriel.math.Vec4;
+
 import java.nio.*;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -13,6 +17,7 @@ public class GLBuffer {
     private int usage;
     private int target;
     private int size;
+    private ByteBuffer map;
 
     public GLBuffer(int target, int usage, int size) {
         if(size < 0) throw new IllegalArgumentException("Invalid Buffer componentSize : " + size);
@@ -89,5 +94,63 @@ public class GLBuffer {
 
     public String toString() {
         return String.format("GLBuffer(handle=%d target=%d usage=%d componentSize=%d)",handle, target, usage, size);
+    }
+
+    public void map() {
+        map = glMapBuffer(target, GL_WRITE_ONLY, map);
+    }
+
+    public void unmap() {
+        glUnmapBuffer(target);
+    }
+
+    public GLBuffer seek(int position) {
+        map.position(position);
+        return this;
+    }
+
+    public GLBuffer write(byte value) {
+        map.put(value);
+        return this;
+    }
+
+    public GLBuffer write(short value) {
+        map.putShort(value);
+        return this;
+    }
+
+    public GLBuffer write(int value) {
+        map.putInt(value);
+        return this;
+    }
+
+    public GLBuffer write(long value) {
+        map.putLong(value);
+        return this;
+    }
+
+    public GLBuffer write(float value) {
+        map.putFloat(value);
+        return this;
+    }
+
+    public GLBuffer write(double value) {
+        map.putDouble(value);
+        return this;
+    }
+
+    public GLBuffer write(Vec2 v) {
+        write(v.x).write(v.y);
+        return this;
+    }
+
+    public GLBuffer write(Vec3 v) {
+        write(v.x).write(v.y).write(v.z);
+        return this;
+    }
+
+    public GLBuffer write(Vec4 v) {
+        write(v.x).write(v.y).write(v.z).write(v.w);
+        return this;
     }
 }

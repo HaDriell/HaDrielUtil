@@ -14,7 +14,6 @@ public class Mesh {
     private int vao;
     private int vertexCount;
     private VertexBuffer[] vbos;
-    private Shader shader;
 
     public Mesh(int vertexCount, AttribPointer... attribPointers) {
         if(attribPointers.length == 0) throw new IllegalArgumentException("Cannot create Mesh without attrib pointers");
@@ -28,28 +27,25 @@ public class Mesh {
             AttribPointer pointer = attribPointers[i];
             VertexBuffer vbo = new VertexBuffer(pointer.getAttribSize() * vertexCount);
             vbo.bind();
+            glEnableVertexAttribArray(i);
             glVertexAttribPointer(i,
-                    pointer.size(),
+                    pointer.count(),
                     pointer.type(),
                     pointer.normalized(),
                     0,
                     0);
-
             vbos[i] = vbo;
         }
         glBindVertexArray(0);
     }
 
-    public void setShader(Shader shader) {
-        this.shader = shader;
+    public VertexBuffer getVertexAttribBuffer(int index) {
+        return vbos[index];
     }
 
     public void render() {
-        if(shader == null) return; //skip rendering, Mesh is not renderable
-        shader.bind();
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
         glBindVertexArray(0);
-        shader.unbind();
     }
 }

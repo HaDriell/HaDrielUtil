@@ -2,16 +2,15 @@
 
 layout (location = 0) out vec4 color;
 
-uniform sampler2D tex[32];
+uniform sampler2D tex;
 
 in DATA
 {
     vec4 color;
     vec2 uv;
-    int tid;
 } fs_in;
 
 void main()
 {
-    color = texture(tex[fs_in.tid], fs_in.uv);
+    color = fs_in.color * texture(tex, fs_in.uv);
 }

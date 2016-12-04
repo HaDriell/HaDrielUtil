@@ -13,7 +13,6 @@ public class Camera {
 
     private Vec3 position;
     private Vec3 rotation;
-    private Vec3 focalPoint;
 
     public Camera(Matrix4f projectionMatrix) {
         this.projectionMatrix = projectionMatrix;
@@ -56,10 +55,6 @@ public class Camera {
 
     public Matrix4f getViewMatrix() {
         return viewMatrix;
-    }
-
-    public Vec3 getFocalPoint() {
-        return focalPoint;
     }
 
     public Matrix4f getProjectionMatrix() {

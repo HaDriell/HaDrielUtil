@@ -1,5 +1,7 @@
 package fr.hadriel.hgl.opengl;
 
+import org.w3c.dom.Attr;
+
 /**
  * Created by HaDriel on 01/12/2016.
  *
@@ -11,11 +13,14 @@ public class AttribPointer {
     private int components;
     private boolean normalized;
 
-    //Full control layout mod
     public AttribPointer(GLType type, int components, boolean normalized) {
         this.type = type;
         this.components = components;
         this.normalized = normalized;
+    }
+
+    public AttribPointer(GLType type, int components) {
+        this(type, components, false);
     }
 
     public int getAttribSize() {

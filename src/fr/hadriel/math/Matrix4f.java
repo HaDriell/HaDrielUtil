@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 public class Matrix4f {
 
     /*
-    * Matrix VertexAttribPointer
+    * Matrix Display
     * [M00 .... M03]
     * [M10 .... M13]
     * [M20 .... M23]
@@ -69,15 +69,15 @@ public class Matrix4f {
         return this;
     }
 
-    public Matrix4f setIdentity() {
+    public Matrix4f setToIdentity() {
         set(IDENTITY);
         return this;
     }
 
     public Matrix4f translate(float x, float y, float z) {
-        elements[M03] += x;
-        elements[M13] += y;
-        elements[M23] += z;
+        elements[M30] += x;
+        elements[M31] += y;
+        elements[M32] += z;
         return this;
     }
 
@@ -94,26 +94,61 @@ public class Matrix4f {
     }
 
     public Matrix4f setToOrthographic(float left, float right, float top, float bottom, float near, float far) {
-        setIdentity();
+        setToIdentity();
 
         elements[M00] = 2f / (right - left);
         elements[M11] = 2f / (top - bottom);
         elements[M22] = -2f / (far - near);
 
-        elements[M03] = -(right + left) / (right - left);
-        elements[M13] = -(top + bottom) / (top - bottom);
-        elements[M23] = -(far + near) / (far - near);
+        elements[M30] = -(right + left) / (right - left);
+        elements[M31] = -(top + bottom) / (top - bottom);
+        elements[M32] = -(far + near) / (far - near);
         return this;
     }
 
+    public Matrix4f setToPerspective(float fov, float aspectRatio, float near, float far) {
+        setToIdentity();
+        float q = 1f / (float) Math.tan(Math.toRadians(0.5f * fov));
+        float a = q / aspectRatio;
+
+        float b = (near + far) / (near - far);
+        float c = (2f * near * far) / (near - far);
+        elements[M00] = a;
+        elements[M11] = q;
+        elements[M22] = b;
+        elements[M23] = -1f;
+        elements[M32] = c;
+        return this;
+    }
+
+    public Matrix4f setToLookAt(Vec3 position, Vec3 target, Vec3 up) {
+        setToIdentity();
+        Vec3 f = position.copy().sub(target).normalize();
+        Vec3 s = f.copy().cross(up.copy().normalize());
+        Vec3 u = s.cross(f);
+        elements[M00] = s.x;
+        elements[M01] = s.y;
+        elements[M02] = s.z;
+
+        elements[M10] = u.x;
+        elements[M11] = u.y;
+        elements[M12] = u.z;
+
+        elements[M20] = -f.x;
+        elements[M21] = -f.y;
+        elements[M22] = -f.z;
+
+        return this.multiply(Translation(-position.x, -position.y, -position.z));
+    }
+
     public Matrix4f setToScale(float sx, float sy, float sz) {
-        setIdentity();
+        setToIdentity();
         scale(sx, sy, sz);
         return this;
     }
 
     public Matrix4f setToRotation(float angle, Vec3 axis) {
-        setIdentity();
+        setToIdentity();
         float r = Mathf.toRadians(angle);
         float c = Mathf.cos(r);
         float s = Mathf.sin(r);
@@ -136,10 +171,8 @@ public class Matrix4f {
     }
 
     public Matrix4f setToTranslation(float x, float y, float z) {
-        setIdentity();
-        elements[M02] = x;
-        elements[M12] = y;
-        elements[M22] = y;
+        setToIdentity();
+        translate(x, y, z);
         return this;
     }
 
@@ -166,6 +199,14 @@ public class Matrix4f {
         return new Matrix4f().setToOrthographic(left, right, top, bottom, near, far);
     }
 
+    public static Matrix4f Perspective(float fov, float aspectRatio, float near, float far) {
+        return new Matrix4f().setToPerspective(fov, aspectRatio, near, far);
+    }
+
+    public static Matrix4f LookAt(Vec3 position, Vec3 target, Vec3 up) {
+        return new Matrix4f().setToLookAt(position, target, up);
+    }
+
     public static Matrix4f Scale(float sx, float sy, float sz) {
         return new Matrix4f().setToScale(sx, sy, sz);
     }
@@ -180,10 +221,10 @@ public class Matrix4f {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M00], elements[M01], elements[M02], elements[M03])).append('\n');
-        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M10], elements[M11], elements[M12], elements[M13])).append('\n');
-        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M20], elements[M21], elements[M22], elements[M23])).append('\n');
-        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M30], elements[M31], elements[M32], elements[M33])).append('\n');
+        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M00], elements[M10], elements[M20], elements[M30])).append('\n');
+        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M01], elements[M11], elements[M21], elements[M31])).append('\n');
+        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M02], elements[M12], elements[M22], elements[M32])).append('\n');
+        sb.append(String.format("[%.2f %.2f %.2f %.2f]", elements[M03], elements[M13], elements[M23], elements[M33])).append('\n');
         return sb.toString();
     }
 
