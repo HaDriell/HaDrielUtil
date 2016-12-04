@@ -79,7 +79,7 @@ public class SerialFileChannel {
         long position = channel.size();
         setLength(channel.size() + count);
         while(position > pointer) {
-            int size = (int) Math.min(position - pointer, copyBuffer.length); // find the buffer size to use
+            int size = (int) Math.min(position - pointer, copyBuffer.length); // find the buffer componentSize to use
             read(position - size, copyBuffer, 0, size);
             write(position - size + count, copyBuffer, 0, size);
             position -= size; //shift position back

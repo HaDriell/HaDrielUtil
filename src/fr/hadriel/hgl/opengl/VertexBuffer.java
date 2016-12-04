@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.core.buffers;
+package fr.hadriel.hgl.opengl;
 
 import static org.lwjgl.opengl.GL15.*;
 

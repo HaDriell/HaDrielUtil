@@ -32,13 +32,13 @@ public class ByteStream {
     public void ensureCapacity(int nsize) {
         if(nsize > stream.length) {
             System.out.println("resizing to " + nsize);
-            //new size is over stream length, grow the array
+            //new componentSize is over stream length, grow the array
             while (nsize > stream.length) {
                 stream = Arrays.copyOf(stream, (int) (stream.length * 1.7F));
             }
         } else if(nsize + shift > stream.length) {
             System.out.println("unshifting");
-            //new size is not over capacity BUT unshifting is mandatory to avoid overflow
+            //new componentSize is not over capacity BUT unshifting is mandatory to avoid overflow
             byte[] nstream = new byte[stream.length];
             System.arraycopy(stream, shift, nstream, 0, size);
             stream = nstream;

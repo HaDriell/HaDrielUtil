@@ -32,7 +32,7 @@ public class IOUtils {
         long position = access.length();
         access.setLength(access.length() + count);
         while(position > pointer) {
-            int size = (int) Math.min(position - pointer, operationBuffer.length); // find the buffer size to use
+            int size = (int) Math.min(position - pointer, operationBuffer.length); // find the buffer componentSize to use
             access.seek(position - size); //place the pointer
             access.read(operationBuffer, 0, size); // copy data
             access.seek(position - size + count); //replace to the sender

@@ -36,4 +36,20 @@ public class Timer {
     public void set(long time) {
         anchor = time;
     }
+
+    /**
+     * pushes the timer anchor in the "past"
+     * @param time in seconds
+     */
+    public void add(float time) {
+        anchor -= time * 1_000_000_000F;
+    }
+
+    /**
+     * pushes the timer anchor in the "future"
+     * @param time in seconds
+     */
+    public void remove(float time) {
+        anchor += time * 1_000_000_000F;
+    }
 }

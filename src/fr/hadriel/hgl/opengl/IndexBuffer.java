@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.core.buffers;
+package fr.hadriel.hgl.opengl;
 
 import java.nio.ShortBuffer;
 

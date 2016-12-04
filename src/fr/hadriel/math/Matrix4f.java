@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 public class Matrix4f {
 
     /*
-    * Matrix Layout
+    * Matrix VertexAttribPointer
     * [M00 .... M03]
     * [M10 .... M13]
     * [M20 .... M23]

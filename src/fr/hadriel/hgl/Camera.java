@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.core;
+package fr.hadriel.hgl;
 
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec3;

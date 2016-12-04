@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.core.buffers;
+package fr.hadriel.hgl.opengl;
 
 import java.nio.*;
 
@@ -13,10 +13,9 @@ public class GLBuffer {
     private int usage;
     private int target;
     private int size;
-    private GLBufferMap map;
 
     public GLBuffer(int target, int usage, int size) {
-        if(size < 0) throw new IllegalArgumentException("Invalid Buffer size : " + size);
+        if(size < 0) throw new IllegalArgumentException("Invalid Buffer componentSize : " + size);
         this.handle = glGenBuffers();
         this.usage = usage;
         this.target = target;
@@ -89,12 +88,6 @@ public class GLBuffer {
     }
 
     public String toString() {
-        return String.format("GLBuffer(handle=%d target=%d usage=%d size=%d)",handle, target, usage, size);
-    }
-
-    public GLBufferMap open(GLMode mode) {
-        if(map == null) map = new GLBufferMap();
-        map.open(target, size, mode);
-        return map;
+        return String.format("GLBuffer(handle=%d target=%d usage=%d componentSize=%d)",handle, target, usage, size);
     }
 }

@@ -28,7 +28,7 @@ public class Slider extends ProgressBar {
 
     public Slider(float value, int width, int height) {
         super(value, width, height);
-        this.buttonWidthProperty = new Property<>(0.2f); // relative to the slider's full size
+        this.buttonWidthProperty = new Property<>(0.2f); // relative to the slider's full componentSize
 
         this.buttonPatchProperty = new Property<>(null, UIDefaults.DEFAULT_SLIDER_BUTTON_PATCH);
 

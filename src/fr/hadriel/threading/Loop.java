@@ -12,6 +12,10 @@ public abstract class Loop {
         return running;
     }
 
+    protected void setRunning(boolean running) {
+        this.running = running;
+    }
+
     public void requireRunning() {
         if(!running)
             throw new IllegalStateException(this + " must be running to call this method!");

@@ -41,7 +41,7 @@ public class Button extends Widget {
         this.onHoveredPatchProperty.addCallback((patch) -> onHoveredTexture = patch.createTexture(sizeProperty.get()));
         this.onPressedPatchProperty.addCallback((patch) -> onPressedTexture = patch.createTexture(sizeProperty.get()));
 
-        //on size change, regenerate the texture
+        //on componentSize change, regenerate the texture
         super.sizeProperty.addCallback((size) -> onIdleTexture = onIdlePatchProperty.get().createTexture(size));
         super.sizeProperty.addCallback((size) -> onHoveredTexture = onHoveredPatchProperty.get().createTexture(size));
         super.sizeProperty.addCallback((size) -> onPressedTexture = onPressedPatchProperty.get().createTexture(size));
