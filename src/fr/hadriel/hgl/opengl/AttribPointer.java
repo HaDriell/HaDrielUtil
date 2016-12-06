@@ -9,18 +9,24 @@ import org.w3c.dom.Attr;
  */
 public class AttribPointer {
 
+    private String name;
     private GLType type;
     private int components;
     private boolean normalized;
 
-    public AttribPointer(GLType type, int components, boolean normalized) {
+    public AttribPointer(String name, GLType type, int components, boolean normalized) {
+        this.name = name;
         this.type = type;
         this.components = components;
         this.normalized = normalized;
     }
 
+    public AttribPointer(String name, GLType type, int components) {
+        this(name, type, components, false);
+    }
+
     public AttribPointer(GLType type, int components) {
-        this(type, components, false);
+        this(null, type, components, false);
     }
 
     public int getAttribSize() {
@@ -39,7 +45,11 @@ public class AttribPointer {
         return normalized;
     }
 
-    public int count() {
+    public int components() {
         return components;
+    }
+
+    public String name() {
+        return name;
     }
 }

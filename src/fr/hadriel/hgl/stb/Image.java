@@ -1,5 +1,8 @@
 package fr.hadriel.hgl.stb;
 
+import org.lwjgl.BufferUtils;
+
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.stb.STBImage.*;
@@ -8,27 +11,32 @@ import static org.lwjgl.stb.STBImage.*;
  * Created by glathuiliere on 29/11/2016.
  */
 public class Image {
-    public final ByteBuffer pixels;
+    public final int[] pixels;
     public final int width;
     public final int height;
     public final int components;
 
-    Image(ByteBuffer pixels, int width, int height, int components) {
+    public Image(int[] pixels, int width, int height, int components) {
         this.pixels = pixels;
         this.width = width;
         this.height = height;
         this.components = components;
     }
 
-    public static Image load(String filename) {
-        int[] x = new int[1];
-        int[] y = new int[1];
-        int[] components = new int[1];
-        ByteBuffer pixels = stbi_load(filename, x, y, components, STBI_rgb_alpha);
-        return pixels == null ? null : new Image(pixels, x[0], y[0], components[0]);
-    }
-
-    public static void unload(Image image) {
-        stbi_image_free(image.pixels);
+    public Image(String filename) throws IOException {
+        int[] w = new int[1]; //width
+        int[] h = new int[1]; //height
+        int[] c = new int[1]; //color components
+        ByteBuffer buffer = stbi_load(filename, w, h, c, STBI_rgb_alpha);
+        if (buffer == null) throw new IOException("Could not load Image : " + stbi_failure_reason());
+        width = w[0];
+        height = h[0];
+        components = c[0];
+        pixels = new int[width * height];
+        for(int i = 0; i < pixels.length; i++) {
+            pixels[i] = buffer.getInt();
+        }
+        buffer.clear();
+        stbi_image_free(buffer);
     }
 }

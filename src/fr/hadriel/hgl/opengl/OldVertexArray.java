@@ -1,21 +1,19 @@
-package fr.hadriel.hgl.graphics;
+package fr.hadriel.hgl.opengl;
 
 
-import fr.hadriel.hgl.opengl.AttribPointer;
-import fr.hadriel.hgl.opengl.VertexBuffer;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL11.*;
 /**
  * Created by HaDriel on 03/12/2016.
  */
-public class Mesh {
+public class OldVertexArray {
 
     private int vao;
     private int vertexCount;
     private VertexBuffer[] vbos;
 
-    public Mesh(int vertexCount, AttribPointer... attribPointers) {
+    public OldVertexArray(int vertexCount, AttribPointer... attribPointers) {
         if(attribPointers.length == 0) throw new IllegalArgumentException("Cannot create Mesh without attrib pointers");
         this.vbos = new VertexBuffer[attribPointers.length];
         this.vertexCount = vertexCount;
@@ -29,7 +27,7 @@ public class Mesh {
             vbo.bind();
             glEnableVertexAttribArray(i);
             glVertexAttribPointer(i,
-                    pointer.count(),
+                    pointer.components(),
                     pointer.type(),
                     pointer.normalized(),
                     0,
@@ -39,13 +37,23 @@ public class Mesh {
         glBindVertexArray(0);
     }
 
-    public VertexBuffer getVertexAttribBuffer(int index) {
+    public int getVertexCount() {
+        return vertexCount;
+    }
+
+    public VertexBuffer getBuffer(int index) {
         return vbos[index];
     }
 
-    public void render() {
+    public void bind() {
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    }
+
+    public void unbind() {
         glBindVertexArray(0);
+    }
+
+    public void draw(int mode) {
+        glDrawArrays(mode, 0, vertexCount);
     }
 }

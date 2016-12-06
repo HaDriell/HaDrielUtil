@@ -9,14 +9,12 @@ import fr.hadriel.math.Vec3;
 public class Camera {
 
     private Matrix4f projectionMatrix;
-    private Matrix4f viewMatrix;
 
     private Vec3 position;
     private Vec3 rotation;
 
     public Camera(Matrix4f projectionMatrix) {
         this.projectionMatrix = projectionMatrix;
-        this.viewMatrix = new Matrix4f();
         this.position = new Vec3();
         this.rotation = new Vec3();
     }
@@ -54,7 +52,7 @@ public class Camera {
     }
 
     public Matrix4f getViewMatrix() {
-        return viewMatrix;
+        return new Matrix4f();
     }
 
     public Matrix4f getProjectionMatrix() {

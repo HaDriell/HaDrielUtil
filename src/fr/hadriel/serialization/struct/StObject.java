@@ -81,7 +81,7 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
     }
 
     protected int serializeImpl(byte[] buffer, int pointer) {
-        pointer = Serial.write(buffer, pointer, (short) members.size()); // member count < 65535
+        pointer = Serial.write(buffer, pointer, (short) members.size()); // member components < 65535
         for(Map.Entry<String, StPrimitive> e : members.entrySet()) {
             pointer = Serial.write(buffer, pointer, (short) e.getKey().length());
             pointer = Serial.write(buffer, pointer, e.getKey().getBytes());

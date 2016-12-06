@@ -72,12 +72,14 @@ public class GLBuffer {
         else throw new IllegalArgumentException("Unsupported buffer type");
     }
 
-    public void bind() {
+    public GLBuffer bind() {
         glBindBuffer(target, handle);
+        return this;
     }
 
-    public void unbind() {
+    public GLBuffer unbind() {
         glBindBuffer(target, 0);
+        return this;
     }
 
     public int getUsage() {
@@ -96,16 +98,53 @@ public class GLBuffer {
         return String.format("GLBuffer(handle=%d target=%d usage=%d componentSize=%d)",handle, target, usage, size);
     }
 
-    public void map() {
+    public GLBuffer map() {
         map = glMapBuffer(target, GL_WRITE_ONLY, map);
+        return this;
     }
 
-    public void unmap() {
+    public GLBuffer unmap() {
         glUnmapBuffer(target);
+        return this;
     }
 
     public GLBuffer seek(int position) {
         map.position(position);
+        return this;
+    }
+
+    public GLBuffer write(ByteBuffer value) {
+        map.put(value);
+        return this;
+    }
+
+    public GLBuffer write(byte[] value) {
+        map.put(value);
+        return this;
+    }
+
+    public GLBuffer write(short[] value) {
+        for(short s : value) write(s);
+        return this;
+    }
+
+    public GLBuffer write(int[] value) {
+        for(int s : value) write(s);
+        return this;
+    }
+
+    public GLBuffer write(long[] value) {
+        for(long s : value) write(s);
+        return this;
+    }
+
+    public GLBuffer write(float[] value) {
+        for(float s : value) write(s);
+        return this;
+    }
+
+    public GLBuffer write(double[] value) {
+        for(double s : value) write(s);
         return this;
     }
 

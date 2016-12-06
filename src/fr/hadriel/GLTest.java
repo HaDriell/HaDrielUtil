@@ -1,13 +1,7 @@
 package fr.hadriel;
 
 import fr.hadriel.hgl.glfw.GLFWWindow;
-import fr.hadriel.hgl.graphics.Mesh;
-import fr.hadriel.hgl.graphics.Shader;
-import fr.hadriel.hgl.graphics.Texture;
-import fr.hadriel.hgl.opengl.AttribPointer;
-import fr.hadriel.hgl.opengl.GLType;
-import fr.hadriel.hgl.opengl.VertexBuffer;
-import fr.hadriel.hgl.stb.Image;
+import fr.hadriel.hgl.opengl.*;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec3;
@@ -23,17 +17,6 @@ import java.io.File;
  */
 public class GLTest {
 
-    public static final Vec2
-            TOP = new Vec2(0.5f, 0),
-            BOTL = new Vec2(0, 1),
-            BOTR = new Vec2(1, 1);
-
-    public static final Vec4
-            WHITE = new Vec4(1, 1, 1, 1),
-            BLACK = new Vec4(0, 0, 0, 1),
-            BLUE = new Vec4(0, 0, 1, 1),
-            RED = new Vec4(1, 0, 0, 1),
-            GREEN = new Vec4(0, 1, 0, 1);
 
     public static final Vec3
             X = new Vec3(1, 0, 0),
@@ -42,6 +25,18 @@ public class GLTest {
             NY = new Vec3(0, -1, 0),
             Z = new Vec3(0, 0, 1),
             NZ = new Vec3(0, 0, -1);
+
+    public static final Vec4
+            WHITE = new Vec4(1, 1, 1, 1),
+            BLACK = new Vec4(0, 0, 0, 1),
+            BLUE = new Vec4(0, 0, 1, 1),
+            RED = new Vec4(1, 0, 0, 1),
+            GREEN = new Vec4(0, 1, 0, 1);
+
+    public static final Vec2
+            TOP = new Vec2(0.5f, 0.1f),
+            BOTL = new Vec2(0, 1),
+            BOTR = new Vec2(1, 1);
 
     public static Vec3[] POSITIONS = new Vec3[] {
             Y, Z, X,
@@ -64,14 +59,23 @@ public class GLTest {
             TOP, BOTL, BOTR,
     };
 
-    public static void main(String[] args) {
 
+
+
+    /******************************************************************************************************************/
+    // Main
+    /******************************************************************************************************************/
+    public static void main(String[] args) {
         new GLFWWindow() {
-            private Texture texture;
-            private Mesh mesh;
+            private Texture2D texture;
+
+            private SingleBufferVertexArray vao3;
+            private MultiBufferVertexArray vao2;
+            private OldVertexArray vao;
+
             private Shader shader;
             private Timer timer;
-            private Matrix4f pr_matrix = Matrix4f.Perspective(120, 8 / 4.5f, 1, 1000);
+            private Matrix4f pr_matrix = Matrix4f.Perspective(120, 8 / 4.5f, 0, 1000);
             private Matrix4f ml_matrix = new Matrix4f();
             private Matrix4f vw_matrix = new Matrix4f().translate(0, 0, -5);
 
@@ -80,45 +84,97 @@ public class GLTest {
                 timer = new Timer();
                 try {
                     shader = new Shader(new File("simple.vert"), new File("simple.frag"));
+                    texture = new Texture2D("illuminati.png");
                 } catch (Exception ignore) {
                     ignore.printStackTrace();
                 }
-                mesh = new Mesh(POSITIONS.length,
+
+                vao = new OldVertexArray(POSITIONS.length,
                         new AttribPointer(GLType.FLOAT, 3),
                         new AttribPointer(GLType.FLOAT, 4),
                         new AttribPointer(GLType.FLOAT, 2)
                 );
-                texture = new Texture(Image.load("illuminati.png"));
-                setupMesh();
+
+                vao2 = new MultiBufferVertexArray(POSITIONS.length,
+                        new AttribPointer(GLType.FLOAT, 3),
+                        new AttribPointer(GLType.FLOAT, 4),
+                        new AttribPointer(GLType.FLOAT, 2)
+                );
+
+                vao3 = new SingleBufferVertexArray(POSITIONS.length,
+                        new AttribPointer(GLType.FLOAT, 3),
+                        new AttribPointer(GLType.FLOAT, 4),
+                        new AttribPointer(GLType.FLOAT, 2)
+                );
+                setupVAOS();
             }
 
-            private void setupMesh() {
-                VertexBuffer positions = mesh.getVertexAttribBuffer(0);
+            private void setupVAOS() {
+                VertexBuffer positions, colors, uvs;
+
+                //Setup Positions
+                positions = vao.getBuffer(0);
                 positions.bind();
                 positions.map();
-
                 for(Vec3 p : POSITIONS) positions.write(p);
-
                 positions.unmap();
                 positions.unbind();
 
-                VertexBuffer colors = mesh.getVertexAttribBuffer(1);
+                //Setup Colors
+                colors = vao.getBuffer(1);
                 colors.bind();
                 colors.map();
-
                 for(Vec4 c : COLORS) colors.write(c);
-
                 colors.unmap();
                 colors.unbind();
 
-                VertexBuffer uvs = mesh.getVertexAttribBuffer(2);
+                //Setup UVs
+                uvs = vao.getBuffer(2);
                 uvs.bind();
                 uvs.map();
-
                 for(Vec2 v : UVS) uvs.write(v);
-
                 uvs.unmap();
                 uvs.unbind();
+
+                /**************************************************/
+
+                //Setup Positions
+                positions = vao2.getBuffer(0);
+                positions.bind();
+                positions.map();
+                for(Vec3 p : POSITIONS) positions.write(p);
+                positions.unmap();
+                positions.unbind();
+
+                //Setup Colors
+                colors = vao2.getBuffer(1);
+                colors.bind();
+                colors.map();
+                for(Vec4 c : COLORS) colors.write(c);
+                colors.unmap();
+                colors.unbind();
+
+                //Setup UVs
+                uvs = vao2.getBuffer(2);
+                uvs.bind();
+                uvs.map();
+                for(Vec2 v : UVS) uvs.write(v);
+                uvs.unmap();
+                uvs.unbind();
+
+                /**************************************************/
+
+                VertexBuffer vbo = vao3.getBuffer(0);
+                //Setup Positions
+                vbo.bind();
+                vbo.map();
+                for(int i = 0; i < POSITIONS.length; i++) {
+                    vbo.write(POSITIONS[i]);
+                    vbo.write(COLORS[i]);
+                    vbo.write(UVS[i]);
+                }
+                vbo.unmap();
+                vbo.unbind();
             }
 
             public void onRender(long window) {
@@ -133,13 +189,21 @@ public class GLTest {
                 shader.setUniformMat4f("pr_matrix", pr_matrix);
                 shader.setUniformMat4f("vw_matrix", vw_matrix);
                 shader.setUniformMat4f("ml_matrix", ml_matrix);
-                mesh.render();
+
+//                vao.bind();
+//                vao.draw(GL11.GL_TRIANGLES); // OK (will be deleted)
+//                vao.unbind();
+
+//                vao2.bind();
+//                vao2.draw(GL11.GL_TRIANGLES); // OK
+//                vao2.unbind();
+
+                vao3.bind();
+                vao3.draw(GL11.GL_TRIANGLES);
+                vao3.unbind();
+
                 texture.unbind();
                 shader.unbind();
-            }
-
-            public void onDestroy() {
-
             }
 
             public void onKey(long window, int key, int scancode, int action, int mods) {
@@ -153,6 +217,7 @@ public class GLTest {
                 if(key ==  GLFW.GLFW_KEY_C) vw_matrix.translate(0, -.1f, 0);
             }
 
+            public void onDestroy() {}
             public void onMouseButton(long window, int button, int action, int mods) {}
             public void onMousePos(long window, double xpos, double ypos) {}
             public void onCursorEnter(long window, boolean entered) {}

@@ -92,7 +92,7 @@ public class HZipArchive {
     }
 
     private long getMapAllocationSizeRequirement() {
-        long size = 2; //count
+        long size = 2; //components
         for(Map.Entry<String, Pointer> e : pointerMap.entrySet()) { // only target the named pointers
             size += 2 + e.getKey().length() + 8; // short + nameBytes + long;
         }

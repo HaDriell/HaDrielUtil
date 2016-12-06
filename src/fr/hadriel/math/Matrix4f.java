@@ -10,11 +10,12 @@ import java.nio.FloatBuffer;
 public class Matrix4f {
 
     /*
-    * Matrix Display
-    * [M00 .... M03]
-    * [M10 .... M13]
-    * [M20 .... M23]
-    * [M30 .... M33]
+    * Matrix Order [M_COL_ROW] :
+    *
+    * [M00 .... M30]
+    * [M01 .... M31]
+    * [M02 .... M32]
+    * [M03 .... M33]
     * */
 
     //First Row
@@ -189,6 +190,29 @@ public class Matrix4f {
         }
         set(data);
         return this;
+    }
+
+    // assumed Vec4(x, y, 0, 1);
+    public Vec2 multiply(Vec2 v) {
+        float x = elements[M00] * v.x + elements[M10] * v.y + elements[M30];
+        float y = elements[M01] * v.x + elements[M11] * v.y + elements[M31];
+        return v.set(x, y);
+    }
+
+    // assumed Vec4(x, y, z, 1)
+    public Vec3 multiply(Vec3 v) {
+        float x = elements[M00] * v.x + elements[M10] * v.y + elements[M20] * v.z + elements[M30];
+        float y = elements[M01] * v.x + elements[M11] * v.y + elements[M21] * v.z + elements[M31];
+        float z = elements[M02] * v.x + elements[M12] * v.y + elements[M22] * v.z + elements[M32];
+        return v.set(x, y, z);
+    }
+
+    public Vec4 multiply(Vec4 v) {
+        float x = elements[M00] * v.x + elements[M10] * v.y + elements[M20] * v.z + elements[M30] * v.w;
+        float y = elements[M01] * v.x + elements[M11] * v.y + elements[M21] * v.z + elements[M31] * v.w;
+        float z = elements[M02] * v.x + elements[M12] * v.y + elements[M22] * v.z + elements[M32] * v.w;
+        float w = elements[M03] * v.x + elements[M13] * v.y + elements[M23] * v.z + elements[M33] * v.w;
+        return v.set(x, y, z, w);
     }
 
     public Matrix4f copy() {

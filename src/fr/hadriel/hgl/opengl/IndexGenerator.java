@@ -9,7 +9,7 @@ import java.nio.ShortBuffer;
  */
 public interface IndexGenerator {
     public static void checkElementCount(int elementCount) {
-        if(elementCount < 0 || elementCount > Short.MAX_VALUE) throw new IllegalArgumentException("Invalid Element count :" + elementCount);
+        if(elementCount < 0 || elementCount > Short.MAX_VALUE) throw new IllegalArgumentException("Invalid Element components :" + elementCount);
     }
 
 

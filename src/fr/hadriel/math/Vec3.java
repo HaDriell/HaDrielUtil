@@ -5,6 +5,10 @@ package fr.hadriel.math;
  */
 public class Vec3 {
 
+    public static final Vec3 X = new Vec3(1, 0, 0);
+    public static final Vec3 Y = new Vec3(0, 1, 0);
+    public static final Vec3 Z = new Vec3(0, 0, 1);
+
     public float x;
     public float y;
     public float z;
@@ -101,6 +105,6 @@ public class Vec3 {
     }
 
     public String toString() {
-        return String.format("Vec3(%.2f, %.2f, %.2f)", x, y, z);
+        return String.format("(%.2f, %.2f, %.2f)", x, y, z);
     }
 }

@@ -1,4 +1,4 @@
-package fr.hadriel.hgl.graphics;
+package fr.hadriel.hgl.opengl;
 
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.util.ArrayMap;
@@ -46,12 +46,16 @@ public class Shader {
         if(glGetShaderi(vertex, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Failed to compile vertex Shader");
             System.err.println(glGetShaderInfoLog(vertex));
+            System.out.println("OpenGL Version : " + glGetString(GL_VERSION));
+            System.exit(1);
         }
 
         glCompileShader(fragment);
         if(glGetShaderi(fragment, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Failed to compile fragment Shader");
             System.err.println(glGetShaderInfoLog(fragment));
+            System.out.println("OpenGL Version : " + glGetString(GL_VERSION));
+            System.exit(1);
         }
 
         glAttachShader(handle, vertex);
