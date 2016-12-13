@@ -5,7 +5,7 @@ package fr.hadriel.ecs;
  */
 public abstract class EntityProcessor {
 
-    private final Class<? extends Component>[] requiredTypes;
+    private final Class[] requiredTypes;
 
     protected EntityProcessor() {
         this.requiredTypes = requires();
@@ -13,13 +13,13 @@ public abstract class EntityProcessor {
 
     public boolean accept(Entity entity) {
         for(Class c : requiredTypes) {
-            if(entity.get(c) == null)
+            if(entity.getComponent(c) == null)
                 return false;
         }
         return true;
     }
 
-    protected abstract Class<? extends Component>[] requires();
+    protected abstract Class[] requires();
 
     public abstract void update(Entity entity, float delta);
 }

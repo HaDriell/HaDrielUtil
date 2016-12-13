@@ -7,6 +7,7 @@ public class Vec2 {
 
     public static final Vec2 X = new Vec2(1, 0);
     public static final Vec2 Y = new Vec2(0, 1);
+    public static final Vec2 ZERO = new Vec2();
 
     public float x;
     public float y;

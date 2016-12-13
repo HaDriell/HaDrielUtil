@@ -1,6 +1,4 @@
-package fr.hadriel.hgl.stb;
-
-import org.lwjgl.BufferUtils;
+package fr.hadriel.hgl.resources;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,6 +16,16 @@ public class Image {
 
     public Image(int[] pixels, int width, int height, int components) {
         this.pixels = pixels;
+        this.width = width;
+        this.height = height;
+        this.components = components;
+    }
+
+    public Image(ByteBuffer pixels, int width, int height, int components) {
+        this.pixels = new int[width * height];
+        for(int i = 0; i < this.pixels.length; i++) {
+            this.pixels[i] = pixels.getInt();
+        }
         this.width = width;
         this.height = height;
         this.components = components;

@@ -178,7 +178,7 @@ public class Matrix3f {
     public Matrix3f invert() {
         float det = det();
         if(det == 0)
-            throw new RuntimeException("Can't Invert Matrix");
+            throw new RuntimeException("Can'torque Invert Matrix");
 
         float invDet = 1f / det;
         float[] tmp = new float[9];

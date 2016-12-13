@@ -11,7 +11,7 @@ public class Timer {
 
     /**
      *
-     * @return elapsed seconds since the last reset() or the Timer creation
+     * @return elapsed seconds since the last clear() or the Timer creation
      */
     public float elapsed() {
         return (System.nanoTime() - anchor) / 1_000_000_000F;

@@ -1,6 +1,9 @@
 package fr.hadriel.hgl.opengl;
 
 import fr.hadriel.math.Matrix4f;
+import fr.hadriel.math.Vec2;
+import fr.hadriel.math.Vec3;
+import fr.hadriel.math.Vec4;
 import fr.hadriel.util.ArrayMap;
 import fr.hadriel.util.IOUtils;
 
@@ -85,6 +88,10 @@ public class Shader {
         return result;
     }
 
+    public void setUniform1iv(String name, int[] values) {
+        glUniform1iv(getUniform(name), values);
+    }
+
     public void setUniform1i(String name, int value) {
         glUniform1i(getUniform(name), value);
     }
@@ -93,12 +100,28 @@ public class Shader {
         glUniform1f(getUniform(name), value);
     }
 
+    public void setUniform2f(String name, Vec2 v) {
+        setUniform2f(name, v.x, v.y);
+    }
+
+    public void setUniform3f(String name, Vec3 v) {
+        setUniform3f(name, v.x, v.y, v.z);
+    }
+
+    public void setUniform4f(String name, Vec4 v) {
+        setUniform4f(name, v.x, v.y, v.z, v.w);
+    }
+
     public void setUniform2f(String name, float x, float y) {
         glUniform2f(getUniform(name), x, y);
     }
 
     public void setUniform3f(String name, float x, float y, float z) {
         glUniform3f(getUniform(name), x, y, z);
+    }
+
+    public void setUniform4f(String name, float x, float y, float z, float w) {
+        glUniform4f(getUniform(name), x, y, z, w);
     }
 
     public void setUniformMat4f(String name, Matrix4f matrix) {

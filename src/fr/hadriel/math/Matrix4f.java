@@ -63,6 +63,10 @@ public class Matrix4f {
         this(IDENTITY);
     }
 
+    public Matrix4f set(Matrix4f matrix) {
+        return set(matrix.elements);
+    }
+
     public Matrix4f set(float[] flatMatrix) {
         if(flatMatrix.length != 16)
             throw new IllegalArgumentException("Invalid flat Matrix sizeProperty");
@@ -91,6 +95,127 @@ public class Matrix4f {
 
     public Matrix4f rotate(float angle, Vec3 axis) {
         multiply(Matrix4f.Rotation(angle, axis));
+        return this;
+    }
+
+    public Matrix4f invert() {
+        float[] temp = new float[16];
+        temp[0] = elements[5] * elements[10] * elements[15] -
+                elements[5] * elements[11] * elements[14] -
+                elements[9] * elements[6] * elements[15] +
+                elements[9] * elements[7] * elements[14] +
+                elements[13] * elements[6] * elements[11] -
+                elements[13] * elements[7] * elements[10];
+
+        temp[4] = -elements[4] * elements[10] * elements[15] +
+                elements[4] * elements[11] * elements[14] +
+                elements[8] * elements[6] * elements[15] -
+                elements[8] * elements[7] * elements[14] -
+                elements[12] * elements[6] * elements[11] +
+                elements[12] * elements[7] * elements[10];
+
+        temp[8] = elements[4] * elements[9] * elements[15] -
+                elements[4] * elements[11] * elements[13] -
+                elements[8] * elements[5] * elements[15] +
+                elements[8] * elements[7] * elements[13] +
+                elements[12] * elements[5] * elements[11] -
+                elements[12] * elements[7] * elements[9];
+
+        temp[12] = -elements[4] * elements[9] * elements[14] +
+                elements[4] * elements[10] * elements[13] +
+                elements[8] * elements[5] * elements[14] -
+                elements[8] * elements[6] * elements[13] -
+                elements[12] * elements[5] * elements[10] +
+                elements[12] * elements[6] * elements[9];
+
+        temp[1] = -elements[1] * elements[10] * elements[15] +
+                elements[1] * elements[11] * elements[14] +
+                elements[9] * elements[2] * elements[15] -
+                elements[9] * elements[3] * elements[14] -
+                elements[13] * elements[2] * elements[11] +
+                elements[13] * elements[3] * elements[10];
+
+        temp[5] = elements[0] * elements[10] * elements[15] -
+                elements[0] * elements[11] * elements[14] -
+                elements[8] * elements[2] * elements[15] +
+                elements[8] * elements[3] * elements[14] +
+                elements[12] * elements[2] * elements[11] -
+                elements[12] * elements[3] * elements[10];
+
+        temp[9] = -elements[0] * elements[9] * elements[15] +
+                elements[0] * elements[11] * elements[13] +
+                elements[8] * elements[1] * elements[15] -
+                elements[8] * elements[3] * elements[13] -
+                elements[12] * elements[1] * elements[11] +
+                elements[12] * elements[3] * elements[9];
+
+        temp[13] = elements[0] * elements[9] * elements[14] -
+                elements[0] * elements[10] * elements[13] -
+                elements[8] * elements[1] * elements[14] +
+                elements[8] * elements[2] * elements[13] +
+                elements[12] * elements[1] * elements[10] -
+                elements[12] * elements[2] * elements[9];
+
+        temp[2] = elements[1] * elements[6] * elements[15] -
+                elements[1] * elements[7] * elements[14] -
+                elements[5] * elements[2] * elements[15] +
+                elements[5] * elements[3] * elements[14] +
+                elements[13] * elements[2] * elements[7] -
+                elements[13] * elements[3] * elements[6];
+
+        temp[6] = -elements[0] * elements[6] * elements[15] +
+                elements[0] * elements[7] * elements[14] +
+                elements[4] * elements[2] * elements[15] -
+                elements[4] * elements[3] * elements[14] -
+                elements[12] * elements[2] * elements[7] +
+                elements[12] * elements[3] * elements[6];
+
+        temp[10] = elements[0] * elements[5] * elements[15] -
+                elements[0] * elements[7] * elements[13] -
+                elements[4] * elements[1] * elements[15] +
+                elements[4] * elements[3] * elements[13] +
+                elements[12] * elements[1] * elements[7] -
+                elements[12] * elements[3] * elements[5];
+
+        temp[14] = -elements[0] * elements[5] * elements[14] +
+                elements[0] * elements[6] * elements[13] +
+                elements[4] * elements[1] * elements[14] -
+                elements[4] * elements[2] * elements[13] -
+                elements[12] * elements[1] * elements[6] +
+                elements[12] * elements[2] * elements[5];
+
+        temp[3] = -elements[1] * elements[6] * elements[11] +
+                elements[1] * elements[7] * elements[10] +
+                elements[5] * elements[2] * elements[11] -
+                elements[5] * elements[3] * elements[10] -
+                elements[9] * elements[2] * elements[7] +
+                elements[9] * elements[3] * elements[6];
+
+        temp[7] = elements[0] * elements[6] * elements[11] -
+                elements[0] * elements[7] * elements[10] -
+                elements[4] * elements[2] * elements[11] +
+                elements[4] * elements[3] * elements[10] +
+                elements[8] * elements[2] * elements[7] -
+                elements[8] * elements[3] * elements[6];
+
+        temp[11] = -elements[0] * elements[5] * elements[11] +
+                elements[0] * elements[7] * elements[9] +
+                elements[4] * elements[1] * elements[11] -
+                elements[4] * elements[3] * elements[9] -
+                elements[8] * elements[1] * elements[7] +
+                elements[8] * elements[3] * elements[5];
+
+        temp[15] = elements[0] * elements[5] * elements[10] -
+                elements[0] * elements[6] * elements[9] -
+                elements[4] * elements[1] * elements[10] +
+                elements[4] * elements[2] * elements[9] +
+                elements[8] * elements[1] * elements[6] -
+                elements[8] * elements[2] * elements[5];
+        float determinant = elements[0] * temp[0] + elements[1] * temp[4] + elements[2] * temp[8] + elements[3] * temp[12];
+        determinant = 1f / determinant;
+        for(int i = 0; i < elements.length; i++) {
+            elements[i] = temp[i] * determinant;
+        }
         return this;
     }
 
@@ -177,6 +302,20 @@ public class Matrix4f {
         return this;
     }
 
+    public Matrix4f setToTransform2D(float scalex, float scaley, float rotation, float positionx, float positiony) {
+        setToIdentity();
+        float r = Mathf.toRadians(rotation);
+        float cos = Mathf.cos(r);
+        float sin = Mathf.sin(r);
+        elements[M00] = cos * scalex;
+        elements[M10] = -sin;
+        elements[M30] = positionx;
+        elements[M01] = sin;
+        elements[M11] = cos * scaley;
+        elements[M31] = positiony;
+        return this;
+    }
+
     public Matrix4f multiply(Matrix4f matrix) {
         float[] data = new float[16];
         for(int row = 0; row < 4; row++) {
@@ -241,6 +380,10 @@ public class Matrix4f {
 
     public static Matrix4f Translation(float x, float y, float z) {
         return new Matrix4f().setToTranslation(x, y, z);
+    }
+
+    public static Matrix4f Transform2D(float sx, float sy, float r, float tx, float ty) {
+        return new Matrix4f().setToTransform2D(sx, sy, r, tx, ty);
     }
 
     public String toString() {

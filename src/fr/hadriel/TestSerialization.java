@@ -14,7 +14,7 @@ import java.io.ByteArrayInputStream;
 public class TestSerialization {
     public static void main(String[] args) throws Exception {
         StObject object = new StObject();
-        object.put("a", "a");
+        object.put("angle", "angle");
         object.put("b", "b");
         object.put("c", "c");
         object.put("d", "d");

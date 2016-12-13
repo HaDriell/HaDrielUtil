@@ -30,9 +30,13 @@ public class ProcessorManager {
         lock.unlock();
     }
 
-    public void forEach(Consumer<EntityProcessor> consumer) {
+    public void update(List<Entity> entities, float delta) {
         lock.lock();
-        processors.forEach(consumer);
+        for(EntityProcessor processor : processors) {
+            for(Entity e : entities) {
+                if (processor.accept(e)) processor.update(e, delta);
+            }
+        }
         lock.unlock();
     }
 }

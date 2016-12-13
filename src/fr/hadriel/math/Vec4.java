@@ -23,6 +23,14 @@ public class Vec4 {
         this.w = w;
     }
 
+    public Vec4(Vec3 v, float w) {
+        this(v.x, v.y, v.z, w);
+    }
+
+    public Vec4(Vec2 v, float z, float w) {
+        this(v.x, v.y, z, w);
+    }
+
     public Vec4() {
         this(0, 0, 0, 0);
     }

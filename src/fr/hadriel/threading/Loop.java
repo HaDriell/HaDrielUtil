@@ -64,7 +64,7 @@ public abstract class Loop {
     protected abstract void onLoop();
 
     /**
-     * this method is called only when Thread terminates by a normal stop(); (not when interrupted !)
+     * this method is called only when Thread terminates by angle normal stop(); (not when interrupted !)
      */
     protected abstract void onStop();
 }

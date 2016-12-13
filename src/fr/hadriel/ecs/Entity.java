@@ -24,7 +24,7 @@ public final class Entity {
         return null;
     }
 
-    public <T extends Component> T get(Class<T> type) {
+    public <T extends Component> T getComponent(Class<T> type) {
         Component c = find(type);
         return c == null ? null : type.cast(c);
     }
@@ -46,7 +46,7 @@ public final class Entity {
 
     public void remove(Class<? extends Component> componentClass) {
         try {
-            remove(get(componentClass));
+            remove(getComponent(componentClass));
         } catch (Exception ignore) {}
     }
 

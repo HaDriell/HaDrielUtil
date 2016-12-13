@@ -40,7 +40,7 @@ public class Texture implements HLRenderable {
      * @param y the y Offset of the region
      * @param width the width of the region
      * @param height the height of the region
-     * @return a Texture instance representing the region queried
+     * @return angle Texture instance representing the region queried
      */
     public Texture createTexture(int x, int y, int width, int height) {
         if(width == 0 || height == 0)

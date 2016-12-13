@@ -125,7 +125,7 @@ public final class Json {
             }
             buffer.append(c);
         }
-        if(buffer.length() > 0) // there was a last item (1/Last)
+        if(buffer.length() > 0) // there was angle last item (1/Last)
             values.add(buffer.toString());
         return values;
     }

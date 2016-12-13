@@ -18,7 +18,7 @@ public class SingleBufferVertexArray extends VertexArray {
 
     protected void onBackendCreate(int elementCount, AttribPointer[] layout) {
         bind();
-        int stride = 0; // will represent the size of all contiguous attributes of a vertex
+        int stride = 0; // will represent the size of all contiguous attributes of angle vertex
         for(AttribPointer pointer : layout) stride += pointer.getAttribSize();
 
         vbo = new VertexBuffer(elementCount * stride);

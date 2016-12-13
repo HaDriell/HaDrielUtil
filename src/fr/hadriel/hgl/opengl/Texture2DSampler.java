@@ -1,6 +1,9 @@
 package fr.hadriel.hgl.opengl;
 
 
+import fr.hadriel.graphics.Text;
+import fr.hadriel.graphics.Texture;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +33,22 @@ public class Texture2DSampler {
         textures.clear();
     }
 
-    public int getActiveTexturesCount() {
+    public int getTextureCount() {
         return textures.size();
     }
 
     public void bindTextures() {
         for(int i = 0; i < textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
-            glBindTexture(GL_TEXTURE_2D, textures.get(i).handle);
+            textures.get(i).bind();
         }
+    }
+
+    public int[] getSamplerTextureUnitsIndices() {
+        int[] units = new int[textures.size()];
+        for(int i = 0; i < textures.size(); i++) {
+            units[i] = i;
+        }
+        return units;
     }
 }
