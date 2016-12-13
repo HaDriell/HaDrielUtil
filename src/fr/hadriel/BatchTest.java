@@ -2,14 +2,11 @@ package fr.hadriel;
 
 import fr.hadriel.hgl.g2d.BatchGraphics;
 import fr.hadriel.hgl.g2d.BatchRenderer;
-import fr.hadriel.hgl.g2d.QuadraticBezierCurve;
 import fr.hadriel.hgl.g2d.Transform2D;
 import fr.hadriel.hgl.glfw.GLFWWindow;
 import fr.hadriel.hgl.opengl.Texture2D;
 import fr.hadriel.hgl.opengl.TextureRegion;
-import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.math.Vec4;
 import fr.hadriel.time.Timer;
 
 import java.io.IOException;
@@ -33,8 +30,8 @@ public class BatchTest {
                 try {
                     a = new Texture2D("Teron Fielsang.png");
                     b = new Texture2D("illuminati.png");
-                    regionA = a.getRectangle(0, 0, a.width, a.height);
-                    regionb = b.getRectangle(0, 0, b.width, b.height);
+                    regionA = a.getRegion(0, 0, a.width, a.height);
+                    regionb = b.getRegion(0, 0, b.width, b.height);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

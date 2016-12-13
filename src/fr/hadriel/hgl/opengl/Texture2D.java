@@ -3,7 +3,6 @@ package fr.hadriel.hgl.opengl;
 
 
 import fr.hadriel.hgl.resources.Image;
-import fr.hadriel.math.Vec2;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ import static org.lwjgl.opengl.GL12.*;
  */
 public class Texture2D {
 
-    //TODO : make angle beter TextureProperties support PLEASE
+    //TODO : make a beter TextureProperties support PLEASE
     public final int handle;
     public final int width;
     public final int height;
@@ -37,27 +36,25 @@ public class Texture2D {
     public Texture2D(Image image, boolean glNearest) {
         this.width = image.width;
         this.height = image.height;
-
-        ByteBuffer data = BufferUtils.createByteBuffer(4 * image.width * image.height);
-        for(int pixel : image.pixels) data.putInt(pixel);
-        data.flip();
-
-        handle = glGenTextures();
+        this.handle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, handle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, glNearest ? GL_NEAREST : GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, glNearest ? GL_NEAREST : GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.pixels);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    public TextureRegion getRectangle(int x, int y, int width, int height) {
-        float fx = x / this.width;
-        float fy = y / this.height;
-        float fw = width / this.width;
-        float fh = height / this.height;
-        return new TextureRegion(this, fx, fy, fw, fh);
+    public TextureRegion getRegion(float x, float y, float width, float height) {
+        return new TextureRegion(this, x, y, width, height);
+    }
+
+    public void setData(Image image) {
+        ByteBuffer data = BufferUtils.createByteBuffer(image.pixels.length * 4);
+        for(int p : image.pixels) data.putInt(p);
+        data.flip();
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.width, image.height, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
 
     public void bind() {
