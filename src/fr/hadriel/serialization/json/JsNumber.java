@@ -3,9 +3,9 @@ package fr.hadriel.serialization.json;
 import fr.hadriel.serialization.SerialException;
 
 /**
- * Created by HaDriel on 19/10/2016.
+ * Created by HaDriel setOn 19/10/2016.
  */
-public class JsNumber implements JsPrimitive {
+public class JsNumber implements JsPrimitive2 {
 
     public double value;
 

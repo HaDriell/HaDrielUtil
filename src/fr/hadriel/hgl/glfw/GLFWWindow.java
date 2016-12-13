@@ -1,16 +1,13 @@
 package fr.hadriel.hgl.glfw;
 
-import fr.hadriel.event.MultiEventListener;
 import org.lwjgl.opengl.GLCapabilities;
 
 /**
- * Created by HaDriel on 04/12/2016.
+ * Created by HaDriel setOn 04/12/2016.
  */
 public abstract class GLFWWindow {
     Long handle = null;
     GLCapabilities capabilities;
-
-    public MultiEventListener listener = new MultiEventListener();
 
     protected GLFWWindow() {
         GLFWThread.create(this, null);

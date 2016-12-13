@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by glathuiliere on 21/11/2016.
+ * Created by glathuiliere setOn 21/11/2016.
  */
 public final class Entity {
 

@@ -5,7 +5,7 @@ import fr.hadriel.serialization.Serial;
 import java.io.IOException;
 
 /**
- * Created by HaDriel on 23/10/2016.
+ * Created by HaDriel setOn 23/10/2016.
  */
 public class BoundedSerialAccess implements SerialAccess {
 

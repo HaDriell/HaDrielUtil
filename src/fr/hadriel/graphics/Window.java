@@ -14,7 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Created by glathuiliere on 22/07/2016.
+ * Created by glathuiliere setOn 22/07/2016.
  */
 public class Window extends TickedLoop {
 
@@ -91,7 +91,7 @@ public class Window extends TickedLoop {
             frame.dispose();
         }
         DisplayMode vidmode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
-        //override configuration on fullscreen
+        //override configuration setOn fullscreen
         if(configuration.fullscreen) {
             configuration.decorated = false;
             configuration.width = vidmode.getWidth();

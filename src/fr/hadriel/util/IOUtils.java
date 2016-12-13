@@ -4,7 +4,7 @@ package fr.hadriel.util;
 import java.io.*;
 
 /**
- * Created by HaDriel on 13/10/2016.
+ * Created by HaDriel setOn 13/10/2016.
  */
 public class IOUtils {
 

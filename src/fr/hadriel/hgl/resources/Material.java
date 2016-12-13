@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Created by HaDriel on 07/12/2016.
+ * Created by HaDriel setOn 07/12/2016.
  * Custom Material setup for Phong Shader
  */
 public class Material {

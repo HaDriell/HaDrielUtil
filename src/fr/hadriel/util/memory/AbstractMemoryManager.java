@@ -3,7 +3,7 @@ package fr.hadriel.util.memory;
 import fr.hadriel.util.Callback;
 
 /**
- * Created by glathuiliere on 27/10/2016.
+ * Created by glathuiliere setOn 27/10/2016.
  */
 public abstract class AbstractMemoryManager implements MemoryManager {
 

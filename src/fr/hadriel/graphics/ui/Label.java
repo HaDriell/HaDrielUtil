@@ -6,7 +6,7 @@ import fr.hadriel.math.Vec2;
 import fr.hadriel.util.Property;
 
 /**
- * Created by glathuiliere on 10/08/2016.
+ * Created by glathuiliere setOn 10/08/2016.
  */
 public class Label extends Widget {
 

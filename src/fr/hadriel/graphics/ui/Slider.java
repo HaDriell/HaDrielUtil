@@ -11,7 +11,7 @@ import fr.hadriel.math.Vec2;
 import fr.hadriel.util.Property;
 
 /**
- * Created by glathuiliere on 12/08/2016.
+ * Created by glathuiliere setOn 12/08/2016.
  */
 public class Slider extends ProgressBar {
 

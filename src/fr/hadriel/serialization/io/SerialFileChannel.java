@@ -7,7 +7,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
 /**
- * Created by HaDriel on 23/10/2016.
+ * Created by HaDriel setOn 23/10/2016.
  */
 public class SerialFileChannel {
 

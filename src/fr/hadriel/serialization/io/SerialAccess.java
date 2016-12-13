@@ -1,7 +1,7 @@
 package fr.hadriel.serialization.io;
 
 /**
- * Created by glathuiliere on 25/10/2016.
+ * Created by glathuiliere setOn 25/10/2016.
  */
 public interface SerialAccess extends SerialInput, SerialOutput {
 

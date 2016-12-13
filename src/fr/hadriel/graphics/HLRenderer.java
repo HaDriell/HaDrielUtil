@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 
 /**
- * Created by glathuiliere on 22/07/2016.
+ * Created by glathuiliere setOn 22/07/2016.
  */
 public class HLRenderer {
 

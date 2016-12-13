@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by glathuiliere on 09/08/2016.
+ * Created by glathuiliere setOn 09/08/2016.
  */
 public class StArray extends StPrimitive implements Iterable<StPrimitive> {
 

@@ -1,7 +1,7 @@
 package fr.hadriel.math;
 
 /**
- * Created by glathuiliere on 05/09/2016.
+ * Created by glathuiliere setOn 05/09/2016.
  */
 public class Interval {
 

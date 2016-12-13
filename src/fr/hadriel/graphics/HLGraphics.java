@@ -5,7 +5,7 @@ import fr.hadriel.math.Matrix3f;
 import java.awt.*;
 
 /**
- * Created by glathuiliere on 08/08/2016.
+ * Created by glathuiliere setOn 08/08/2016.
  */
 public class HLGraphics {
 

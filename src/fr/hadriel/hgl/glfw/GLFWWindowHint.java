@@ -1,7 +1,7 @@
 package fr.hadriel.hgl.glfw;
 
 /**
- * Created by glathuiliere on 22/07/2016.
+ * Created by glathuiliere setOn 22/07/2016.
  */
 public class GLFWWindowHint {
     public int width = 800;

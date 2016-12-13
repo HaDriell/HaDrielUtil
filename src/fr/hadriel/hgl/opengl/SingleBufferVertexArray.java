@@ -2,7 +2,7 @@ package fr.hadriel.hgl.opengl;
 
 import static org.lwjgl.opengl.GL20.*;
 /**
- * Created by glathuiliere on 06/12/2016.
+ * Created by glathuiliere setOn 06/12/2016.
  */
 public class SingleBufferVertexArray extends VertexArray {
 

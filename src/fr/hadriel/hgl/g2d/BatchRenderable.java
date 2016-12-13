@@ -1,8 +1,8 @@
 package fr.hadriel.hgl.g2d;
 
 /**
- * Created by HaDriel on 09/12/2016.
+ * Created by HaDriel setOn 09/12/2016.
  */
 public interface BatchRenderable {
-    public void render(BatchGraphics renderer);
+    public void render(BatchGraphics g);
 }

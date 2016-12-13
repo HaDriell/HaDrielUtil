@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.Stack;
 
 /**
- * Created by glathuiliere on 11/08/2016.
+ * Created by glathuiliere setOn 11/08/2016.
  */
 public class ClipStack {
 

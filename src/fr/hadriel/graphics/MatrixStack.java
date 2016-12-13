@@ -6,7 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.util.Stack;
 
 /**
- * Created by glathuiliere on 22/07/2016.
+ * Created by glathuiliere setOn 22/07/2016.
  */
 public class MatrixStack {
 

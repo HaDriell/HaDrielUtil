@@ -10,7 +10,7 @@ import fr.hadriel.graphics.ui.Label;
 import java.awt.*;
 
 /**
- * Created by glathuiliere on 18/08/2016.
+ * Created by glathuiliere setOn 18/08/2016.
  */
 public class FunGUI {
 

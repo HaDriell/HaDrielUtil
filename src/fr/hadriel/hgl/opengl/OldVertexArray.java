@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL11.*;
 /**
- * Created by HaDriel on 03/12/2016.
+ * Created by HaDriel setOn 03/12/2016.
  */
 public class OldVertexArray {
 

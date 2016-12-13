@@ -3,7 +3,7 @@ package fr.hadriel.graphics;
 import fr.hadriel.time.Timer;
 
 /**
- * Created by glathuiliere on 11/08/2016.
+ * Created by glathuiliere setOn 11/08/2016.
  */
 public class Animation implements HLRenderable {
 

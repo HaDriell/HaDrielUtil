@@ -7,7 +7,7 @@ import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
 
 /**
- * Created by HaDriel on 11/12/2016.
+ * Created by HaDriel setOn 11/12/2016.
  */
 public class BatchGraphics {
 

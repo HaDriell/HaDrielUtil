@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by glathuiliere on 16/08/2016.
+ * Created by glathuiliere setOn 16/08/2016.
  */
 public class Property<T> {
 
@@ -26,38 +26,35 @@ public class Property<T> {
         this(null, null);
     }
 
-    public void addCallback(Callback<T> callback) {
+    public synchronized void addCallback(Callback<T> callback) {
         synchronized (callbacks) {
             callbacks.add(callback);
             cache = null;
         }
     }
 
-    public void removeCallback(Callback<T> callback) {
+    public synchronized void removeCallback(Callback<T> callback) {
         synchronized (callbacks) {
             callbacks.remove(callback);
             cache = null;
         }
     }
 
-    public void clearCallbacks() {
+    public synchronized void clearCallbacks() {
         synchronized (callbacks) {
             callbacks.clear();
             cache = null;
         }
     }
 
-    public void doCallback() {
-        synchronized (callbacks) {
-            if(cache == null) {
-                cache = new Callback[callbacks.size()];
-                callbacks.toArray(cache);
-            }
-            for(Callback<T> callback : cache) {
-                callback.execute(value);
-            }
+    public synchronized void doCallback() {
+        if(cache == null) {
+            cache = new Callback[callbacks.size()];
+            callbacks.toArray(cache);
         }
-
+        for(Callback<T> callback : cache) {
+            callback.execute(value);
+        }
     }
 
     public void setDefaultValue(T value) {

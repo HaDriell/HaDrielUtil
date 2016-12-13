@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.font.GlyphVector;
 
 /**
- * Created by glathuiliere on 11/08/2016.
+ * Created by glathuiliere setOn 11/08/2016.
  */
 public class Text implements HLRenderable {
 

@@ -6,7 +6,7 @@ import fr.hadriel.util.memory.Pointer;
 import java.io.IOException;
 
 /**
- * Created by HaDriel on 23/10/2016.
+ * Created by HaDriel setOn 23/10/2016.
  */
 public class PointerSerialAccess implements SerialAccess {
 

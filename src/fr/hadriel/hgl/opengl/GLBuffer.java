@@ -9,7 +9,7 @@ import java.nio.*;
 import static org.lwjgl.opengl.GL15.*;
 
 /**
- * Created by HaDriel on 30/11/2016.
+ * Created by HaDriel setOn 30/11/2016.
  */
 public class GLBuffer {
 

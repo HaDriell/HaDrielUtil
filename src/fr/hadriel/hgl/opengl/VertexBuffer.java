@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL15.*;
 import java.nio.Buffer;
 
 /**
- * Created by HaDriel on 30/11/2016.
+ * Created by HaDriel setOn 30/11/2016.
  */
 public class VertexBuffer extends GLBuffer {
 

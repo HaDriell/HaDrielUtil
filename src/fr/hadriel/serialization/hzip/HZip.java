@@ -1,7 +1,7 @@
 package fr.hadriel.serialization.hzip;
 
 /**
- * Created by glathuiliere on 27/10/2016.
+ * Created by glathuiliere setOn 27/10/2016.
  */
 public final class HZip {
     public static final byte[] HEADER_PREFIX = {'H', 'Z', 'I', 'P'};

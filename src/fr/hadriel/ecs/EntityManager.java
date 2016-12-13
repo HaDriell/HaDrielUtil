@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by HaDriel on 24/11/2016.
+ * Created by HaDriel setOn 24/11/2016.
  */
 public class EntityManager {
 

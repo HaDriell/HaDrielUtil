@@ -4,7 +4,7 @@ package fr.hadriel;
 import fr.hadriel.util.PRNG;
 
 /**
- * Created by HaDriel on 21/10/2016.
+ * Created by HaDriel setOn 21/10/2016.
  */
 public class TestPRNG {
     public static void main(String[] args) {

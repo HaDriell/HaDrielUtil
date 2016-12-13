@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by HaDriel on 19/10/2016.
+ * Created by HaDriel setOn 19/10/2016.
  */
-public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimitive>>{
+public class JsObject implements JsPrimitive2, Iterable<Map.Entry<String, JsPrimitive2>>{
 
-    private Map<String, JsPrimitive> members;
+    private Map<String, JsPrimitive2> members;
 
     public JsObject() {
         this.members = new ArrayMap<>();
@@ -22,7 +22,7 @@ public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimi
         members.clear();
     }
 
-    public void put(String name, JsPrimitive value) {
+    public void put(String name, JsPrimitive2 value) {
         members.put(name, value == null ? new JsNull() : value);
     }
 
@@ -38,7 +38,7 @@ public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimi
         members.remove(name);
     }
 
-    public Iterator<Map.Entry<String, JsPrimitive>> iterator() {
+    public Iterator<Map.Entry<String, JsPrimitive2>> iterator() {
         return members.entrySet().iterator();
     }
 
@@ -78,7 +78,7 @@ public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimi
         StringBuilder sb = new StringBuilder();
         boolean firstStatement = true;
         sb.append('{');
-        for(Map.Entry<String, JsPrimitive> member : members.entrySet()) {
+        for(Map.Entry<String, JsPrimitive2> member : members.entrySet()) {
             if(firstStatement) firstStatement = false;
             else sb.append(',');
             sb.append('"').append(member.getKey()).append('"').append(':').append(member.getValue().toString());

@@ -8,7 +8,7 @@ import fr.hadriel.math.Matrix3f;
 import fr.hadriel.util.Property;
 
 /**
- * Created by glathuiliere on 18/08/2016.
+ * Created by glathuiliere setOn 18/08/2016.
  */
 public class ProgressBar extends Widget {
 

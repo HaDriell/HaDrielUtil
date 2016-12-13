@@ -5,7 +5,7 @@ import fr.hadriel.graphics.Texture;
 import fr.hadriel.util.Property;
 
 /**
- * Created by glathuiliere on 11/08/2016.
+ * Created by glathuiliere setOn 11/08/2016.
  */
 public class Image extends Widget {
 

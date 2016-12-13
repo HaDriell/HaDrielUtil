@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * Created by glathuiliere on 12/08/2016.
+ * Created by glathuiliere setOn 12/08/2016.
  */
 public class NinePatch {
 

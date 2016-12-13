@@ -3,7 +3,7 @@ package fr.hadriel;
 import fr.hadriel.util.ByteStream;
 
 /**
- * Created by glathuiliere on 07/11/2016.
+ * Created by glathuiliere setOn 07/11/2016.
  */
 public class TestByteStream {
     public static void main(String[] args) throws Exception {

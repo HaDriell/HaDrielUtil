@@ -3,7 +3,7 @@ package fr.hadriel.math;
 import java.awt.geom.AffineTransform;
 
 /**
- * Created by glathuiliere on 13/07/2016.
+ * Created by glathuiliere setOn 13/07/2016.
  */
 public class Matrix3f {
 

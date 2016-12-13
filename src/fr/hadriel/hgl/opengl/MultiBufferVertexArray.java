@@ -3,7 +3,7 @@ package fr.hadriel.hgl.opengl;
 
 import static org.lwjgl.opengl.GL20.*;
 /**
- * Created by HaDriel on 03/12/2016.
+ * Created by HaDriel setOn 03/12/2016.
  */
 public class MultiBufferVertexArray extends VertexArray {
 

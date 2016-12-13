@@ -1,7 +1,7 @@
 package fr.hadriel.math;
 
 /**
- * Created by glathuiliere on 13/07/2016.
+ * Created by glathuiliere setOn 13/07/2016.
  */
 public class Mathf {
     public static final float PI = 3.14159265358979323846264338327950288419716939937510582354687f;

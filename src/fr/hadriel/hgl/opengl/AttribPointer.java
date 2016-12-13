@@ -3,7 +3,7 @@ package fr.hadriel.hgl.opengl;
 import org.w3c.dom.Attr;
 
 /**
- * Created by HaDriel on 01/12/2016.
+ * Created by HaDriel setOn 01/12/2016.
  *
  * Basic support for One data name per VBO
  */

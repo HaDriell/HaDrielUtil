@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by glathuiliere on 09/08/2016.
+ * Created by glathuiliere setOn 09/08/2016.
  */
 public class StByte extends StPrimitive {
 

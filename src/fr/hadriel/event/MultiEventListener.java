@@ -4,47 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by glathuiliere on 16/08/2016.
+ * Created by glathuiliere setOn 13/12/2016.
  */
 public class MultiEventListener implements IEventListener {
 
-    private Map<Class<? extends IEvent>, SimpleEventListener> map;
+    private Map<Class<? extends IEvent>, IEventHandler> map;
+
 
     public MultiEventListener() {
         this.map = new HashMap<>();
     }
 
-    private synchronized <T extends IEvent> SimpleEventListener getOrCreateListener(Class<T> type) {
-        SimpleEventListener result = map.get(type);
-        if(result == null) {
-            result = new SimpleEventListener(type);
-            map.put(type, result);
-        }
-        return result;
-    }
-
-    public synchronized <T extends IEvent> void setHandler(Class<T> type, IEventHandler<T> handler) {
-        SimpleEventListener listener = getOrCreateListener(type);
-        listener.addHandler(type, handler);
-    }
-
-    public synchronized <T extends IEvent> void removeHandler(Class<T> type, IEventHandler<T> handler) {
-        SimpleEventListener listener = getOrCreateListener(type);
-        listener.removeHandler(handler);
-    }
-
-    public synchronized void clearHandlers() {
-        map.clear();
+    public synchronized <T extends IEvent> void setOn(Class<T> type, IEventHandler<T> handler) {
+        map.put(type, handler);
     }
 
     @SuppressWarnings("unchecked")
-    public synchronized boolean onEvent(IEvent event) {
-        for(Map.Entry<Class<? extends IEvent>, SimpleEventListener> entry : map.entrySet()) {
-            Class<? extends IEvent> type = entry.getKey();
-            SimpleEventListener listener = entry.getValue();
-            if(listener.onEvent(event))
-                return true;
-        }
-        return false;
+    public boolean onEvent(IEvent event) {
+        IEventHandler handler = map.get(event.getClass());
+        return handler != null && handler.handle(event);
     }
 }

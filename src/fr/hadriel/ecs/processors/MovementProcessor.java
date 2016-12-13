@@ -8,7 +8,7 @@ import fr.hadriel.ecs.components.SpeedComponent;
 import fr.hadriel.math.Vec2;
 
 /**
- * Created by HaDriel on 09/12/2016.
+ * Created by HaDriel setOn 09/12/2016.
  */
 public class MovementProcessor extends EntityProcessor {
 

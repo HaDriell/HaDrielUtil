@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by glathuiliere on 27/10/2016.
+ * Created by glathuiliere setOn 27/10/2016.
  */
 public class HZipArchive {
 

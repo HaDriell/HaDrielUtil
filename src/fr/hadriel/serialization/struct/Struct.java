@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by glathuiliere on 19/08/2016.
+ * Created by glathuiliere setOn 19/08/2016.
  */
 public final class Struct {
 

@@ -5,7 +5,7 @@ import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
 
 /**
- * Created by glathuiliere on 13/07/2016.
+ * Created by glathuiliere setOn 13/07/2016.
  */
 public class Matrix4f {
 

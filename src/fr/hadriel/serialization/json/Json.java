@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Created by glathuiliere on 18/10/2016.
+ * Created by glathuiliere setOn 18/10/2016.
  */
 public final class Json {
 
-    public static JsPrimitive deserialize(String input) throws SerialException {
+    public static JsPrimitive2 deserialize(String input) throws SerialException {
         String json = input.trim();
         char c = json.charAt(0);
         switch (c) {

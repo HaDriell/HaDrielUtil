@@ -1,7 +1,7 @@
 package fr.hadriel.math;
 
 /**
- * Created by glathuiliere on 13/06/2016.
+ * Created by glathuiliere setOn 13/06/2016.
  */
 public class Vec2 {
 

@@ -1,7 +1,7 @@
 package fr.hadriel.hgl.opengl;
 
 /**
- * Created by HaDriel on 08/12/2016.
+ * Created by HaDriel setOn 08/12/2016.
  */
 public class TextureRegion {
 

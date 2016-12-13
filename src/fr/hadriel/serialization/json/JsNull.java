@@ -1,12 +1,11 @@
 package fr.hadriel.serialization.json;
 
-import fr.hadriel.serialization.Serial;
 import fr.hadriel.serialization.SerialException;
 
 /**
- * Created by HaDriel on 19/10/2016.
+ * Created by HaDriel setOn 19/10/2016.
  */
-public class JsNull implements JsPrimitive {
+public class JsNull implements JsPrimitive2 {
 
     public byte asByte() {
         throw new UnsupportedOperationException();

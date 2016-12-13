@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Created by glathuiliere on 27/10/2016.
+ * Created by glathuiliere setOn 27/10/2016.
  */
 public class ContiguousMemoryManager extends AbstractMemoryManager {
 

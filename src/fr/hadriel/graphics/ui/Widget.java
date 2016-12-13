@@ -10,7 +10,7 @@ import fr.hadriel.util.Property;
 import java.awt.*;
 
 /**
- * Created by glathuiliere on 08/08/2016.
+ * Created by glathuiliere setOn 08/08/2016.
  */
 public class Widget implements HLRenderable {
 
@@ -67,12 +67,12 @@ public class Widget implements HLRenderable {
     }
 
     /**
-     * Called when mouse hits returns true for the first time on the Widget
+     * Called when mouse hits returns true for the first time setOn the Widget
      */
     public void onMouseEntered() {}
 
     /**
-     * Called when mouse hits returns false for the first time on the Widget
+     * Called when mouse hits returns false for the first time setOn the Widget
      */
     public void onMouseExited() {}
 

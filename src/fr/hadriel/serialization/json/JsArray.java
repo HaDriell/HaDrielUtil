@@ -8,23 +8,23 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by HaDriel on 19/10/2016.
+ * Created by HaDriel setOn 19/10/2016.
  */
-public class JsArray implements JsPrimitive, Iterable<JsPrimitive> {
+public class JsArray implements JsPrimitive2, Iterable<JsPrimitive2> {
 
-    private List<JsPrimitive> elements;
+    private List<JsPrimitive2> elements;
 
     public JsArray() {
         this(null);
     }
 
-    public JsArray(Collection<JsPrimitive> list) {
+    public JsArray(Collection<JsPrimitive2> list) {
         this.elements = new ArrayList<>();
         if(list != null)
             this.elements.addAll(list);
     }
 
-    public Iterator<JsPrimitive> iterator() {
+    public Iterator<JsPrimitive2> iterator() {
         return elements.iterator();
     }
 
@@ -32,11 +32,11 @@ public class JsArray implements JsPrimitive, Iterable<JsPrimitive> {
         elements.clear();
     }
 
-    public JsPrimitive get(int index) {
+    public JsPrimitive2 get(int index) {
         return elements.get(index);
     }
 
-    public void add(JsPrimitive primitive) {
+    public void add(JsPrimitive2 primitive) {
         elements.add(primitive);
     }
 
@@ -48,7 +48,7 @@ public class JsArray implements JsPrimitive, Iterable<JsPrimitive> {
         add(new JsString(value));
     }
 
-    public void remove(JsPrimitive primitive) {
+    public void remove(JsPrimitive2 primitive) {
         elements.remove(primitive);
     }
 
@@ -92,7 +92,7 @@ public class JsArray implements JsPrimitive, Iterable<JsPrimitive> {
         StringBuilder sb = new StringBuilder();
         boolean firstStatement = true;
         sb.append('[');
-        for(JsPrimitive element : elements) {
+        for(JsPrimitive2 element : elements) {
             if(firstStatement) firstStatement = false;
             else sb.append(',');
             sb.append(element.toString());
@@ -107,7 +107,7 @@ public class JsArray implements JsPrimitive, Iterable<JsPrimitive> {
 
     public static JsArray deserialize(String input) throws SerialException {
         List<String> elements = Json.splitJson(input);
-        List<JsPrimitive> list = new ArrayList<>();
+        List<JsPrimitive2> list = new ArrayList<>();
         for(String element : elements) {
             list.add(Json.deserialize(element));
         }

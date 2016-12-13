@@ -5,7 +5,7 @@ import org.lwjgl.BufferUtils;
 import java.nio.ShortBuffer;
 
 /**
- * Created by HaDriel on 01/12/2016.
+ * Created by HaDriel setOn 01/12/2016.
  */
 public interface IndexGenerator {
     public static void checkElementCount(int elementCount) {

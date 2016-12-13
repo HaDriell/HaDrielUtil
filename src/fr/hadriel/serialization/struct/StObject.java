@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by glathuiliere on 09/08/2016.
+ * Created by glathuiliere setOn 09/08/2016.
  */
 public class StObject extends StPrimitive implements Iterable<Map.Entry<String, StPrimitive>> {
 

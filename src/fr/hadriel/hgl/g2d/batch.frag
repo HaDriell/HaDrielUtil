@@ -2,7 +2,7 @@
 
 out vec4 color;
 
-uniform sampler2D textures[48]; // back support is for OpenGL 3.X (48 textures max)
+uniform sampler2D textures[32]; // support for OpenGL 3.X (48 textures max) should be 80 right now
 
 in vec4 o_color;
 in vec2 o_uv;

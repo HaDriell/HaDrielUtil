@@ -4,40 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by glathuiliere on 16/08/2016.
+ * Created by glathuiliere setOn 16/08/2016.
  */
 public class SimpleEventListener implements IEventListener {
 
     private Class<? extends IEvent> type;
-    private List<IEventHandler<? extends IEvent>> handlers;
+    private IEventHandler handler;
 
-    public SimpleEventListener(Class<? extends IEvent> type) {
+    public SimpleEventListener() {} // default constructor for noobs
+
+    public <T extends IEvent> SimpleEventListener(Class<T> type, IEventHandler<T> handler) {
+        setOn(type, handler);
+    }
+
+    public synchronized <T extends IEvent> void setOn(Class<T> type, IEventHandler<T> handler) {
         this.type = type;
-        this.handlers = new ArrayList<>();
-    }
-
-    public synchronized <T extends IEvent> void addHandler(Class<T> type, IEventHandler<T> handler) {
-        if(this.type != type)
-            throw new IllegalArgumentException("Event name " + type.getSimpleName() + " is Unsupported for SimpleEventListener<" + this.type.getSimpleName() + ">");
-        handlers.add(handler);
-    }
-
-    public synchronized void removeHandler(IEventHandler handler) {
-        handlers.remove(handler);
-    }
-
-    public synchronized void clearHandlers() {
-        handlers.clear();
+        this.handler = handler;
     }
 
     @SuppressWarnings("unchecked")
     public synchronized boolean onEvent(IEvent event) {
-        if(type != event.getClass())
-            return false;
-        for (IEventHandler handler : handlers) {
-            if (type == event.getClass() && handler.handle(event))
-                return true;
-        }
-        return false;
+        return handler != null && event.getClass() == type && handler.handle(event);
     }
 }

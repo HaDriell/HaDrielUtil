@@ -4,7 +4,7 @@ import fr.hadriel.serialization.IPrimitive;
 import fr.hadriel.serialization.Serial;
 
 /**
- * Created by glathuiliere on 09/08/2016.
+ * Created by glathuiliere setOn 09/08/2016.
  */
 public abstract class StPrimitive implements IPrimitive {
 

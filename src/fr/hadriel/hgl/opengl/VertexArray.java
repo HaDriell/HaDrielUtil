@@ -5,7 +5,7 @@ package fr.hadriel.hgl.opengl;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL11.*;
 /**
- * Created by glathuiliere on 06/12/2016.
+ * Created by glathuiliere setOn 06/12/2016.
  */
 public abstract class VertexArray {
 

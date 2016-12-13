@@ -10,7 +10,7 @@ import fr.hadriel.math.Vec2;
 import fr.hadriel.util.Property;
 
 /**
- * Created by glathuiliere on 10/08/2016.
+ * Created by glathuiliere setOn 10/08/2016.
  */
 public class Button extends Widget {
 
@@ -36,12 +36,12 @@ public class Button extends Widget {
         this.onHoveredPatchProperty = new Property<>(null, UIDefaults.DEFAULT_HOVERED_PATCH);
         this.onPressedPatchProperty = new Property<>(null, UIDefaults.DEFAULT_PRESSED_PATCH);
 
-        //on patch change, regenerate the texture
+        //setOn patch change, regenerate the texture
         this.onIdlePatchProperty.addCallback((patch) -> onIdleTexture = patch.createTexture(sizeProperty.get()));
         this.onHoveredPatchProperty.addCallback((patch) -> onHoveredTexture = patch.createTexture(sizeProperty.get()));
         this.onPressedPatchProperty.addCallback((patch) -> onPressedTexture = patch.createTexture(sizeProperty.get()));
 
-        //on componentSize change, regenerate the texture
+        //setOn componentSize change, regenerate the texture
         super.sizeProperty.addCallback((size) -> onIdleTexture = onIdlePatchProperty.get().createTexture(size));
         super.sizeProperty.addCallback((size) -> onHoveredTexture = onHoveredPatchProperty.get().createTexture(size));
         super.sizeProperty.addCallback((size) -> onPressedTexture = onPressedPatchProperty.get().createTexture(size));

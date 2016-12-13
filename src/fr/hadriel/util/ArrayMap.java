@@ -3,7 +3,7 @@ package fr.hadriel.util;
 import java.util.*;
 
 /**
- * Created by HaDriel on 19/10/2016.
+ * Created by HaDriel setOn 19/10/2016.
  */
 public class ArrayMap<K, V> extends AbstractMap<K, V> {
 

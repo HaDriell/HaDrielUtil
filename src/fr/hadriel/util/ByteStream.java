@@ -3,7 +3,7 @@ package fr.hadriel.util;
 import java.util.Arrays;
 
 /**
- * Created by glathuiliere on 07/11/2016.
+ * Created by glathuiliere setOn 07/11/2016.
  */
 public class ByteStream {
 

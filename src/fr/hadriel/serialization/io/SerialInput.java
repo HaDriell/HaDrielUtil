@@ -3,7 +3,7 @@ package fr.hadriel.serialization.io;
 import java.io.IOException;
 
 /**
- * Created by HaDriel on 23/10/2016.
+ * Created by HaDriel setOn 23/10/2016.
  */
 public interface SerialInput {
     public void seek(long pointer) throws IOException;

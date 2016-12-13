@@ -4,7 +4,7 @@ import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec2;
 
 /**
- * Created by glathuiliere on 09/08/2016.
+ * Created by glathuiliere setOn 09/08/2016.
  */
 public class Transform {
 

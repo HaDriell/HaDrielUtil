@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11;
 import java.io.File;
 
 /**
- * Created by HaDriel on 04/12/2016.
+ * Created by HaDriel setOn 04/12/2016.
  */
 public class GLTest {
 

@@ -6,7 +6,7 @@ import fr.hadriel.math.Vec3;
 import fr.hadriel.math.Vec4;
 
 /**
- * Created by glathuiliere on 05/12/2016.
+ * Created by glathuiliere setOn 05/12/2016.
  */
 public class TestMath {
 
