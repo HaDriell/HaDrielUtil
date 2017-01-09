@@ -5,7 +5,7 @@ import fr.hadriel.serialization.SerialException;
 /**
  * Created by HaDriel setOn 19/10/2016.
  */
-public class JsNumber implements JsPrimitive2 {
+public class JsNumber implements JsPrimitive {
 
     public double value;
 

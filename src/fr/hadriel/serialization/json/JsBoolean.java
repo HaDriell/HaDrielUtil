@@ -6,7 +6,7 @@ import fr.hadriel.serialization.SerialException;
 /**
  * Created by HaDriel setOn 19/10/2016.
  */
-public class JsBoolean implements JsPrimitive2 {
+public class JsBoolean implements JsPrimitive {
 
     public boolean value;
 

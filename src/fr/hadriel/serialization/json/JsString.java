@@ -5,7 +5,7 @@ import fr.hadriel.serialization.SerialException;
 /**
  * Created by HaDriel setOn 19/10/2016.
  */
-public class JsString implements JsPrimitive2 {
+public class JsString implements JsPrimitive {
 
     public String value;
 

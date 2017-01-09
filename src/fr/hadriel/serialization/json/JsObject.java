@@ -10,9 +10,9 @@ import java.util.Map;
 /**
  * Created by HaDriel setOn 19/10/2016.
  */
-public class JsObject implements JsPrimitive2, Iterable<Map.Entry<String, JsPrimitive2>>{
+public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimitive>>{
 
-    private Map<String, JsPrimitive2> members;
+    private Map<String, JsPrimitive> members;
 
     public JsObject() {
         this.members = new ArrayMap<>();
@@ -22,7 +22,7 @@ public class JsObject implements JsPrimitive2, Iterable<Map.Entry<String, JsPrim
         members.clear();
     }
 
-    public void put(String name, JsPrimitive2 value) {
+    public void put(String name, JsPrimitive value) {
         members.put(name, value == null ? new JsNull() : value);
     }
 
@@ -38,7 +38,7 @@ public class JsObject implements JsPrimitive2, Iterable<Map.Entry<String, JsPrim
         members.remove(name);
     }
 
-    public Iterator<Map.Entry<String, JsPrimitive2>> iterator() {
+    public Iterator<Map.Entry<String, JsPrimitive>> iterator() {
         return members.entrySet().iterator();
     }
 
@@ -78,7 +78,7 @@ public class JsObject implements JsPrimitive2, Iterable<Map.Entry<String, JsPrim
         StringBuilder sb = new StringBuilder();
         boolean firstStatement = true;
         sb.append('{');
-        for(Map.Entry<String, JsPrimitive2> member : members.entrySet()) {
+        for(Map.Entry<String, JsPrimitive> member : members.entrySet()) {
             if(firstStatement) firstStatement = false;
             else sb.append(',');
             sb.append('"').append(member.getKey()).append('"').append(':').append(member.getValue().toString());

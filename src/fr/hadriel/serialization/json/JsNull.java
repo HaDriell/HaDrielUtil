@@ -5,7 +5,7 @@ import fr.hadriel.serialization.SerialException;
 /**
  * Created by HaDriel setOn 19/10/2016.
  */
-public class JsNull implements JsPrimitive2 {
+public class JsNull implements JsPrimitive {
 
     public byte asByte() {
         throw new UnsupportedOperationException();

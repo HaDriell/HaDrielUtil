@@ -11,7 +11,7 @@ import java.util.Stack;
  */
 public final class Json {
 
-    public static JsPrimitive2 deserialize(String input) throws SerialException {
+    public static JsPrimitive deserialize(String input) throws SerialException {
         String json = input.trim();
         char c = json.charAt(0);
         switch (c) {
