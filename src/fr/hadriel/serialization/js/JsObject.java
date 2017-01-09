@@ -1,4 +1,4 @@
-package fr.hadriel.serialization.jsonfixed;
+package fr.hadriel.serialization.js;
 
 import fr.hadriel.serialization.SerialException;
 import fr.hadriel.util.ArrayMap;
