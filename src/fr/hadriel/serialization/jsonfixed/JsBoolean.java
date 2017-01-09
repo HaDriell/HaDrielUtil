@@ -1,4 +1,4 @@
-package fr.hadriel.serialization.json;
+package fr.hadriel.serialization.jsonfixed;
 
 import fr.hadriel.serialization.Serial;
 import fr.hadriel.serialization.SerialException;
