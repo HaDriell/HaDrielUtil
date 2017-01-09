@@ -8,8 +8,8 @@ import fr.hadriel.math.Vec2;
  */
 public class MousePressedEvent implements IEvent {
 
-    public float x, y;
-    public int button;
+    public final float x, y;
+    public final int button;
 
     public MousePressedEvent(float x, float y, int button) {
         this.x = x;

@@ -1,14 +1,13 @@
 package fr.hadriel;
 
 import fr.hadriel.events.MouseMovedEvent;
-import fr.hadriel.hgl.g2d.BatchGraphics;
-import fr.hadriel.hgl.g2d.BatchRenderer;
-import fr.hadriel.hgl.g2d.ui.Group;
-import fr.hadriel.hgl.g2d.ui.Node;
-import fr.hadriel.hgl.g2d.ui.Transform;
-import fr.hadriel.hgl.glfw.GLFWWindow;
-import fr.hadriel.hgl.opengl.Texture2D;
-import fr.hadriel.hgl.opengl.TextureRegion;
+import fr.hadriel.lwjgl.g2d.BatchGraphics;
+import fr.hadriel.lwjgl.g2d.BatchRenderer;
+import fr.hadriel.lwjgl.g2d.ui.Group;
+import fr.hadriel.lwjgl.g2d.ui.Node;
+import fr.hadriel.lwjgl.glfw.GLFWWindow;
+import fr.hadriel.lwjgl.opengl.Texture2D;
+import fr.hadriel.lwjgl.opengl.TextureRegion;
 import fr.hadriel.math.Vec2;
 
 import java.io.IOException;
@@ -39,27 +38,27 @@ public class BatchTest {
                 g = new BatchGraphics(batch);
 
                 // Scene Graph
-                Transform transform = new Transform();
-                transform.translate(100, 100);
-                transform.add(new Node() {
-                    boolean hit;
+                Group group = new Group();
+                group.getTransform().translate(100, 100);
 
+                group.add(new Node() {
+                    boolean hit;
                     {
                         setSize(100, 100);
                         setOn(MouseMovedEvent.class, (event) -> {
-                            hit = isHit(event.x, event.y);
+                            hit = isInside(event.x, event.y);
                             return hit;
                         });
                     }
 
                     public void onRender(BatchGraphics g) {
-                        if(!hit) g.setColor(1, 0, 0, 1);
+                        if (!hit) g.setColor(1, 0, 0, 1);
                         else g.setColor(0, 0, 1, 1);
                         g.fillRect(0, 0, getWidth(), getHeight());
                     }
                 });
 
-                root.add(transform);
+                root.add(group);
             }
 
             private Vec2 mouse = new Vec2();

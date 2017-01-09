@@ -1,6 +1,6 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.time.Timer;
+import fr.hadriel.util.Timer;
 
 /**
  * Created by glathuiliere setOn 11/08/2016.

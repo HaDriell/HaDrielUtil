@@ -1,6 +1,6 @@
 package fr.hadriel.threading;
 
-import fr.hadriel.time.Timer;
+import fr.hadriel.util.Timer;
 
 /**
  * Created by glathuiliere setOn 08/08/2016.

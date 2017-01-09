@@ -7,7 +7,7 @@ import fr.hadriel.event.IEvent;
  */
 public class KeyPressedEvent implements IEvent {
 
-    public int key;
+    public final int key;
 
     public KeyPressedEvent(int key) {
         this.key = key;

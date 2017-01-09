@@ -8,8 +8,8 @@ import fr.hadriel.math.Vec2;
  */
 public class MouseMovedEvent implements IEvent {
 
-    public float x, y;
-    public boolean dragged;
+    public final float x, y;
+    public final boolean dragged;
 
     public MouseMovedEvent(float x, float y, boolean dragged) {
         this.x = x;
