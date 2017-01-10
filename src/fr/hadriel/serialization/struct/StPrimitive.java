@@ -26,4 +26,9 @@ public abstract class StPrimitive implements IPrimitive {
     protected abstract int getSizeImpl();
 
     protected abstract int serializeImpl(byte[] buffer, int pointer);
+
+    public abstract StArray asStArray();
+
+    public abstract StObject asStObject();
+
 }

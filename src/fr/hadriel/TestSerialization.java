@@ -15,6 +15,7 @@ public class TestSerialization {
     public static void main(String[] args) throws Exception {
         StObject object = new StObject();
         object.put("angle", "angle");
+        object.put("null", Struct.NULL);
         object.put("b", "b");
         object.put("c", "c");
         object.put("d", "d");

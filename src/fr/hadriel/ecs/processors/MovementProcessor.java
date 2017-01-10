@@ -5,39 +5,38 @@ import fr.hadriel.ecs.EntityProcessor;
 import fr.hadriel.ecs.components.AccelerationComponent;
 import fr.hadriel.ecs.components.LocationComponent;
 import fr.hadriel.ecs.components.SpeedComponent;
-import fr.hadriel.math.Vec2;
 
 /**
  * Created by HaDriel setOn 09/12/2016.
  */
 public class MovementProcessor extends EntityProcessor {
 
-    private Vec2 gravity;
-    private float friction;
 
-    public MovementProcessor(Vec2 gravity, float friction) {
-        this.gravity = gravity;
-        this.friction = friction;
-    }
-
-    protected Class[] requires() {
-        return new Class[] {
-                LocationComponent.class,
-                SpeedComponent.class,
-                AccelerationComponent.class
-        };
+    public MovementProcessor() {
+        super(new Class[] {LocationComponent.class, SpeedComponent.class, AccelerationComponent.class});
     }
 
     public void update(Entity entity, float delta) {
         LocationComponent location = entity.getComponent(LocationComponent.class);
         SpeedComponent speed = entity.getComponent(SpeedComponent.class);
         AccelerationComponent acceleration = entity.getComponent(AccelerationComponent.class);
-        location.x += speed.x;
-        location.y += speed.y;
-        location.angle += speed.rotation;
 
-        speed.x += acceleration.x;
-        speed.y += acceleration.y;
-        speed.rotation += acceleration.torque;
+        if(acceleration.x != 0 || acceleration.y != 0 || acceleration.torque != 0) {
+            speed.x += acceleration.x * delta;
+            speed.y += acceleration.y * delta;
+            speed.rotation += acceleration.torque;
+            speed.modified = true;
+        }
+
+        if(speed.x != 0 || speed.y != 0) {
+            location.x += speed.x * delta;
+            location.y += speed.y * delta;
+            location.angle += speed.rotation;
+            location.modified = true;
+        }
     }
+
+    public void beforeUpdate(float delta) {}
+
+    public void afterUpdate(float delta) {}
 }

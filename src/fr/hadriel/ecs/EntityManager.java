@@ -29,22 +29,24 @@ public class EntityManager {
         return result;
     }
 
-    public void add(long id) {
+    public void create(long id) {
         created.add(new Entity(id));
     }
 
-    public void add(Entity e) {
+    public void create(Entity e) {
         if(e == null) return;
+        if(created.contains(e)) return;
         created.add(e);
     }
 
-    public void remove(Entity e) {
+    public void destroy(Entity e) {
         if(e == null) return;
+        if(destroyed.contains(e)) return;
         destroyed.add(e);
     }
 
-    public void remove(long id) {
-        remove(get(id));
+    public void destroy(long id) {
+        destroy(get(id));
     }
 
     public void clear() {
@@ -56,8 +58,8 @@ public class EntityManager {
         return entities;
     }
 
-    public void update() {
-        //Disallow duplicates, so remove all old Entities that had the same id of an existing Entity
+    public void sync() {
+        //Disallow duplicates, so destroy all old Entities that had the same id of an existing Entity
         for(Entity e : created) {
             Entity old = get(e.id);
             if(old != null) entities.remove(old);

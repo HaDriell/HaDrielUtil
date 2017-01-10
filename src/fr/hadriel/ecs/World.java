@@ -1,49 +1,64 @@
 package fr.hadriel.ecs;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by glathuiliere setOn 21/11/2016.
  */
 public class World {
 
-    private ProcessorManager processorManager;
     private EntityManager entityManager;
+    private List<EntityProcessor> processors;
 
     public World() {
-        this.processorManager = new ProcessorManager();
+        this.processors = new ArrayList<>();
         this.entityManager = new EntityManager();
     }
 
-    public void update(float delta) {
-        entityManager.update();
-        processorManager.update(entityManager.getEntities(), delta);
+    public synchronized void update(float delta) {
+        entityManager.sync();
+        List<Entity> entities = entityManager.getEntities();
+        for(EntityProcessor p : processors) {
+            for(Entity e : entities) {
+                p.update(e, delta);
+            }
+        }
     }
 
-    public void addEntity(long id) {
-        entityManager.add(id);
+    public void createEntity(Entity entity) {
+        entityManager.create(entity);
     }
 
-    public void removeEntity(long id) {
-        entityManager.remove(id);
+    public void destroyEntity(Entity entity) {
+        entityManager.destroy(entity);
     }
 
-    public void addComponent(long id, Component component) {
-        Entity e = entityManager.get(id);
-        if(e == null) return;
-        e.add(component);
+    public void createEntity(long id) {
+        entityManager.create(id);
     }
 
-    public void removeComponent(long id, Component component) {
-        Entity e = entityManager.get(id);
-        if(e == null) return;
-        e.remove(component);
+    public void destroyEntity(long id) {
+        entityManager.destroy(id);
     }
 
-    public void addProcessor(EntityProcessor processor) {
-        this.processorManager.add(processor);
+    public Entity getEntity(long id) {
+        return entityManager.get(id);
     }
 
-    public void removeProcessor(EntityProcessor processor) {
-        this.processorManager.remove(processor);
+    public synchronized void addProcessor(EntityProcessor processor) {
+        processors.add(processor);
+    }
+
+    public synchronized void removeProcessor(EntityProcessor processor) {
+        processors.remove(processor);
+    }
+
+    public <T extends EntityProcessor> T getProcessor(Class<T> type) {
+        for(EntityProcessor p : processors) {
+            if(p.getClass() == type) return type.cast(p);
+        }
+        return null;
     }
 }

@@ -14,6 +14,7 @@ public class StString extends StPrimitive {
 
     public StString(String value) {
         super(Struct.TYPE_STRING);
+        if(value == null) throw new IllegalArgumentException("value cannot be null");
         this.value = value;
     }
 
@@ -92,5 +93,15 @@ public class StString extends StPrimitive {
     @Override
     public String asString() {
         return "" + value;
+    }
+
+    @Override
+    public StArray asStArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public StObject asStObject() {
+        throw new UnsupportedOperationException();
     }
 }

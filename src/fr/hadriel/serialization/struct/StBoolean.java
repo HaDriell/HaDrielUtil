@@ -85,4 +85,13 @@ public class StBoolean extends StPrimitive {
     public String asString() {
         return Boolean.toString(value);
     }
+
+    public StArray asStArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    public StObject asStObject() {
+        throw new UnsupportedOperationException();
+    }
+
 }

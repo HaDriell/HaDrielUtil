@@ -38,7 +38,7 @@ public class StLong extends StPrimitive {
     }
 
     public String toString() {
-        return "StArray(" + value + ")";
+        return "StLong(" + value + ")";
     }
 
     @Override
@@ -84,5 +84,13 @@ public class StLong extends StPrimitive {
     @Override
     public String asString() {
         return "" + value;
+    }
+
+    public StArray asStArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    public StObject asStObject() {
+        throw new UnsupportedOperationException();
     }
 }

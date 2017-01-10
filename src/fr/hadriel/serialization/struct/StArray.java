@@ -20,6 +20,10 @@ public class StArray extends StPrimitive implements Iterable<StPrimitive> {
         this.entries = new ArrayList<>();
     }
 
+    public int length() {
+        return entries.size();
+    }
+
     public StPrimitive get(int index) {
         return entries.get(index);
     }
@@ -169,6 +173,14 @@ public class StArray extends StPrimitive implements Iterable<StPrimitive> {
     }
 
     public String asString() {
+        throw new UnsupportedOperationException();
+    }
+
+    public StArray asStArray() {
+        return this;
+    }
+
+    public StObject asStObject() {
         throw new UnsupportedOperationException();
     }
 }

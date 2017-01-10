@@ -84,4 +84,12 @@ public class StInt extends StPrimitive {
     public String asString() {
         return "" + value;
     }
+
+    public StArray asStArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    public StObject asStObject() {
+        throw new UnsupportedOperationException();
+    }
 }

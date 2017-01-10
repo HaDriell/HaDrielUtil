@@ -1,56 +1,75 @@
 package fr.hadriel.ecs;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import fr.hadriel.serialization.struct.StObject;
+import fr.hadriel.serialization.struct.StPrimitive;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by glathuiliere setOn 21/11/2016.
  */
 public final class Entity {
 
-    private List<Component> components;
+    private Map<Class, Component> components;
     public final long id;
 
     public Entity(long id) {
         this.id = id;
-        this.components = new ArrayList<>();
+        this.components = new HashMap<>();
     }
 
-    private Component find(Class clazz) {
-        for(Component c : components) {
-            if(clazz.isInstance(c)) return c;
+    public Component getComponent(String className) {
+        try {
+            return components.get(Class.forName(className));
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to find class " + className);
         }
-        return null;
     }
 
     public <T extends Component> T getComponent(Class<T> type) {
-        Component c = find(type);
-        return c == null ? null : type.cast(c);
+        return type.cast(components.get(type));
     }
 
-    public void add(Component component) {
-        if(find(component.getClass()) == null)
-            components.add(component);
-    }
-
-    public void remove(Component component) {
-        components.remove(component);
-    }
-
-    public void add(Class<? extends Component> componentClass) {
+    public <T extends Component> T createComponent(Class<T> type) {
         try {
-            add(componentClass.newInstance());
-        } catch (Exception ignore) {}
+            T c = type.newInstance();
+            components.put(type, c); //deletes any old version of this component
+            return c;
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to create Component " + type.getSimpleName());
+        }
     }
 
-    public void remove(Class<? extends Component> componentClass) {
-        try {
-            remove(getComponent(componentClass));
-        } catch (Exception ignore) {}
+    public <T extends Component> void destroyComponent(Class<T> type) {
+        components.remove(type);
     }
 
-    public List<Component> getComponents() {
-        return components;
+    public void save(StObject serial) {
+        //put Entity identifier
+        serial.put("id", id);
+
+        //put all relevant Components (given options and delta)
+        for(Map.Entry<Class, Component> e : components.entrySet()) {
+            Class type = e.getKey();
+            Component component = e.getValue();
+            if(!component.synchronizable) continue; // abort serializing this component (doesn't support serialization)
+
+            //Serialize Component
+            StObject componentSerial = new StObject();
+            component.save(componentSerial);
+            serial.put(type.getName(), componentSerial);
+        }
+    }
+
+    public void load(StObject serial) {
+        if(serial.get("id").asLong() != id) throw new RuntimeException("Invalid ID provided, cannot Update Entity");
+        for(Map.Entry<String, StPrimitive> m : serial) {
+            if(m.getKey().equals("id")) continue;
+            String componentName = m.getKey();
+            StObject componentSerial = m.getValue().asStObject();
+
+        }
     }
 }

@@ -180,4 +180,12 @@ public class StObject extends StPrimitive implements Iterable<Map.Entry<String, 
     public String asString() {
         throw new UnsupportedOperationException();
     }
+
+    public StArray asStArray() {
+        throw new UnsupportedOperationException();
+    }
+
+    public StObject asStObject() {
+        return this;
+    }
 }
