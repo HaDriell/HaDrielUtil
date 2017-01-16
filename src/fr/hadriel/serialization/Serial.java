@@ -6,6 +6,7 @@ import java.io.*;
  * Created by glathuiliere setOn 09/08/2016.
  */
 public class Serial {
+    private Serial() {}
 
     public static final byte FALSE = 0x0;
     public static final byte TRUE = 0x1;
