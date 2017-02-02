@@ -6,9 +6,9 @@ package fr.hadriel.event;
 public interface IEventHandler<T extends IEvent> {
 
     /**
-     * Returns true if the T event should be stopped
-     * @param event
-     * @return
+     * This function is called by IEventListeners when onEvent(IEvent event) is called
+     * @param event the event instance
+     * @return true if this event should stop it's propagation
      */
     public boolean handle(T event);
 }

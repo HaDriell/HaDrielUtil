@@ -64,7 +64,7 @@ public abstract class VertexArray {
 
     /**
      *
-     * @param layoutIndex
+     * @param layoutIndex the index of the target VBO in this VAO
      * @return the VertexBuffer associated with the AttribPointer at layoutIndex
      */
     public abstract VertexBuffer getBuffer(int layoutIndex);

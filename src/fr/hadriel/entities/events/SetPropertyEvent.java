@@ -1,7 +1,6 @@
 package fr.hadriel.entities.events;
 
 import fr.hadriel.event.IEvent;
-import fr.hadriel.serialization.struct.StPrimitive;
 
 /**
  * Created by HaDriel on 13/01/2017.

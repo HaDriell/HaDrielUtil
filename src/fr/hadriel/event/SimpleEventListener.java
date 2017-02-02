@@ -1,8 +1,5 @@
 package fr.hadriel.event;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by glathuiliere on 16/08/2016.
  */

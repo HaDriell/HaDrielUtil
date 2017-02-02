@@ -1,7 +1,6 @@
 package fr.hadriel.lwjgl.g2d;
 
 import fr.hadriel.math.Matrix3f;
-import fr.hadriel.math.Matrix4f;
 
 import java.util.Stack;
 

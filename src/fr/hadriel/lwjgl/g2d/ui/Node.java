@@ -66,16 +66,18 @@ public abstract class Node implements BatchRenderable, IEventListener {
                 }
                 return !hit; //stop propagation if not hit
             }, true);
-            addHandler(MousePressedEvent.class, (event) -> hit(event.x, event.y), true); // ensure mouse hits the Node
+            addHandler(MousePressedEvent.class, (event) -> {
+                boolean hit = hit(event.x, event.y); // ensure mouse hits the Node
+                if(hit && !isFocus()) {
+                    onEvent(new FocusRequestEvent(this));
+                }
+                return !hit; //stop propagation if not hit
+            }, true);
             addHandler(MouseReleasedEvent.class, (event) -> hit(event.x, event.y), true); // ensure mouse hits the Node
             addHandler(MouseEnterEvent.class, (event) -> hit(event.x, event.y), true); // ensure mouse hits the Node
             addHandler(MouseExitEvent.class, (event) -> !hit(event.x, event.y), true); // ensure mouse does not hit the Node
             addHandler(KeyPressedEvent.class, (event) -> isFocus(), true); // ensure Node is Focussed
             addHandler(KeyReleasedEvent.class, (event) -> isFocus(), true); // ensure Node is Focussed
-            addHandler(FocusRequestEvent.class, (event) -> {
-                setFocus(event.node == this); // the FocusRequest targets only
-                return false; // never consume a FocusRequest
-            }, true);
         }
     }
 

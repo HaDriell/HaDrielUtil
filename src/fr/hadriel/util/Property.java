@@ -47,6 +47,7 @@ public class Property<T> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized void doCallback() {
         if(cache == null) {
             cache = new Callback[callbacks.size()];

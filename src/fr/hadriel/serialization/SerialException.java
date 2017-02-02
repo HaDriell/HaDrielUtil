@@ -1,7 +1,6 @@
 package fr.hadriel.serialization;
 
 
-import java.io.OutputStream;
 
 /**
  * Created by HaDriel on 19/10/2016.

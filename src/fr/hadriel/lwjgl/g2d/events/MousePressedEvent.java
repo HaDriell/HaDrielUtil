@@ -1,6 +1,5 @@
 package fr.hadriel.lwjgl.g2d.events;
 
-import fr.hadriel.event.IEvent;
 import fr.hadriel.math.Vec2;
 
 /**

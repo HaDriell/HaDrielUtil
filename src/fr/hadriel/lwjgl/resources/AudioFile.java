@@ -2,7 +2,6 @@ package fr.hadriel.lwjgl.resources;
 
 import fr.hadriel.lwjgl.openal.OpenAL;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL10;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;

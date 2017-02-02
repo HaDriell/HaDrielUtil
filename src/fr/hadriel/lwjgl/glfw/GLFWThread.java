@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -33,7 +34,7 @@ public class GLFWThread extends Loop {
     private GLFWVidMode vidmode;
 
     private GLFWThread() {
-        creationCache = new ArrayMap<>();
+        creationCache = new HashMap<>();
         windows = new ArrayList<>();
         closed = new ArrayList<>();
     }
