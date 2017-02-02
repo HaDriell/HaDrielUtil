@@ -2,7 +2,7 @@ package fr.hadriel.lwjgl.opengl;
 
 import static org.lwjgl.opengl.GL11.*;
 /**
- * Created by HaDriel setOn 08/12/2016.
+ * Created by HaDriel on 08/12/2016.
  */
 public class BlendMode {
 

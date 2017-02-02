@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * Created by glathuiliere setOn 18/10/2016.
+ * Created by glathuiliere on 18/10/2016.
  */
 public final class Json {
 

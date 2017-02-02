@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by HaDriel setOn 23/10/2016.
+ * Created by HaDriel on 23/10/2016.
  */
 public class TestElipse {
     public static void main(String[] args) throws IOException {

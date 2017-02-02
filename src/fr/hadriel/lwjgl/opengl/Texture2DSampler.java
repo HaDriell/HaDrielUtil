@@ -7,7 +7,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL13.*;
 
 /**
- * Created by glathuiliere setOn 05/12/2016.
+ * Created by glathuiliere on 05/12/2016.
  */
 public class Texture2DSampler {
 

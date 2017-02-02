@@ -9,7 +9,7 @@ import fr.hadriel.serialization.struct.Struct;
 import java.io.ByteArrayInputStream;
 
 /**
- * Created by HaDriel setOn 12/10/2016.
+ * Created by HaDriel on 12/10/2016.
  */
 public class TestSerialization {
     public static void main(String[] args) throws Exception {

@@ -3,7 +3,7 @@ package fr.hadriel.serialization;
 import java.io.*;
 
 /**
- * Created by glathuiliere setOn 09/08/2016.
+ * Created by glathuiliere on 09/08/2016.
  */
 public class Serial {
     private Serial() {}

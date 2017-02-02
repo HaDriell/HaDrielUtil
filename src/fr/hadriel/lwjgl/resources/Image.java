@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.stb.STBImage.*;
 
 /**
- * Created by glathuiliere setOn 29/11/2016.
+ * Created by glathuiliere on 29/11/2016.
  */
 public class Image {
     public final int[] pixels;

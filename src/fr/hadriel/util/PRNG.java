@@ -1,7 +1,7 @@
 package fr.hadriel.util;
 
 /**
- * Created by HaDriel setOn 21/10/2016.
+ * Created by HaDriel on 21/10/2016.
  *
  * Implementation of Mersenne Twister PRNG
  * Source: https://cs.gmu.edu/~sean/research/mersenne/MersenneTwisterFast.java

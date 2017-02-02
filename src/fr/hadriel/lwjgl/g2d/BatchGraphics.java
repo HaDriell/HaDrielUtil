@@ -1,25 +1,22 @@
 package fr.hadriel.lwjgl.g2d;
 
 import fr.hadriel.lwjgl.opengl.TextureRegion;
-import fr.hadriel.math.Mathf;
-import fr.hadriel.math.Matrix4f;
-import fr.hadriel.math.Vec2;
-import fr.hadriel.math.Vec4;
+import fr.hadriel.math.*;
 
 /**
- * Created by HaDriel setOn 11/12/2016.
+ * Created by HaDriel on 11/12/2016.
  */
 public class BatchGraphics {
 
     private float strokeWidth = 1f;
-    private Matrix4fStack stack;
+    private Matrix3fStack stack;
     private Vec4 color;
 
     private BatchRenderer batch;
 
     public BatchGraphics(BatchRenderer batch) {
         this.batch = batch;
-        this.stack = new Matrix4fStack();
+        this.stack = new Matrix3fStack();
         this.color = new Vec4();
     }
 
@@ -31,6 +28,14 @@ public class BatchGraphics {
         return strokeWidth;
     }
 
+    public void setColor(int packed) {
+        float r = ((packed >> 24) & 0xFF) / 255f;
+        float g = ((packed >> 16) & 0xFF) / 255f;
+        float b = ((packed >> 8) & 0xFF) / 255f;
+        float a = ((packed >> 0) & 0xFF) / 255f;
+        setColor(r, g, b, a);
+    }
+
     public void setColor(float r, float g, float b, float a) {
         color.set(r, g, b, a);
     }
@@ -39,7 +44,7 @@ public class BatchGraphics {
         return new Vec4(color);
     }
 
-    public void push(Matrix4f matrix) {
+    public void push(Matrix3f matrix) {
         stack.push(matrix);
     }
 
@@ -75,7 +80,7 @@ public class BatchGraphics {
         float dx = x + width;
         float dy = y + height;
         Vec2 p = new Vec2();
-        Matrix4f matrix = stack.top();
+        Matrix3f matrix = stack.top();
         matrix.multiply(p.set(x, y));
         batch.submit(p.x, p.y, color, 0, 0, null);
         matrix.multiply(p.set(dx, y));
@@ -91,7 +96,7 @@ public class BatchGraphics {
         Vec2 line = new Vec2(xb - xa, yb - ya);
         Vec2 heavyness = line.getNormalLeft().scale(weight, weight);
         Vec2 p = new Vec2();
-        Matrix4f matrix = stack.top();
+        Matrix3f matrix = stack.top();
         matrix.multiply(p.set(xa + heavyness.x, ya + heavyness.y));
         batch.submit(p.x, p.y, color);
         matrix.multiply(p.set(xa - heavyness.x, ya - heavyness.y));
@@ -132,7 +137,7 @@ public class BatchGraphics {
 
     public void drawTextureRegion(float x, float y, float width, float height, TextureRegion region, Vec4 color) {
         Vec2 p = new Vec2();
-        Matrix4f matrix = stack.top();
+        Matrix3f matrix = stack.top();
         matrix.multiply(p.set(x, y));
         batch.submit(p.x, p.y, color, region.u[0], region.v[0], region.texture);
         matrix.multiply(p.set(x + width, y));

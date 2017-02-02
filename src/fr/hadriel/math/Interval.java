@@ -1,7 +1,7 @@
 package fr.hadriel.math;
 
 /**
- * Created by glathuiliere setOn 05/09/2016.
+ * Created by glathuiliere on 05/09/2016.
  */
 public class Interval {
 
@@ -9,12 +9,21 @@ public class Interval {
     public float max;
 
     public Interval(float a, float b) {
-        this.min = Mathf.min(a, b);
-        this.max = Mathf.max(a, b);
+        if(a < b) {
+            this.min = a;
+            this.max = b;
+        } else {
+            this.min = b;
+            this.max = a;
+        }
     }
 
     public float length() {
         return max - min;
+    }
+
+    public boolean overlaps(Interval b) {
+        return getOverlapValue(this, b) > 0;
     }
 
     public static float getOverlapValue(Interval a, Interval b) {

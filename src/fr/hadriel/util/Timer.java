@@ -1,7 +1,7 @@
 package fr.hadriel.util;
 
 /**
- * Created by glathuiliere setOn 08/08/2016.
+ * Created by glathuiliere on 08/08/2016.
  *
  * Utility class to measure elapsed time during runtime.
  */

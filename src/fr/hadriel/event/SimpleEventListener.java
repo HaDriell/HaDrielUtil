@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by glathuiliere setOn 16/08/2016.
+ * Created by glathuiliere on 16/08/2016.
  */
 public class SimpleEventListener implements IEventListener {
 

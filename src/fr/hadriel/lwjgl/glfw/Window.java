@@ -1,7 +1,7 @@
 package fr.hadriel.lwjgl.glfw;
 
 /**
- * Created by glathuiliere setOn 13/12/2016.
+ * Created by glathuiliere on 13/12/2016.
  */
 public class Window extends GLFWWindow {
 

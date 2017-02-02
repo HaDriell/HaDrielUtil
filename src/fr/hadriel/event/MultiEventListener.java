@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by glathuiliere setOn 13/12/2016.
+ * Created by glathuiliere on 13/12/2016.
  */
 public class MultiEventListener implements IEventListener {
 
@@ -14,7 +14,7 @@ public class MultiEventListener implements IEventListener {
         this.map = new HashMap<>();
     }
 
-    public synchronized <T extends IEvent> void setOn(Class<T> type, IEventHandler<T> handler) {
+    public synchronized <T extends IEvent> void on(Class<T> type, IEventHandler<T> handler) {
         map.put(type, handler);
     }
 

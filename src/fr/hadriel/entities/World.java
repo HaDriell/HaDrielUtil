@@ -13,7 +13,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Created by glathuiliere setOn 21/11/2016.
+ * Created by glathuiliere on 21/11/2016.
  */
 public class World {
 

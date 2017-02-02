@@ -4,7 +4,7 @@ package fr.hadriel.serialization;
 import java.io.OutputStream;
 
 /**
- * Created by HaDriel setOn 19/10/2016.
+ * Created by HaDriel on 19/10/2016.
  */
 public class SerialException extends Exception {
 

@@ -1,7 +1,7 @@
 package fr.hadriel.serialization;
 
 /**
- * Created by glathuiliere setOn 18/10/2016.
+ * Created by glathuiliere on 18/10/2016.
  */
 public interface IPrimitive {
 

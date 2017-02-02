@@ -5,7 +5,7 @@ import org.lwjgl.BufferUtils;
 import java.nio.FloatBuffer;
 
 /**
- * Created by glathuiliere setOn 13/07/2016.
+ * Created by glathuiliere on 13/07/2016.
  */
 public class Matrix4f {
 
@@ -376,6 +376,10 @@ public class Matrix4f {
 
     public static Matrix4f Rotation(float angle, Vec3 axis) {
         return new Matrix4f().setToRotation(angle, axis);
+    }
+
+    public static Matrix4f Rotation2D(float angle) {
+        return Rotation(angle, Vec3.Z);
     }
 
     public static Matrix4f Translation(float x, float y, float z) {

@@ -12,7 +12,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.*;
 
 /**
- * Created by glathuiliere setOn 29/11/2016.
+ * Created by glathuiliere on 29/11/2016.
  */
 public class Texture2D {
 

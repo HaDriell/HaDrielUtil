@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by glathuiliere setOn 29/11/2016.
+ * Created by glathuiliere on 29/11/2016.
  */
 public class Shader {
 

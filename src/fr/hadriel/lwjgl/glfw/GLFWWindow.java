@@ -3,7 +3,7 @@ package fr.hadriel.lwjgl.glfw;
 import org.lwjgl.opengl.GLCapabilities;
 
 /**
- * Created by HaDriel setOn 04/12/2016.
+ * Created by HaDriel on 04/12/2016.
  */
 public abstract class GLFWWindow {
     Long handle = null;

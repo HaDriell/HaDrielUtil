@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by HaDriel setOn 19/10/2016.
+ * Created by HaDriel on 19/10/2016.
  */
 public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimitive>>{
 

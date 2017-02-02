@@ -3,7 +3,7 @@ package fr.hadriel.math;
 import java.awt.geom.AffineTransform;
 
 /**
- * Created by glathuiliere setOn 13/07/2016.
+ * Created by glathuiliere on 13/07/2016.
  */
 public class Matrix3f {
 
@@ -72,6 +72,10 @@ public class Matrix3f {
         return this;
     }
 
+    public Matrix3f set(Matrix3f matrix) {
+        return set(matrix.elements);
+    }
+
     public Matrix3f setIdentity() {
         set(IDENTITY);
         return this;
@@ -116,7 +120,7 @@ public class Matrix3f {
     /**
      * Around Z axis
      * @param angle in degree
-     * @return this matrix set to Rotation
+     * @return this matrix setWallpaper to Rotation
      */
     public Matrix3f setToRotation(float angle) {
         float r = Mathf.toRadians(angle);
@@ -162,6 +166,12 @@ public class Matrix3f {
         return this;
     }
 
+    public Vec2 multiply(Vec2 v) {
+        float x = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
+        float y = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
+        return v.set(x, y);
+    }
+
     public float det() {
         return elements[M00] * elements[M11] * elements[M22] +
                 elements[M01] * elements[M12] * elements[M20] +
@@ -202,6 +212,10 @@ public class Matrix3f {
         tr.x = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
         tr.y = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
         return tr;
+    }
+
+    public static Matrix3f Identity() {
+        return new Matrix3f();
     }
 
     public static Matrix3f Scale(float sx, float sy) {

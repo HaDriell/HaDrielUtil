@@ -1,7 +1,7 @@
 package fr.hadriel.math;
 
 /**
- * Created by glathuiliere setOn 13/06/2016.
+ * Created by glathuiliere on 13/06/2016.
  */
 public class Vec2 {
 
@@ -148,6 +148,10 @@ public class Vec2 {
         return this;
     }
 
+    public Vec2 transform(Matrix4f matrix) {
+        return matrix.multiply(this);
+    }
+
     public Vec2 getTransformed(Matrix3f matrix) {
         return matrix.getTransformed(this);
     }
@@ -158,5 +162,13 @@ public class Vec2 {
 
     public String toString() {
         return String.format("(%.2f; %.2f)", x, y);
+    }
+
+    public static float orientation(Vec2 a, Vec2 b, Vec2 c) {
+        float acx = a.x - c.x;
+        float bcx = b.x - c.x;
+        float acy = a.y - c.y;
+        float bcy = b.y - c.y;
+        return acx * bcy - acy * bcx;
     }
 }

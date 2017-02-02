@@ -13,9 +13,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static org.lwjgl.glfw.GLFW.*;
 /**
- * Created by HaDriel setOn 04/12/2016.
+ * Created by HaDriel on 04/12/2016.
  *
- * Should never work setOn iOS because it's not the main thread (fuck you bastards)
+ * Should never work on iOS because it's not the main thread (fuck you bastards)
  */
 public class GLFWThread extends Loop {
     private static GLFWThread instance = new GLFWThread();

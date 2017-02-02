@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by HaDriel setOn 19/10/2016.
+ * Created by HaDriel on 19/10/2016.
  */
 public class JsArray implements JsPrimitive, Iterable<JsPrimitive> {
 

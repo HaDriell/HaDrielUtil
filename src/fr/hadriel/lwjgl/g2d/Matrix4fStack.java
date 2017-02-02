@@ -5,7 +5,7 @@ import fr.hadriel.math.Matrix4f;
 import java.util.Stack;
 
 /**
- * Created by HaDriel setOn 09/12/2016.
+ * Created by HaDriel on 09/12/2016.
  */
 public class Matrix4fStack {
 

@@ -1,7 +1,7 @@
 package fr.hadriel.lwjgl.opengl;
 
 /**
- * Created by HaDriel setOn 01/12/2016.
+ * Created by HaDriel on 01/12/2016.
  *
  * Basic support for One data name per VBO
  */

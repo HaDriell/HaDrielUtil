@@ -3,7 +3,7 @@ package fr.hadriel.util;
 import org.w3c.dom.Node;
 
 /**
- * Created by glathuiliere setOn 12/12/2016.
+ * Created by glathuiliere on 12/12/2016.
  */
 public class XMLUtil {
 
