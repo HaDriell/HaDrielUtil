@@ -47,8 +47,10 @@ public class Test2D {
 
                 Rectangle a = new Rectangle(150, 50, 0xFF0000FF, 0x0000FFFF); //RGBA
                 Rectangle b = new Rectangle(25, 25, 0x00FF00FF, 0xFF00FFFF); //RGBA
-
+                Rectangle c = new Rectangle(25, 25, 0x000000FF, 0xFFFFFFFF); //RGBA
+                c.translate(50, 0);
                 a.add(b);
+                a.add(c);
                 group.add(a);
 
 

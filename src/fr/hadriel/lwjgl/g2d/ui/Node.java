@@ -31,6 +31,7 @@ public abstract class Node implements BatchRenderable, IEventListener {
     private Transform2D transform;
     private Matrix3f absoluteInverseMatrix;
     private boolean absoluteInverseMatrixValid;
+
     private Vec2 size;
 
     //Node states
@@ -50,20 +51,13 @@ public abstract class Node implements BatchRenderable, IEventListener {
 
         //Default Handlers
         if(useDefaultHandlers) {
+
+            /* Handles that manages the mouse input listening and virtual related events */
+
             addHandler(MouseMovedEvent.class, (event) -> {
-                boolean hit = hit(event.x, event.y); // ensure mouse hits the Node
-
-                //Virtual Event MouseEnter detection
-                if(hit && !isHovered()) {
-                    onEvent(new MouseEnterEvent(event.x, event.y));
-                    setHovered(true);
-                }
-
-                //Virtual Event MouseExit detection
-                if(!hit && isHovered()) {
-                    onEvent(new MouseExitEvent(event.x, event.y));
-                    setHovered(false);
-                }
+                boolean hit = hit(event.x, event.y);
+                if(hit) onEvent(new MouseEnterEvent(event.x, event.y));
+                else onEvent(new MouseExitEvent(event.x, event.y));
                 return !hit; //stop propagation if not hit
             }, true);
             addHandler(MousePressedEvent.class, (event) -> {
@@ -73,9 +67,22 @@ public abstract class Node implements BatchRenderable, IEventListener {
                 }
                 return !hit; //stop propagation if not hit
             }, true);
-            addHandler(MouseReleasedEvent.class, (event) -> hit(event.x, event.y), true); // ensure mouse hits the Node
-            addHandler(MouseEnterEvent.class, (event) -> hit(event.x, event.y), true); // ensure mouse hits the Node
-            addHandler(MouseExitEvent.class, (event) -> !hit(event.x, event.y), true); // ensure mouse does not hit the Node
+            addHandler(MouseReleasedEvent.class, (event) -> hit(event.x, event.y), true);
+
+            /* Handles that manages Mouse Enter/Exit propagation */
+            addHandler(MouseEnterEvent.class, (event) -> {
+                boolean hovered = isHovered();
+                setHovered(true);
+                return hovered  || isLeaf(); //stop propagation if hovered
+            }, true);
+            addHandler(MouseExitEvent.class, (event) -> {
+                boolean notHovered = !isHovered();
+                setHovered(false);
+                return notHovered || isLeaf(); //stop propagation if not hovered
+            }, true);
+
+            /* Handles that define the default key input listening logic */
+
             addHandler(KeyPressedEvent.class, (event) -> isFocus(), true); // ensure Node is Focussed
             addHandler(KeyReleasedEvent.class, (event) -> isFocus(), true); // ensure Node is Focussed
         }
@@ -83,6 +90,10 @@ public abstract class Node implements BatchRenderable, IEventListener {
 
     public Node() {
         this(true);
+    }
+
+    public boolean isLeaf() {
+        return children.size() == 0;
     }
 
     private void setHovered(boolean hovered) {
@@ -186,11 +197,15 @@ public abstract class Node implements BatchRenderable, IEventListener {
         if(node.parent != null) node.parent.remove(node);
         children.add(node);
         node.parent = this;
+        invalidateAbsoluteMatix(); //parent changed, invalidate the absolute matrix
     }
 
     public synchronized void remove(Node node) {
         // If node is succesfully removed of children, set it's node.parent to null
-        if(children.remove(node)) node.parent = null;
+        if(children.remove(node)) {
+            node.parent = null;
+            invalidateAbsoluteMatix(); //parent changed, invalidate the absolute matrix
+        }
     }
 
     //Bubble forwards to parent if unhandled

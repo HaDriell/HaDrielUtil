@@ -23,4 +23,8 @@ public class Rectangle extends Node {
         Vec2 size = getSize();
         g.fillRect(0, 0, size.x, size.y);
     }
+
+    public String toString() {
+        return "R(" + hoveredColor + ")";
+    }
 }
