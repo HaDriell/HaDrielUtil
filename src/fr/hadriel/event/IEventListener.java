@@ -5,7 +5,6 @@ package fr.hadriel.event;
  */
 public interface IEventListener {
 
-    public boolean onEvent(IEvent event);
-
+    public void onEvent(Event event);
 
 }

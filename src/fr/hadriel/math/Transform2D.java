@@ -30,13 +30,21 @@ public class Transform2D {
         }
     }
 
-    public Vec2 transform(float x, float y) {
+    public Vec2 transform(Vec2 v) {
         validate();
-        return inverse.multiply(new Vec2(x, y));
+        return inverse.multiply(v);
+    }
+
+    public Vec2 transform(float x, float y) {
+        return transform(new Vec2(x, y));
+    }
+
+    public Vec2 untransform(Vec2 v) {
+        return matrix.multiply(v);
     }
 
     public Vec2 untransform(float x, float y) {
-        return matrix.multiply(new Vec2(x, y));
+        return untransform(new Vec2(x, y));
     }
 
     public void set(Matrix3f matrix) {

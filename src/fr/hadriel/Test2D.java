@@ -3,9 +3,7 @@ package fr.hadriel;
 import fr.hadriel.lwjgl.g2d.events.MouseMovedEvent;
 import fr.hadriel.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.lwjgl.g2d.BatchRenderer;
-import fr.hadriel.lwjgl.g2d.ui.Group;
-import fr.hadriel.lwjgl.g2d.ui.Node;
-import fr.hadriel.lwjgl.g2d.ui.Rectangle;
+import fr.hadriel.event.Node;
 import fr.hadriel.lwjgl.glfw.GLFWWindow;
 import fr.hadriel.lwjgl.opengl.Texture2D;
 import fr.hadriel.lwjgl.opengl.TextureRegion;
@@ -40,21 +38,11 @@ public class Test2D {
                 g = new BatchGraphics(batch);
 
                 // Scene Graph
-                root = new Group();
-                Group group = new Group();
-                group.rotate(45);
-                group.translate(100, 100);
-
-                Rectangle a = new Rectangle(150, 50, 0xFF0000FF, 0x0000FFFF); //RGBA
-                Rectangle b = new Rectangle(25, 25, 0x00FF00FF, 0xFF00FFFF); //RGBA
-                Rectangle c = new Rectangle(25, 25, 0x000000FF, 0xFFFFFFFF); //RGBA
-                c.translate(50, 0);
-                a.add(b);
-                a.add(c);
-                group.add(a);
-
-
-                root.add(group);
+//                root = new Node();
+//                Node group = new Node();
+//                group.rotate(45);
+//                group.translate(100, 100);
+//                root.add(group);
             }
 
             private Vec2 mouse = new Vec2();
@@ -63,7 +51,7 @@ public class Test2D {
                 g.begin();
                 g.setColor(1, 1, 1, 1);
                 g.fillRect(0, 0, 800, 450);
-                root.render(g);
+//                root.render(g);
                 g.end();
             }
 

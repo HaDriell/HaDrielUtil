@@ -2,7 +2,7 @@ package fr.hadriel.entities;
 
 
 import fr.hadriel.entities.events.*;
-import fr.hadriel.event.IEvent;
+import fr.hadriel.event.Event;
 import fr.hadriel.event.IEventListener;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class World {
 
     //World Events
     private List<IEventListener> listeners;
-    private Queue<IEvent> queue;
+    private Queue<Event> queue;
     private Lock lock;
 
     public World() {
@@ -40,15 +40,15 @@ public class World {
     public synchronized void pollEvents() {
         lock.lock();
         while(!queue.isEmpty()) {
-            IEvent event = queue.poll();
+            Event event = queue.poll();
             if(event == null) continue;
 
             //Entity Management
-            IEvent.dispatch(event, CreateEntityEvent.class, this::onCreateEntity);
-            IEvent.dispatch(event, DestroyEntityEvent.class, this::onDestroyEntity);
+            Event.dispatch(event, CreateEntityEvent.class, this::onCreateEntity);
+            Event.dispatch(event, DestroyEntityEvent.class, this::onDestroyEntity);
             //Property Management
-            IEvent.dispatch(event, SetPropertyEvent.class, this::onSetProperty);
-            IEvent.dispatch(event, DestroyPropertyEvent.class, this::onDestroyProperty);
+            Event.dispatch(event, SetPropertyEvent.class, this::onSetProperty);
+            Event.dispatch(event, DestroyPropertyEvent.class, this::onDestroyProperty);
 
             //Listener forwarding
             for(IEventListener listener : listeners) {
@@ -75,7 +75,7 @@ public class World {
         return null;
     }
 
-    private boolean onCreateEntity(CreateEntityEvent event) {
+    private void onCreateEntity(CreateEntityEvent event) {
         System.out.println("Creating Entity " + event.id);
         Entity e = getEntity(event.id);
         if(e == null) {
@@ -84,33 +84,29 @@ public class World {
         } else {
             e.clear();
         }
-        return true;
     }
 
-    private boolean onDestroyEntity(DestroyEntityEvent event) {
+    private void onDestroyEntity(DestroyEntityEvent event) {
         System.out.println("Destroying Entity " + event.id);
         Entity e = getEntity(event.id);
         if(e != null)
             entities.remove(e);
-        return true;
     }
 
-    private boolean onSetProperty(SetPropertyEvent event) {
+    private void onSetProperty(SetPropertyEvent event) {
         System.out.println("Setting Property " + event.name + " on Entity " + event.id);
         Entity e = getEntity(event.id);
         if(e != null) {
             e.set(event.name, event.value);
         }
-        return true;
     }
 
-    private boolean onDestroyProperty(DestroyPropertyEvent event) {
+    private void onDestroyProperty(DestroyPropertyEvent event) {
         System.out.println("Destroying Property " + event.name + " on Entity " + event.id);
         Entity e = getEntity(event.id);
         if(e != null) {
             entities.remove(e);
         }
-        return true;
     }
 
     /* LISTENER API */
