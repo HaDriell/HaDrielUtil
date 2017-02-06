@@ -4,6 +4,8 @@ import fr.hadriel.lwjgl.g2d.events.MouseMovedEvent;
 import fr.hadriel.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.lwjgl.g2d.BatchRenderer;
 import fr.hadriel.event.Node;
+import fr.hadriel.lwjgl.g2d.scene.Group;
+import fr.hadriel.lwjgl.g2d.scene.Widget;
 import fr.hadriel.lwjgl.glfw.GLFWWindow;
 import fr.hadriel.lwjgl.opengl.Texture2D;
 import fr.hadriel.lwjgl.opengl.TextureRegion;
@@ -23,7 +25,7 @@ public class Test2D {
             private TextureRegion regionA, regionb;
             private BatchRenderer batch;
             private BatchGraphics g;
-            private Node root;
+            private Group root;
 
             public void onInit() {
                 try {
@@ -38,11 +40,11 @@ public class Test2D {
                 g = new BatchGraphics(batch);
 
                 // Scene Graph
-//                root = new Node();
-//                Node group = new Node();
-//                group.rotate(45);
-//                group.translate(100, 100);
-//                root.add(group);
+                root = new Group();
+                Group group = new Group();
+                group.rotate(45);
+                group.translate(100, 100);
+                root.add(group);
             }
 
             private Vec2 mouse = new Vec2();
