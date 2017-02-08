@@ -7,10 +7,12 @@ import fr.hadriel.event.Event;
  */
 public class KeyPressedEvent extends Event {
 
+    public final int mods;
     public final int key;
 
-    public KeyPressedEvent(int key) {
+    public KeyPressedEvent(int key, int mods) {
         super(true);
         this.key = key;
+        this.mods = mods;
     }
 }

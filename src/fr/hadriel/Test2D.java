@@ -1,17 +1,8 @@
 package fr.hadriel;
 
-import fr.hadriel.lwjgl.g2d.events.MouseMovedEvent;
-import fr.hadriel.lwjgl.g2d.BatchGraphics;
-import fr.hadriel.lwjgl.g2d.BatchRenderer;
-import fr.hadriel.event.Node;
-import fr.hadriel.lwjgl.g2d.scene.Group;
-import fr.hadriel.lwjgl.g2d.scene.Widget;
-import fr.hadriel.lwjgl.glfw.GLFWWindow;
-import fr.hadriel.lwjgl.opengl.Texture2D;
-import fr.hadriel.lwjgl.opengl.TextureRegion;
-import fr.hadriel.math.Vec2;
-
-import java.io.IOException;
+import fr.hadriel.lwjgl.g2d.G2DWindow;
+import fr.hadriel.lwjgl.g2d.ui.Group;
+import fr.hadriel.lwjgl.g2d.ui.Rectangle;
 
 /**
  * Created by glathuiliere on 31/01/2017.
@@ -19,58 +10,18 @@ import java.io.IOException;
 public class Test2D {
 
     public static void main(String[] args) {
-        new GLFWWindow() {
+        Rectangle a = new Rectangle(50, 50);
 
-            private Texture2D a, b;
-            private TextureRegion regionA, regionb;
-            private BatchRenderer batch;
-            private BatchGraphics g;
-            private Group root;
+        Rectangle b = new Rectangle(50, 50);
+        b.translate(55, 0);
 
-            public void onInit() {
-                try {
-                    a = new Texture2D("Teron Fielsang.png");
-                    b = new Texture2D("illuminati.png");
-                    regionA = a.getRegion(0, 0, a.width, a.height);
-                    regionb = b.getRegion(0, 0, b.width, b.height);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                batch = new BatchRenderer(0, 800, 0, 450);
-                g = new BatchGraphics(batch);
+        Group group = new Group();
+        group.translate(100, 0);
+        group.rotate(-45);
+        group.add(a);
+        group.add(b);
 
-                // Scene Graph
-                root = new Group();
-                Group group = new Group();
-                group.rotate(45);
-                group.translate(100, 100);
-                root.add(group);
-            }
-
-            private Vec2 mouse = new Vec2();
-
-            public void onRender(long window) {
-                g.begin();
-                g.setColor(1, 1, 1, 1);
-                g.fillRect(0, 0, 800, 450);
-//                root.render(g);
-                g.end();
-            }
-
-            public void onKey(long window, int key, int scancode, int action, int mods) {}
-            public void onDestroy() {}
-            public void onMouseButton(long window, int button, int action, int mods) {
-            }
-
-            public void onMousePos(long window, double xpos, double ypos) {
-                mouse.set((float) xpos, (float) ypos);
-                root.onEvent(new MouseMovedEvent(mouse, false));
-            }
-
-            public void onCursorEnter(long window, boolean entered) {}
-            public void onWindowFocus(long window, boolean focus) {}
-            public void onWindowClose(long window) {}
-            public void onWindowSize(long window, int width, int height) {}
-        };
+        G2DWindow window = new G2DWindow();
+        window.getRoot().add(group);
     }
 }

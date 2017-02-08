@@ -17,7 +17,7 @@ public class TestSound {
         OpenAL.create();
         AudioFile file = new AudioFile("music.wav");
         Sound s = new Sound(file);
-        s.setAttenuationModel(1, 1, 1);
+//        s.setAttenuationModel(1, 1, 1);
         s.play();
         Timer t = new Timer();
         t.reset();
@@ -25,7 +25,6 @@ public class TestSound {
         while (!Thread.interrupted()) {
             float sin = Mathf.sin(t.elapsed());
             System.out.println(sin);
-            s.setPosition(700, 700, -2);
             try {Thread.sleep(10);} catch (InterruptedException ignore) {}
         }
         OpenAL.destroy();

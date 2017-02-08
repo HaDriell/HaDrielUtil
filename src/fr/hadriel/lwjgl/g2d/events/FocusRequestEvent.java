@@ -1,17 +1,17 @@
 package fr.hadriel.lwjgl.g2d.events;
 
 import fr.hadriel.event.Event;
-import fr.hadriel.event.Node;
+import fr.hadriel.lwjgl.g2d.ui.Widget;
 
 /**
- * Created by glathuiliere on 02/02/2017.
+ * Created by glathuiliere on 08/02/2017.
  */
 public class FocusRequestEvent extends Event {
 
-    public final Node node;
+    public final Widget widget;
 
-    public FocusRequestEvent(Node node) {
+    public FocusRequestEvent(Widget widget) {
         super(true);
-        this.node = node;
+        this.widget = widget;
     }
 }

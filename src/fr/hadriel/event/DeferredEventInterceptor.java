@@ -10,11 +10,11 @@ import java.util.Map;
  *
  * This Event Listener can register multiple Handlers for a given Event type.
  */
-public class DeferredEventFilter implements IEventFilter {
+public class DeferredEventInterceptor implements IEventFilter {
 
     private Map<Class<? extends Event>, List<IEventFilter>> filters;
 
-    public DeferredEventFilter() {
+    public DeferredEventInterceptor() {
         this.filters = new HashMap<>();
     }
 

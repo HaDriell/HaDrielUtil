@@ -1,6 +1,7 @@
 package fr.hadriel.lwjgl.openal;
 
 import fr.hadriel.lwjgl.resources.AudioFile;
+import fr.hadriel.math.Vec3;
 
 import java.nio.ByteBuffer;
 
@@ -18,10 +19,18 @@ public class Sound {
     }
 
     public Sound(ByteBuffer pcm, int alFormat, int sampleRate) {
+        //Create Source
         source = alGenSources();
+        //Create & Bind Buffer
         buffer = alGenBuffers();
         alBufferData(buffer, alFormat, pcm, sampleRate);
         alSourcei(source, AL_BUFFER, buffer);
+        //Set default settings
+        setPitch(1);
+        setGain(1);
+        setPosition(0, 0, 0);
+        setVelocity(0, 0, 0);
+        setLooping(false);
     }
 
     public void destroy() {
@@ -61,6 +70,10 @@ public class Sound {
 
     public void setPosition(float x, float y, float z) {
         alSource3f(source, AL_POSITION, x, y, z);
+    }
+
+    public void setVelocity(float x, float y, float z) {
+        alSource3f(source, AL_VELOCITY, x, y, z);
     }
 
     public boolean isPlaying() {

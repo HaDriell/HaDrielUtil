@@ -8,9 +8,11 @@ import fr.hadriel.event.Event;
 public class KeyReleasedEvent extends Event {
 
     public final int key;
+    public final int mods;
 
-    public KeyReleasedEvent(int key) {
+    public KeyReleasedEvent(int key, int mods) {
         super(true);
         this.key = key;
+        this.mods = mods;
     }
 }

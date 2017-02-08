@@ -50,6 +50,10 @@ public class Texture2D {
         return new TextureRegion(this, x, y, width, height);
     }
 
+    public TextureRegion getRegion() {
+        return new TextureRegion(this, 0, 0, width, height);
+    }
+
     public void setData(Image image) {
         ByteBuffer data = BufferUtils.createByteBuffer(image.pixels.length * 4);
         for(int p : image.pixels) data.putInt(p);

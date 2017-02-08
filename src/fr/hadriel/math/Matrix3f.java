@@ -1,7 +1,5 @@
 package fr.hadriel.math;
 
-import java.awt.geom.AffineTransform;
-
 /**
  * Created by glathuiliere on 13/07/2016.
  */
@@ -35,7 +33,7 @@ public class Matrix3f {
     }
 
     public Matrix3f(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
-        this(new float[]{
+        this(new float[] {
                 m00, m01, m02,
                 m10, m11, m12,
                 m20, m21, m22
@@ -54,9 +52,9 @@ public class Matrix3f {
         float cos = Mathf.cos(Mathf.toRadians(rotation));
         float sin = Mathf.sin(Mathf.toRadians(rotation));
         elements[M00] = cos * scaleX;
-        elements[M01] = -sin;
+        elements[M01] = sin;
         elements[M02] = positionX;
-        elements[M10] = sin;
+        elements[M10] = -sin;
         elements[M11] = cos * scaleY;
         elements[M12] = positionY;
         elements[M20] = 0;
@@ -76,15 +74,9 @@ public class Matrix3f {
         return set(matrix.elements);
     }
 
-    public Matrix3f setIdentity() {
+    public Matrix3f setToIdentity() {
         set(IDENTITY);
         return this;
-    }
-
-    public AffineTransform toAffineTransform() {
-        return new AffineTransform(
-                elements[M00], elements[M10], elements[M01],
-                elements[M11], elements[M02], elements[M12]);
     }
 
     public Matrix3f translate(float x, float y) {
@@ -100,17 +92,18 @@ public class Matrix3f {
     }
 
     public Matrix3f rotate(float angle) {
-        multiply(Matrix3f.Rotation(angle));
-        return this;
+        return this.multiply(Matrix3f.Rotation(angle));
     }
 
     public Matrix3f setToScale(float sx, float sy) {
         elements[M00] = sx;
         elements[M01] = 0;
         elements[M02] = 0;
+
         elements[M10] = 0;
         elements[M11] = sy;
         elements[M12] = 0;
+
         elements[M20] = 0;
         elements[M21] = 0;
         elements[M22] = 1;
@@ -127,11 +120,13 @@ public class Matrix3f {
         float cos = Mathf.cos(r);
         float sin = Mathf.sin(r);
         elements[M00] = cos;
-        elements[M01] = -sin;
+        elements[M01] = sin;
         elements[M02] = 0;
-        elements[M10] = sin;
+
+        elements[M10] = -sin;
         elements[M11] = cos;
         elements[M12] = 0;
+
         elements[M20] = 0;
         elements[M21] = 0;
         elements[M22] = 1;
@@ -151,13 +146,13 @@ public class Matrix3f {
         return this;
     }
 
-    public Matrix3f multiply(Matrix3f matrix3f) {
+    public Matrix3f multiply(Matrix3f matrix) {
         float[] data = new float[9];
         for(int row = 0; row < 3; row++) {
             for(int col = 0; col < 3; col++) {
                 float sum = 0;
                 for(int e = 0; e < 3; e++) {
-                    sum += elements[e + row * 3] * matrix3f.elements[col + e * 3];
+                    sum += elements[e + row * 3] * matrix.elements[col + e * 3];
                 }
                 data[col + row * 3] = sum;
             }
@@ -166,10 +161,15 @@ public class Matrix3f {
         return this;
     }
 
+    //ORIGINAL
     public Vec2 multiply(Vec2 v) {
         float x = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
         float y = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
         return v.set(x, y);
+    }
+
+    public Vec2 getTransformed(Vec2 v) {
+        return multiply(new Vec2(v));
     }
 
     public float det() {
@@ -192,26 +192,24 @@ public class Matrix3f {
 
         float invDet = 1f / det;
         float[] tmp = new float[9];
-        tmp[M00] = elements[M11] * elements[M22] - elements[M21] * elements[M12];
-        tmp[M10] = elements[M20] * elements[M12] - elements[M10] * elements[M22];
-        tmp[M20] = elements[M10] * elements[M21] - elements[M20] * elements[M11];
-        tmp[M01] = elements[M21] * elements[M02] - elements[M01] * elements[M22];
-        tmp[M11] = elements[M00] * elements[M22] - elements[M20] * elements[M02];
-        tmp[M21] = elements[M20] * elements[M01] - elements[M00] * elements[M21];
-        tmp[M02] = elements[M01] * elements[M12] - elements[M11] * elements[M02];
-        tmp[M12] = elements[M10] * elements[M02] - elements[M00] * elements[M12];
-        tmp[M22] = elements[M00] * elements[M11] - elements[M10] * elements[M01];
+
+        // --- //
+        tmp[M00] = elements[M11] * elements[M22] - elements[M12] * elements[M21];
+        tmp[M01] = elements[M02] * elements[M21] - elements[M01] * elements[M22];
+        tmp[M02] = elements[M01] * elements[M12] - elements[M02] * elements[M11];
+        // --- //
+        tmp[M10] = elements[M12] * elements[M20] - elements[M10] * elements[M22];
+        tmp[M11] = elements[M00] * elements[M22] - elements[M02] * elements[M20];
+        tmp[M12] = elements[M02] * elements[M10] - elements[M00] * elements[M12];
+        // --- //
+        tmp[M20] = elements[M10] * elements[M21] - elements[M11] * elements[M20];
+        tmp[M21] = elements[M01] * elements[M20] - elements[M00] * elements[M21];
+        tmp[M22] = elements[M00] * elements[M11] - elements[M01] * elements[M10];
+
         for(int i = 0; i < tmp.length; i++)
             tmp[i] *= invDet;
         set(tmp);
         return this;
-    }
-
-    public Vec2 getTransformed(Vec2 v) {
-        Vec2 tr = new Vec2();
-        tr.x = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
-        tr.y = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
-        return tr;
     }
 
     public static Matrix3f Identity() {
