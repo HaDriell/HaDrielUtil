@@ -5,12 +5,12 @@ package fr.hadriel.lwjgl.opengl;
  */
 public class TextureRegion {
 
-    public final Texture2D texture;
+    public final Texture texture;
     public final float[] u;
     public final float[] v;
 
-    public TextureRegion(Texture2D texture2D, float x, float y, float width, float height) {
-        this.texture = texture2D;
+    public TextureRegion(Texture texture, float x, float y, float width, float height) {
+        this.texture = texture;
         u = new float[]{
                 x,
                 x + width,
@@ -23,5 +23,11 @@ public class TextureRegion {
                 y + height,
                 y + height
         };
+
+        //Discrete UV [0 : 1]
+        for(int i = 0; i < 4; i++) {
+            u[i] /= texture.width;
+            v[i] /= texture.height;
+        }
     }
 }

@@ -2,7 +2,6 @@ package fr.hadriel.lwjgl.g2d;
 
 import fr.hadriel.lwjgl.g2d.events.*;
 import fr.hadriel.lwjgl.g2d.ui.Group;
-import fr.hadriel.lwjgl.g2d.ui.Widget;
 import fr.hadriel.lwjgl.glfw.GLFWWindow;
 import fr.hadriel.lwjgl.glfw.GLFWWindowHint;
 import fr.hadriel.math.Vec2;
@@ -30,6 +29,14 @@ public class G2DWindow extends GLFWWindow {
 
     public G2DWindow() {
         this(new GLFWWindowHint()); //default hints
+    }
+
+    public int getWidth() {
+        return properties.width;
+    }
+
+    public int getHeight() {
+        return properties.height;
     }
 
     public Group getRoot() {

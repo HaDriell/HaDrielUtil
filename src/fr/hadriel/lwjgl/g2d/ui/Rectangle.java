@@ -18,7 +18,6 @@ public class Rectangle extends Widget {
     public Rectangle(float width, float height) {
         setSize(width, height);
         setFocusable(true);
-        addEventHandler(MouseMovedEvent.class, (event) -> System.out.println("MouseMoved"));
         addEventHandler(MouseMovedEvent.class, (event) -> cursor.set(getAbsoluteInverse().multiply(new Vec2(event.x, event.y))));
     }
 

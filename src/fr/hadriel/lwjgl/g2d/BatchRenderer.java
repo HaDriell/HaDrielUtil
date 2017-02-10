@@ -18,7 +18,7 @@ public class BatchRenderer {
 
     private BlendMode blendMode;
     private Shader shader;
-    private Texture2DSampler sampler;
+    private TextureSampler sampler;
     private SingleBufferVertexArray vao;
     private VertexBuffer vbo;
     private int elementCount;
@@ -40,7 +40,7 @@ public class BatchRenderer {
 
         this.vbo = vao.getBuffer(0);
 
-        this.sampler = new Texture2DSampler();
+        this.sampler = new TextureSampler();
     }
 
     public BlendMode getBlendMode() {
@@ -61,7 +61,7 @@ public class BatchRenderer {
         submit(px, py, color, 0, 0, null);
     }
 
-    public void submit(float px, float py, Vec4 color, float u, float v, Texture2D texture) {
+    public void submit(float px, float py, Vec4 color, float u, float v, Texture texture) {
         if(elementCount >= MAX_QUADS || sampler.getTextureCount() > 31) {
             end();
             begin();

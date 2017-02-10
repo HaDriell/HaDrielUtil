@@ -44,7 +44,6 @@ public abstract class Widget implements BatchRenderable {
         //MouseMoved can generate MouseEnterEvent / MouseExitEvent on first valid / first invalid hitAbsolute detected
         addEventFilter(MouseMovedEvent.class, (event) -> {
             boolean hit = isHitAbsolute(event.x, event.y);
-            System.out.println("hitting " + this + ": " + hit);
             if (hit && !hovered) onEvent(new MouseEnterEvent(event.x, event.y));
             if (!hit && hovered) onEvent(new MouseExitEvent(event.x, event.y));
             return hit;

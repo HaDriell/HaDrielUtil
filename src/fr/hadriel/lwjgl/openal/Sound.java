@@ -1,8 +1,5 @@
 package fr.hadriel.lwjgl.openal;
 
-import fr.hadriel.lwjgl.resources.AudioFile;
-import fr.hadriel.math.Vec3;
-
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.openal.AL10.*;
@@ -14,16 +11,16 @@ public class Sound {
     private int source;
     private int buffer;
 
-    public Sound(AudioFile file) {
-        this(file.pcm, file.format, file.sampleRate);
+    public Sound(AudioData data) {
+        this(data.data, data.channels, data.samplerate);
     }
 
-    public Sound(ByteBuffer pcm, int alFormat, int sampleRate) {
+    private Sound(ByteBuffer data, int channels, int sampleRate) {
         //Create Source
         source = alGenSources();
         //Create & Bind Buffer
         buffer = alGenBuffers();
-        alBufferData(buffer, alFormat, pcm, sampleRate);
+        alBufferData(buffer, OpenAL.getALFormat(channels, sampleRate), data, sampleRate);
         alSourcei(source, AL_BUFFER, buffer);
         //Set default settings
         setPitch(1);

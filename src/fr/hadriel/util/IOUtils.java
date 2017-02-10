@@ -8,6 +8,22 @@ import java.io.*;
  */
 public class IOUtils {
 
+    public static byte[] readStreamBytes(InputStream in, int amount) throws IOException {
+        byte[] buffer = new byte[amount];
+        int remaining = amount;
+        while (remaining > 0)
+            remaining -= in.read(buffer, buffer.length - remaining, remaining);
+        return buffer;
+    }
+
+    public static byte[] readFile(String filename) throws IOException {
+        return readFile(new File(filename));
+    }
+
+    public static byte[] readFile(File file) throws IOException {
+        return readStreamBytes(new FileInputStream(file), (int) file.length());
+    }
+
     public static String readFileAsString(String filename) throws IOException {
         return readStreamAsString(new FileInputStream(filename));
     }
