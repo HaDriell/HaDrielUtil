@@ -5,7 +5,6 @@ import fr.hadriel.lwjgl.g2d.G2DWindow;
 import fr.hadriel.lwjgl.g2d.ui.Widget;
 import fr.hadriel.lwjgl.opengl.Texture;
 import fr.hadriel.lwjgl.opengl.TextureHint;
-import fr.hadriel.lwjgl.opengl.TextureRegion;
 import fr.hadriel.math.Matrix3f;
 import fr.hadriel.util.Timer;
 import org.lwjgl.opengl.GL11;

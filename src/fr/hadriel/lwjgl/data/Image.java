@@ -1,4 +1,4 @@
-package fr.hadriel.lwjgl.stb;
+package fr.hadriel.lwjgl.data;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -14,11 +14,22 @@ public class Image {
     public final int height;
     public final int components;
 
+    /**
+     *
+     * @param pixels RGBA Pixels array
+     * @param width width of the image
+     * @param height height of the image
+     * @param components number of color components
+     */
     public Image(int[] pixels, int width, int height, int components) {
         this.pixels = pixels;
         this.width = width;
         this.height = height;
         this.components = components;
+    }
+
+    public Image(int[] pixels, int width, int height) {
+        this(pixels, width, height, 4);
     }
 
     public Image(ByteBuffer pixels, int width, int height, int components) {

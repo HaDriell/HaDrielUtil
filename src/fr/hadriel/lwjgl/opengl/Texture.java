@@ -2,7 +2,7 @@ package fr.hadriel.lwjgl.opengl;
 
 
 
-import fr.hadriel.lwjgl.stb.Image;
+import fr.hadriel.lwjgl.data.Image;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
@@ -17,7 +17,6 @@ import static org.lwjgl.opengl.GL30.*;
  */
 public class Texture {
 
-    //TODO : make a beter TextureProperties support PLEASE
     public final int handle;
     public final int width;
     public final int height;

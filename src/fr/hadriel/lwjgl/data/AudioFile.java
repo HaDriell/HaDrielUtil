@@ -1,4 +1,4 @@
-package fr.hadriel.lwjgl.stb;
+package fr.hadriel.lwjgl.data;
 
 import fr.hadriel.lwjgl.openal.OpenAL;
 import org.lwjgl.BufferUtils;

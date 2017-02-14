@@ -107,10 +107,6 @@ public class BatchGraphics {
         batch.submit(p.x, p.y, color);
     }
 
-    public void drawTextureRegion(float x, float y, float width, float height, TextureRegion region) {
-        drawTextureRegion(x, y, width, height, region, null);
-    }
-
     public void drawBezierCurve(float sx, float sy, float cx, float cy, float ex, float ey) {
         float dx1 = cx - sx;
         float dy1 = cy - sy;
@@ -118,7 +114,7 @@ public class BatchGraphics {
         float dy2 = ey - cy;
         Vec2 c = new Vec2(); //current
         Vec2 p = new Vec2(); //previous
-        float stepTime = 1f / Mathf.min(Mathf.sqrt(dx1 * dx1 + dy1 * dy1) + Mathf.sqrt(dx2 * dx2 + dy2 * dy2), 25); // stepTime calculation
+        float stepTime = 1f / Mathf.min(Mathf.sqrt(dx1 * dx1 + dy1 * dy1) + Mathf.sqrt(dx2 * dx2 + dy2 * dy2), 25); // stepTime estimation
 
         //Bézier Curve approximation
         c.set(sx, sy);
@@ -135,6 +131,10 @@ public class BatchGraphics {
         }
     }
 
+    public void drawTextureRegion(float x, float y, float width, float height, TextureRegion region) {
+        drawTextureRegion(x, y, width, height, region, null);
+    }
+
     public void drawTextureRegion(float x, float y, float width, float height, TextureRegion region, Vec4 color) {
         Vec2 p = new Vec2();
         Matrix3f matrix = stack.top();
@@ -146,5 +146,13 @@ public class BatchGraphics {
         batch.submit(p.x, p.y, color, region.u[2], region.v[2], region.texture);
         matrix.multiply(p.set(x, y + height));
         batch.submit(p.x, p.y, color, region.u[3], region.v[3], region.texture);
+    }
+
+    public void drawTextureRegion(float x, float y, TextureRegion region, Vec4 color) {
+        drawTextureRegion(x, y, region.width, region.height, region, color);
+    }
+
+    public void drawTextureRegion(float x, float y, TextureRegion region) {
+        drawTextureRegion(x, y, region.width, region.height, region);
     }
 }

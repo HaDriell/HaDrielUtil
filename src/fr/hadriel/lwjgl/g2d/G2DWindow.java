@@ -72,7 +72,7 @@ public class G2DWindow extends GLFWWindow {
 
     public void onRender(long window) {
         g.begin();
-        g.setColor(1, 1, 1, 1);
+        g.setColor(0, 0, 0, 1);
         g.fillRect(0, 0, properties.width, properties.height);
         root.render(g);
         g.end();

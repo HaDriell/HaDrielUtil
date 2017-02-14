@@ -6,11 +6,15 @@ package fr.hadriel.lwjgl.opengl;
 public class TextureRegion {
 
     public final Texture texture;
+    public final float width;
+    public final float height;
     public final float[] u;
     public final float[] v;
 
     public TextureRegion(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
+        this.width = width;
+        this.height = height;
         u = new float[]{
                 x,
                 x + width,

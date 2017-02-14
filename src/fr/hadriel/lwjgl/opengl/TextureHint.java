@@ -7,6 +7,8 @@ import org.lwjgl.opengl.GL12;
  * Created by glathuiliere on 10/02/2017.
  */
 public class TextureHint {
+    //TODO : I should make prefab Quality TextureHints (like the best Quality / best performance)
+
     /**
      * may take these values:
      * <br>GL_NEAREST
