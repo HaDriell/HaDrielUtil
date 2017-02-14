@@ -21,12 +21,18 @@ import java.util.Map;
  * Created by glathuiliere on 13/02/2017.
  */
 public class TrueTypeFont {
+
+    //TODO : probable cool upgrade would be
+    //TODO :    - Lazy loading
+    //TODO :    - Reloading texture on resize (fixing font size)
+
     private static final int FONT_TEXTURE_SIZE = 2048; //Maximum OpenGL standard Texture size support
     private static final int CHAR_COUNT_PER_ROW = 16; //Maximum OpenGL standard Texture size support
     private static final float FONT_RENDER_SIZE = FONT_TEXTURE_SIZE / CHAR_COUNT_PER_ROW;
 
     private Texture texture;
     private Map<Integer, TTFChar> cmap;
+    private float lineheight;
 
     public TrueTypeFont(InputStream inputStream) throws IOException {
         this.cmap = new HashMap<>();
@@ -43,12 +49,13 @@ public class TrueTypeFont {
 //            g.setColor(Color.black);
 //            g.fillRect(0, 0, FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE);
             g.setColor(Color.white);
+
             FontMetrics metrics = g.getFontMetrics();
-            float maxHeight = metrics.getAscent() + metrics.getDescent();
+            lineheight = metrics.getAscent() + metrics.getDescent();
 
             AffineTransform transform = new AffineTransform();
-            Vec2 offset = new Vec2(0, maxHeight);
-            for(int c = 31; c < 127; c++) {
+            Vec2 offset = new Vec2(0, lineheight);
+            for(int c = 31; c < 256; c++) {
                 transform.setToTranslation(offset.x, offset.y);
                 g.setTransform(transform);
 
@@ -60,14 +67,14 @@ public class TrueTypeFont {
                         offset.y - layout.getAscent(),
                         layout.getAdvance(),
                         layout.getAdvance(),
-                        maxHeight);
+                        lineheight);
                 cmap.put(c, ttfc);
 
                 // Advance Offset to the next position
                 offset.x += layout.getAdvance() + 4; // 4px spacing to ensure scaling won't do artifacts
                 if(offset.x + layout.getAdvance() > FONT_TEXTURE_SIZE) {
                     offset.x = 0;
-                    offset.y += maxHeight + 4; // 4px spacing to ensure scaling won't do artifacts
+                    offset.y += lineheight + 4; // 4px spacing to ensure scaling won't do artifacts
                 }
             }
             g.dispose();
@@ -80,7 +87,7 @@ public class TrueTypeFont {
 
             //Create the Texture
             TextureHint hint = new TextureHint();
-            hint.GL_MIN_FILTER = GL11.GL_LINEAR;
+            hint.GL_MIN_FILTER = GL11.GL_LINEAR_MIPMAP_LINEAR;
 //            hint.GL_MIN_FILTER = GL11.GL_NEAREST_MIPMAP_LINEAR;
 //            hint.GL_TEXTURE_MIPMAP_COUNT = 8;
             texture = new Texture(new Image(
@@ -106,8 +113,7 @@ public class TrueTypeFont {
         float scale = size / FONT_RENDER_SIZE;
         Matrix3f matrix = new Matrix3f();
         for(int i = 0; i < string.length(); i++) {
-            TTFChar ttfc = cmap.get((int) string.charAt(i));
-            if(ttfc == null) ttfc = cmap.get(32); // will retrieve the unknown char (depends on the font)
+            TTFChar ttfc = getTTFChar(string.charAt(i));
             matrix.setToTransform(scale, scale, 0, offsetX, 0);
             g.push(matrix);
             g.drawTextureRegion(
@@ -118,5 +124,19 @@ public class TrueTypeFont {
             g.pop();
             offsetX += ttfc.advance * scale;
         }
+    }
+
+    public TTFChar getTTFChar(int c) {
+        TTFChar ttfc = cmap.get(c);
+        return ttfc != null ? ttfc : cmap.get(31);
+    }
+
+    public Vec2 getSizeOfString(String text, float size) {
+        float scale = size / FONT_RENDER_SIZE;
+        float advance = 0;
+        for(int i = 0; i < text.length(); i++) {
+            advance += getTTFChar(text.charAt(i)).advance;
+        }
+        return new Vec2(advance, lineheight).scale(scale, scale);
     }
 }

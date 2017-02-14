@@ -2,6 +2,7 @@ package fr.hadriel.lwjgl.g2d;
 
 import fr.hadriel.lwjgl.g2d.events.*;
 import fr.hadriel.lwjgl.g2d.ui.Group;
+import fr.hadriel.lwjgl.g2d.ui.Widget;
 import fr.hadriel.lwjgl.glfw.GLFWWindow;
 import fr.hadriel.lwjgl.glfw.GLFWWindowHint;
 import fr.hadriel.math.Vec2;
@@ -17,6 +18,7 @@ public class G2DWindow extends GLFWWindow {
     private BatchRenderer renderer;
     private BatchGraphics g;
     private final Group root;
+    private Widget focus;
 
     private Vec2 mouse;
 
@@ -25,6 +27,7 @@ public class G2DWindow extends GLFWWindow {
         this.properties = hint;
         this.mouse = new Vec2();
         this.root = new Group();
+        root.addEventHandler(FocusRequestEvent.class, (event) -> focus = event.widget); //updates the focused element on FocusRequestEvent
     }
 
     public G2DWindow() {
@@ -53,13 +56,15 @@ public class G2DWindow extends GLFWWindow {
     }
 
     public void onKey(long window, int key, int scancode, int action, int mods) {
-        if(action == GLFW.GLFW_RELEASE) root.onEvent(new KeyReleasedEvent(key, mods));
-        if(action == GLFW.GLFW_PRESS) root.onEvent(new KeyPressedEvent(key, mods));
+        Widget widget = focus != null ? focus : root;
+        if(action == GLFW.GLFW_RELEASE) widget.onEvent(new KeyReleasedEvent(key, mods));
+        if(action == GLFW.GLFW_PRESS) widget.onEvent(new KeyPressedEvent(key, mods));
     }
 
     public void onMouseButton(long window, int button, int action, int mods) {
-        if(action == GLFW.GLFW_RELEASE) root.onEvent(new MouseReleasedEvent(mouse.x, mouse.y, button));
-        if(action == GLFW.GLFW_PRESS) root.onEvent(new MousePressedEvent(mouse.x, mouse.y, button));
+        Widget widget = focus != null ? focus : root;
+        if(action == GLFW.GLFW_RELEASE) widget.onEvent(new MouseReleasedEvent(mouse.x, mouse.y, button));
+        if(action == GLFW.GLFW_PRESS) widget.onEvent(new MousePressedEvent(mouse.x, mouse.y, button));
     }
 
     public void onMousePos(long window, double xpos, double ypos) {
