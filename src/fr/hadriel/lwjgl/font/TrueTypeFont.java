@@ -1,6 +1,6 @@
 package fr.hadriel.lwjgl.font;
 
-import fr.hadriel.lwjgl.data.Image;
+import fr.hadriel.lwjgl.data.ImageData;
 import fr.hadriel.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.lwjgl.opengl.Texture;
 import fr.hadriel.lwjgl.opengl.TextureHint;
@@ -46,8 +46,6 @@ public class TrueTypeFont {
             g.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
 
             g.setFont(font);
-//            g.setColor(Color.black);
-//            g.fillRect(0, 0, FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE);
             g.setColor(Color.white);
 
             FontMetrics metrics = g.getFontMetrics();
@@ -88,9 +86,7 @@ public class TrueTypeFont {
             //Create the Texture
             TextureHint hint = new TextureHint();
             hint.GL_MIN_FILTER = GL11.GL_LINEAR_MIPMAP_LINEAR;
-//            hint.GL_MIN_FILTER = GL11.GL_NEAREST_MIPMAP_LINEAR;
-//            hint.GL_TEXTURE_MIPMAP_COUNT = 8;
-            texture = new Texture(new Image(
+            texture = new Texture(new ImageData(
                     bufferedImage.getRGB(0, 0, FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE, null, 0, FONT_TEXTURE_SIZE),
                     FONT_TEXTURE_SIZE,
                     FONT_TEXTURE_SIZE,

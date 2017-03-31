@@ -13,6 +13,7 @@ import com.jcraft.jorbis.Block;
 import com.jcraft.jorbis.Comment;
 import com.jcraft.jorbis.DspState;
 import com.jcraft.jorbis.Info;
+import fr.hadriel.lwjgl.data.AudioData;
 
 /**
  * Decode an OGG file to PCM data. This class is based on the example
@@ -37,7 +38,7 @@ public class OggDecoder {
     /**
      * Get the data out of an OGG file
      *
-     * @param input The input stream from which to read the OGG file
+     * @param input The input getEntityStream from which to read the OGG file
      * @return The data describing the OGG thats been read
      */
     public AudioData getData(InputStream input) throws IOException {
@@ -50,7 +51,7 @@ public class OggDecoder {
         ByteArrayOutputStream dataout = new ByteArrayOutputStream();
 
         SyncState oy = new SyncState(); // sync and verify incoming physical bitstream
-        StreamState os = new StreamState(); // take physical pages, weld into a logical stream of packets
+        StreamState os = new StreamState(); // take physical pages, weld into a logical getEntityStream of packets
         Page og = new Page(); // one Ogg bitstream page.  Vorbis packets are inside
         Packet op = new Packet(); // one raw packet of data for decode
 
@@ -70,9 +71,9 @@ public class OggDecoder {
         while (true) { // we repeat if the bitstream is chained
             int eos = 0;
 
-            // grab some data at the head of the stream.  We want the first page
+            // grab some data at the head of the getEntityStream.  We want the first page
             // (which is guaranteed to be small and only contain the Vorbis
-            // stream initial header) We need the first page to get the stream
+            // getEntityStream initial header) We need the first page to get the getEntityStream
             // serialno.
 
             // submit a 4k block to libvorbis' Ogg layer
@@ -96,7 +97,7 @@ public class OggDecoder {
             }
 
             // Get the serial number and set up the rest of decode.
-            // serialno first; use it to set up a logical stream
+            // serialno first; use it to set up a logical getEntityStream
             os.init(og.serialno());
 
             // extract the initial header from the first page and verify that the
@@ -110,7 +111,7 @@ public class OggDecoder {
             vi.init();
             vc.init();
             if (os.pagein(og) < 0) {
-                // error; stream version mismatch perhaps
+                // error; getEntityStream version mismatch perhaps
                 throw new IOException("Error reading first page of Ogg bitstream data.");
             }
 
@@ -189,7 +190,7 @@ public class OggDecoder {
 
             float[][][] _pcm = new float[1][][];
             int[] _index = new int[vi.channels];
-            // The rest is just a straight decode loop until end of stream
+            // The rest is just a straight decode loop until end of getEntityStream
             while (eos == 0) {
                 while (eos == 0) {
 

@@ -30,7 +30,7 @@ public class TextureHint {
     /**
      * Defines the maximum number of mipmaps generated
      */
-    public int GL_TEXTURE_MIPMAP_COUNT = 1;
+    public int GL_TEXTURE_MIPMAP_COUNT = 1000;
 
     /**
      * may take these values:

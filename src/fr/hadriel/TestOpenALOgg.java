@@ -1,6 +1,6 @@
 package fr.hadriel;
 
-import fr.hadriel.lwjgl.openal.AudioData;
+import fr.hadriel.lwjgl.data.AudioData;
 import fr.hadriel.lwjgl.openal.OpenAL;
 import fr.hadriel.lwjgl.openal.Sound;
 

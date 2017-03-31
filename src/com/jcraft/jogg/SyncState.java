@@ -92,7 +92,7 @@ public class SyncState{
     return (0);
   }
 
-  // sync the stream.  This is meant to be useful for finding page
+  // sync the getEntityStream.  This is meant to be useful for finding page
   // boundaries.
   //
   // return values for this:
@@ -216,7 +216,7 @@ public class SyncState{
     }
   }
 
-  // sync the stream and get a page.  Keep trying until we find a page.
+  // sync the getEntityStream and get a page.  Keep trying until we find a page.
   // Supress 'sync errors' after reporting the first.
   //
   // return values:
@@ -228,7 +228,7 @@ public class SyncState{
   // _stream, _clear, _init, or _buffer
 
   public int pageout(Page og){
-    // all we need to do is verify a page at the head of the stream
+    // all we need to do is verify a page at the head of the getEntityStream
     // buffer.  If it doesn't verify, we look for the next potential
     // frame
 

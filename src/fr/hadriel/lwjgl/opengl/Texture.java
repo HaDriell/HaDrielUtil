@@ -2,7 +2,7 @@ package fr.hadriel.lwjgl.opengl;
 
 
 
-import fr.hadriel.lwjgl.data.Image;
+import fr.hadriel.lwjgl.data.ImageData;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
@@ -26,14 +26,14 @@ public class Texture {
     }
 
     public Texture(String filename, TextureHint hint) throws IOException {
-        this(new Image(filename), hint);
+        this(new ImageData(filename), hint);
     }
 
-    public Texture(Image image) {
+    public Texture(ImageData image) {
         this(image, new TextureHint());
     }
 
-    public Texture(Image image, TextureHint hint) {
+    public Texture(ImageData image, TextureHint hint) {
         this.width = image.width;
         this.height = image.height;
         this.handle = glGenTextures();
@@ -68,7 +68,7 @@ public class Texture {
         return new TextureRegion(this, 0, 0, width, height);
     }
 
-    public void setData(Image image) {
+    public void setData(ImageData image) {
         ByteBuffer data = BufferUtils.createByteBuffer(image.pixels.length * 4);
         for(int p : image.pixels) data.putInt(p);
         data.flip();

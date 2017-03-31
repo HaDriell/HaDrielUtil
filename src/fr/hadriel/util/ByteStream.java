@@ -32,7 +32,7 @@ public class ByteStream {
     public void ensureCapacity(int nsize) {
         if(nsize > stream.length) {
             System.out.println("resizing to " + nsize);
-            //new componentSize is over stream length, grow the array
+            //new componentSize is over getEntityStream length, grow the array
             while (nsize > stream.length) {
                 stream = Arrays.copyOf(stream, (int) (stream.length * 1.7F));
             }

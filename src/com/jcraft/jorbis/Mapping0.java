@@ -330,7 +330,7 @@ class Mapping0 extends FuncMapping{
 
   class InfoMapping0{
     int submaps; // <= 16
-    int[] chmuxlist=new int[256]; // up to 256 channels in a Vorbis stream
+    int[] chmuxlist=new int[256]; // up to 256 channels in a Vorbis getEntityStream
 
     int[] timesubmap=new int[16]; // [mux]
     int[] floorsubmap=new int[16]; // [mux] submap to floors

@@ -290,7 +290,7 @@ class Floor0 extends FuncFloor{
 
   static void lpc_to_curve(float[] curve, float[] lpc, float amp, LookFloor0 l,
       String name, int frameno){
-    // l->m+1 must be less than l->ln, but guard in case we get a bad stream
+    // l->m+1 must be less than l->ln, but guard in case we get a bad getEntityStream
     float[] lcurve=new float[Math.max(l.ln*2, l.m*2+2)];
 
     if(amp==0){

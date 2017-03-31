@@ -1,5 +1,7 @@
-package fr.hadriel.lwjgl.openal;
+package fr.hadriel.lwjgl.data;
 
+import fr.hadriel.lwjgl.openal.OggDecoder;
+import fr.hadriel.lwjgl.openal.WavFile;
 import org.lwjgl.BufferUtils;
 
 import javax.sound.sampled.AudioFormat;

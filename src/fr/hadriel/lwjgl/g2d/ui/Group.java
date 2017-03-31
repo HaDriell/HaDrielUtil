@@ -1,7 +1,7 @@
 package fr.hadriel.lwjgl.g2d.ui;
 
 
-import fr.hadriel.event.Event;
+import fr.hadriel.event.IEvent;
 import fr.hadriel.lwjgl.g2d.BatchGraphics;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class Group extends Widget {
     private List<Widget> widgets;
 
     public Group() {
-        this.interceptor.clear(); // clear the default events filtering (causes Group to forward events blindly)
+//        this.interceptor.clear(); // clear the default events filtering (causes Group to forward events blindly)
         this.widgets = new ArrayList<>();
     }
 
@@ -41,15 +41,15 @@ public class Group extends Widget {
             w.render(g);
     }
 
-    public void onEvent(Event event) {
+    public void onEvent(IEvent IEvent) {
         if(!isActive()) return;
-        if(event.isConsumed()) return;
-        if(!interceptor.accept(event)) return;
+//        if(IEvent.isConsumed()) return;
+//        if(!interceptor.accept(IEvent)) return;
         for(int i = widgets.size() - 1; i >= 0; i--) {
-            if(event.isConsumed()) return;
-            widgets.get(i).onEvent(event);
+//            if(IEvent.isConsumed()) return;
+            widgets.get(i).onEvent(IEvent);
         }
-        if(event.isConsumed()) return;
-        if(event.isListenable()) listener.onEvent(event);
+//        if(IEvent.isConsumed()) return;
+//        if(IEvent.isListenable()) listener.onEvent(IEvent);
     }
 }

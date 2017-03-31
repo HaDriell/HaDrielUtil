@@ -14,8 +14,8 @@ import fr.hadriel.math.Vec2;
  */
 public abstract class Widget implements BatchRenderable {
 
-    protected final DeferredEventListener listener;
-    protected final DeferredEventInterceptor interceptor;
+    protected final EventListener listener;
+//    protected final DeferredEventInterceptor interceptor;
 
     private boolean active;
     private boolean focused;
@@ -29,8 +29,8 @@ public abstract class Widget implements BatchRenderable {
     private final Matrix3f absoluteInverse;
 
     protected Widget() {
-        this.listener = new DeferredEventListener();
-        this.interceptor = new DeferredEventInterceptor();
+        this.listener = new EventListener();
+//        this.interceptor = new DeferredEventInterceptor();
         this.focused = false;
         this.focusable = false;
         this.active = true;
@@ -42,26 +42,26 @@ public abstract class Widget implements BatchRenderable {
         computeAbsolute();
 
         //MouseMoved can generate MouseEnterEvent / MouseExitEvent on first valid / first invalid hitAbsolute detected
-        addEventFilter(MouseMovedEvent.class, (event) -> {
-            boolean hit = isHitAbsolute(event.x, event.y);
-            if (hit && !hovered) onEvent(new MouseEnterEvent(event.x, event.y));
-            if (!hit && hovered) onEvent(new MouseExitEvent(event.x, event.y));
-            return hit;
-        });
-        //MousePressed changes the focus of the current UIManager (may be changed if CPU intensive)
-        addEventFilter(MousePressedEvent.class, (event) -> {
-            boolean hit = isHitAbsolute(event.x, event.y);
-            if(hit && focusable && !focused) requestFocus();
-            return hit;
-        });
-        addEventFilter(FocusRequestEvent.class, (event) -> {
-            boolean gainFocus = event.widget == this;
-            //Virtual event interpretation.
-            if(gainFocus && !focused) listener.onEvent(new FocusGainEvent());
-            if(!gainFocus && focused) listener.onEvent(new FocusLostEvent());
-            return true;
-        });
-        addEventFilter(MouseReleasedEvent.class, (event) -> isHitAbsolute(event.x, event.y));
+//        addEventFilter(MouseMovedEvent.class, (event) -> {
+//            boolean hit = isHitAbsolute(event.x, event.y);
+//            if (hit && !hovered) onEvent(new MouseEnterEvent(event.x, event.y));
+//            if (!hit && hovered) onEvent(new MouseExitEvent(event.x, event.y));
+//            return hit;
+//        });
+//        //MousePressed changes the focus of the current UIManager (may be changed if CPU intensive)
+//        addEventFilter(MousePressedEvent.class, (event) -> {
+//            boolean hit = isHitAbsolute(event.x, event.y);
+//            if(hit && focusable && !focused) requestFocus();
+//            return hit;
+//        });
+//        addEventFilter(FocusRequestEvent.class, (event) -> {
+//            boolean gainFocus = event.widget == this;
+//            //Virtual events interpretation.
+//            if(gainFocus && !focused) listener.onEvent(new FocusGainEvent());
+//            if(!gainFocus && focused) listener.onEvent(new FocusLostEvent());
+//            return true;
+//        });
+//        addEventFilter(MouseReleasedEvent.class, (event) -> isHitAbsolute(event.x, event.y));
 
         //hovered is updated on Listen phase
         addEventHandler(MouseEnterEvent.class, (event) -> hovered = true);
@@ -123,11 +123,11 @@ public abstract class Widget implements BatchRenderable {
         computeAbsolute();
     }
 
-    public void onEvent(Event event) {
+    public void onEvent(IEvent IEvent) {
         if(!active) return;
-        if(event.isConsumed()) return;
-        if(!interceptor.accept(event)) return;
-        if(event.isListenable()) listener.onEvent(event);
+//        if(IEvent.isConsumed()) return;
+//        if(!interceptor.accept(IEvent)) return;
+//        if(IEvent.isListenable()) listener.onEvent(IEvent);
     }
 
     public void render(BatchGraphics g) {
@@ -141,21 +141,21 @@ public abstract class Widget implements BatchRenderable {
 
     /* Configuration / Accessors */
 
-    public synchronized <T extends Event> void addEventHandler(Class<T> type, IEventHandler<T> handler) {
-        listener.addEventHandler(type, handler);
+    public synchronized <T extends IEvent> void addEventHandler(Class<T> type, IEventHandler<T> handler) {
+        listener.setEventHandler(type, handler);
     }
 
-    public synchronized <T extends Event> void removeEventHandler(Class<T> type, IEventHandler<T> handler) {
-        listener.removeEventHandler(type, handler);
+    public synchronized <T extends IEvent> void removeEventHandler(Class<T> type, IEventHandler<T> handler) {
+//        listener.removeEventHandler(type, handler);
     }
 
-    public synchronized <T extends Event> void addEventFilter(Class<T> type, IEventFilter<T> filter) {
-        interceptor.addEventFilter(type, filter);
-    }
-
-    public synchronized <T extends Event> void removeEventFilter(Class<T> type, IEventFilter<T> filter) {
-        interceptor.removeEventFilter(type, filter);
-    }
+//    public synchronized <T extends IEvent> void addEventFilter(Class<T> type, IEventFilter<T> filter) {
+//        interceptor.addEventFilter(type, filter);
+//    }
+//
+//    public synchronized <T extends IEvent> void removeEventFilter(Class<T> type, IEventFilter<T> filter) {
+//        interceptor.removeEventFilter(type, filter);
+//    }
 
     public Group getParent() {
         return parent;

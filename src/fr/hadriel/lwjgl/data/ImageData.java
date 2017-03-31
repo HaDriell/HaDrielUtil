@@ -8,7 +8,7 @@ import static org.lwjgl.stb.STBImage.*;
 /**
  * Created by glathuiliere on 29/11/2016.
  */
-public class Image {
+public class ImageData {
     public final int[] pixels;
     public final int width;
     public final int height;
@@ -21,18 +21,18 @@ public class Image {
      * @param height height of the image
      * @param components number of color components
      */
-    public Image(int[] pixels, int width, int height, int components) {
+    public ImageData(int[] pixels, int width, int height, int components) {
         this.pixels = pixels;
         this.width = width;
         this.height = height;
         this.components = components;
     }
 
-    public Image(int[] pixels, int width, int height) {
+    public ImageData(int[] pixels, int width, int height) {
         this(pixels, width, height, 4);
     }
 
-    public Image(ByteBuffer pixels, int width, int height, int components) {
+    public ImageData(ByteBuffer pixels, int width, int height, int components) {
         this.pixels = new int[width * height];
         for(int i = 0; i < this.pixels.length; i++) {
             this.pixels[i] = pixels.getInt();
@@ -42,7 +42,7 @@ public class Image {
         this.components = components;
     }
 
-    public Image(String filename) throws IOException {
+    public ImageData(String filename) throws IOException {
         int[] w = new int[1]; //width
         int[] h = new int[1]; //height
         int[] c = new int[1]; //color components
@@ -57,5 +57,15 @@ public class Image {
         }
         buffer.clear();
         stbi_image_free(buffer);
+    }
+
+    public ImageData getRegion(int x, int y, int width, int height) {
+        int[] pixels = new int[width * height];
+        for (int px = 0; px < width; px++) {
+            for (int py = 0; py < height; py++) {
+                pixels[px + py * width] = this.pixels[(x + px) + (y + py) * this.width];
+            }
+        }
+        return new ImageData(pixels, width, height);
     }
 }

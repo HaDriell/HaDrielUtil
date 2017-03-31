@@ -1,5 +1,7 @@
 package fr.hadriel.lwjgl.openal;
 
+import fr.hadriel.lwjgl.data.AudioData;
+
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.openal.AL10.*;

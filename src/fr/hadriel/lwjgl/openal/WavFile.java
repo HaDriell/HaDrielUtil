@@ -17,8 +17,8 @@ public class WavFile {
     private WavFile.IOState ioState;                // Specifies the IO State of the Wav File (used for snaity checking)
     private int bytesPerSample;         // Number of bytes required to store a single sample
     private long numFrames;                 // Number of frames within the data section
-    private OutputStream oStream;   // Output stream used for writting data
-    private InputStream iStream;        // Input stream used for reading data
+    private OutputStream oStream;   // Output getEntityStream used for writting data
+    private InputStream iStream;        // Input getEntityStream used for reading data
     private double floatScale;              // Scaling factor used for int <-> float conversion
     private double floatOffset;         // Offset factor used for int <-> float conversion
     private boolean wordAlignAdjust;        // Specify if an extra byte at the end of the data chunk is required for word alignment
@@ -80,7 +80,7 @@ public class WavFile {
             throw new IOException("Illegal number of valid bits, valid range 2 to 65536");
         if (sampleRate < 0) throw new IOException("Sample rate must be positive");
 
-// Create output stream for writing data
+// Create output getEntityStream for writing data
         wavFile.oStream = new FileOutputStream(file);
 
 // Calculate the chunk sizes
@@ -158,7 +158,7 @@ public class WavFile {
         wavFile.file = null;
         long fileLength = inputStream.available();
 
-// Create a new file input stream for reading file data
+// Create a new file input getEntityStream for reading file data
         wavFile.iStream = inputStream;
 
 // Read the first 12 bytes of the file
@@ -286,7 +286,7 @@ public class WavFile {
         WavFile wavFile = new WavFile();
         wavFile.file = file;
 
-// Create a new file input stream for reading file data
+// Create a new file input getEntityStream for reading file data
         wavFile.iStream = new FileInputStream(file);
 
 // Read the first 12 bytes of the file
@@ -823,7 +823,7 @@ public class WavFile {
 
 
     public void close() throws IOException {
-// Close the input stream and set to null
+// Close the input getEntityStream and set to null
         if (iStream != null) {
             iStream.close();
             iStream = null;
@@ -836,12 +836,12 @@ public class WavFile {
 // If an extra byte is required for word alignment, add it to the end
             if (wordAlignAdjust) oStream.write(0);
 
-// Close the stream and set to null
+// Close the getEntityStream and set to null
             oStream.close();
             oStream = null;
         }
 
-// Flag that the stream is closed
+// Flag that the getEntityStream is closed
         ioState = WavFile.IOState.CLOSED;
     }
 

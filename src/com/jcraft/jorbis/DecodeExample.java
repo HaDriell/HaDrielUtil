@@ -48,7 +48,7 @@ class DecodeExample{
     }
 
     SyncState oy=new SyncState(); // sync and verify incoming physical bitstream
-    StreamState os=new StreamState(); // take physical pages, weld into a logical stream of packets
+    StreamState os=new StreamState(); // take physical pages, weld into a logical getEntityStream of packets
     Page og=new Page(); // one Ogg bitstream page.  Vorbis packets are inside
     Packet op=new Packet(); // one raw packet of data for decode
 
@@ -67,9 +67,9 @@ class DecodeExample{
     while(true){ // we repeat if the bitstream is chained
       int eos=0;
 
-      // grab some data at the head of the stream.  We want the first page
+      // grab some data at the head of the getEntityStream.  We want the first page
       // (which is guaranteed to be small and only contain the Vorbis
-      // stream initial header) We need the first page to get the stream
+      // getEntityStream initial header) We need the first page to get the getEntityStream
       // serialno.
 
       // submit a 4k block to libvorbis' Ogg layer
@@ -96,7 +96,7 @@ class DecodeExample{
       }
 
       // Get the serial number and set up the rest of decode.
-      // serialno first; use it to set up a logical stream
+      // serialno first; use it to set up a logical getEntityStream
       os.init(og.serialno());
 
       // extract the initial header from the first page and verify that the
@@ -110,7 +110,7 @@ class DecodeExample{
       vi.init();
       vc.init();
       if(os.pagein(og)<0){
-        // error; stream version mismatch perhaps
+        // error; getEntityStream version mismatch perhaps
         System.err.println("Error reading first page of Ogg bitstream data.");
         System.exit(1);
       }
@@ -212,7 +212,7 @@ class DecodeExample{
 
       float[][][] _pcm=new float[1][][];
       int[] _index=new int[vi.channels];
-      // The rest is just a straight decode loop until end of stream
+      // The rest is just a straight decode loop until end of getEntityStream
       while(eos==0){
         while(eos==0){
 

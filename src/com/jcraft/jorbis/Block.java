@@ -29,7 +29,7 @@ package com.jcraft.jorbis;
 import com.jcraft.jogg.*;
 
 public class Block{
-  ///necessary stream state for linking to the framing abstraction
+  ///necessary getEntityStream state for linking to the framing abstraction
   float[][] pcm=new float[0][]; // this is a pointer into local storage
   Buffer opb=new Buffer();
 

@@ -173,7 +173,7 @@ public class StreamState{
 
   public int packetout(Packet op){
 
-    /* The last part of decode. We have the stream broken into packet
+    /* The last part of decode. We have the getEntityStream broken into packet
        segments.  Now we need to group them into packets (or return the
        out of sync markers) */
 
@@ -200,8 +200,8 @@ public class StreamState{
 
       op.packet_base=body_data;
       op.packet=body_returned;
-      op.e_o_s=lacing_vals[ptr]&0x200; /* last packet of the stream? */
-      op.b_o_s=lacing_vals[ptr]&0x100; /* first packet of the stream? */
+      op.e_o_s=lacing_vals[ptr]&0x200; /* last packet of the getEntityStream? */
+      op.b_o_s=lacing_vals[ptr]&0x100; /* first packet of the getEntityStream? */
       bytes+=size;
 
       while(size==255){
@@ -224,7 +224,7 @@ public class StreamState{
     return (1);
   }
 
-  // add the incoming page to the stream state; we decompose the page
+  // add the incoming page to the getEntityStream state; we decompose the page
   // into packet segments here as well.
 
   public int pagein(Page og){
@@ -364,10 +364,10 @@ public class StreamState{
      Only a return value of 0 from ogg_stream_flush indicates all packet
      data is flushed into pages.
 
-     ogg_stream_page will flush the last page in a stream even if it's
+     ogg_stream_page will flush the last page in a getEntityStream even if it's
      undersized; you almost certainly want to use ogg_stream_pageout
      (and *not* ogg_stream_flush) unless you need to flush an undersized
-     page in the middle of a stream for some reason. */
+     page in the middle of a getEntityStream for some reason. */
 
   public int flush(Page og){
 
@@ -407,7 +407,7 @@ public class StreamState{
     /* construct the header in temp storage */
     System.arraycopy("OggS".getBytes(), 0, header, 0, 4);
 
-    /* stream structure version */
+    /* getEntityStream structure version */
     header[4]=0x00;
 
     /* continued packet flag? */
@@ -428,7 +428,7 @@ public class StreamState{
       granule_pos>>>=8;
     }
 
-    /* 32 bits of stream serial number */
+    /* 32 bits of getEntityStream serial number */
     {
       int _serialno=serialno;
       for(i=14; i<18; i++){
@@ -443,7 +443,7 @@ public class StreamState{
       pageno=0; /* because someone called
                 stream_reset; this would be a
                 strange thing to do in an
-                encode stream, but it has
+                encode getEntityStream, but it has
                 plausible uses */
     {
       int _pageno=pageno++;

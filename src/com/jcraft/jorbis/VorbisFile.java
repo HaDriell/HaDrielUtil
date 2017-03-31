@@ -80,7 +80,7 @@ public class VorbisFile{
   float samptrack;
 
   StreamState os=new StreamState(); // take physical pages, weld into a logical
-  // stream of packets
+  // getEntityStream of packets
   DspState vd=new DspState(); // central working state for 
   // the packet->PCM decoder
   Block vb=new Block(vd); // local working space for packet->PCM decode
@@ -314,7 +314,7 @@ public class VorbisFile{
 
   // last step of the OggVorbis_File initialization; get all the
   // vorbis_info structs and PCM positions.  Only called by the seekable
-  // initialization (local stream storage is hacked slightly; pay
+  // initialization (local getEntityStream storage is hacked slightly; pay
   // attention to how that's done)
   void prefetch_all_headers(Info first_i, Comment first_c, int dataoffset)
       throws JOrbisException{
@@ -350,7 +350,7 @@ public class VorbisFile{
       }
 
       // get the serial number and PCM length of this link. To do this,
-      // get the last page of the stream
+      // get the last page of the getEntityStream
       {
         long end=offsets[i+1]; //!!!
         seek_helper(end);
@@ -468,7 +468,7 @@ public class VorbisFile{
   int process_packet(int readp){
     Page og=new Page();
 
-    // handle one packet.  Try to fetch it from current stream state
+    // handle one packet.  Try to fetch it from current getEntityStream state
     // extract packets from page
     while(true){
       // process a packet if we can.  If the machine isn't loaded,
@@ -508,8 +508,8 @@ public class VorbisFile{
               // ready to be returned. Find the offset of the *first*
               // 
               // As an aside, this trick is inaccurate if we begin
-              // reading anew right at the last page; the end-of-stream
-              // granulepos declares the last frame in the stream, and the
+              // reading anew right at the last page; the end-of-getEntityStream
+              // granulepos declares the last frame in the getEntityStream, and the
               // last packet of the last page may be a partial frame.
               // So, we need a previous granulepos from an in-sequence page
               // to have a reference point.  Thus the !op.e_o_s clause above
@@ -566,7 +566,7 @@ public class VorbisFile{
               break;
           }
           if(i==links)
-            return (-1); // sign of a bogus stream.  error out,
+            return (-1); // sign of a bogus getEntityStream.  error out,
           // leave machine uninitialized
           current_link=i;
 
@@ -679,9 +679,9 @@ public class VorbisFile{
     oy.init();
 
     // perhaps some data was previously read into a buffer for testing
-    // against other stream types.  Allow initialization from this
+    // against other getEntityStream types.  Allow initialization from this
     // previously read data (as we may be reading from a non-seekable
-    // stream)
+    // getEntityStream)
     if(initial!=null){
       int index=oy.buffer(ibytes);
       System.arraycopy(initial, 0, oy.data, index, ibytes);
@@ -758,7 +758,7 @@ public class VorbisFile{
   }
 
   // returns the actual bitrate since last call.  returns -1 if no
-  // additional data to offer since last call (or at beginning of stream)
+  // additional data to offer since last call (or at beginning of getEntityStream)
   public int bitrate_instant(){
     int _link=(seekable ? current_link : 0);
     if(samptrack==0)
@@ -784,7 +784,7 @@ public class VorbisFile{
 
   // returns: total raw (compressed) length of content if i==-1
   //          raw (compressed) length of that logical bitstream for i==0 to n
-  //          -1 if the stream is not seekable (we can't know the length)
+  //          -1 if the getEntityStream is not seekable (we can't know the length)
 
   public long raw_total(int i){
     if(!seekable||i>=links)
@@ -803,7 +803,7 @@ public class VorbisFile{
 
   // returns: total PCM length (samples) of content if i==-1
   //          PCM length (samples) of that logical bitstream for i==0 to n
-  //          -1 if the stream is not seekable (we can't know the length)
+  //          -1 if the getEntityStream is not seekable (we can't know the length)
   public long pcm_total(int i){
     if(!seekable||i>=links)
       return (-1);
@@ -821,7 +821,7 @@ public class VorbisFile{
 
   // returns: total seconds of content if i==-1
   //          seconds in that logical bitstream for i==0 to n
-  //          -1 if the stream is not seekable (we can't know the length)
+  //          -1 if the getEntityStream is not seekable (we can't know the length)
   public float time_total(int i){
     if(!seekable||i>=links)
       return (-1);
@@ -910,7 +910,7 @@ public class VorbisFile{
     //return -1;
   }
 
-  // seek to a sample offset relative to the decompressed pcm stream 
+  // seek to a sample offset relative to the decompressed pcm getEntityStream
   // returns zero on success, nonzero on failure
 
   public int pcm_seek(long pos){
@@ -1023,7 +1023,7 @@ public class VorbisFile{
     //return -1;
   }
 
-  // seek to a playback time relative to the decompressed pcm stream 
+  // seek to a playback time relative to the decompressed pcm getEntityStream
   // returns zero on success, nonzero on failure
   int time_seek(float seconds){
     // translate time to PCM position and call pcm_seek
@@ -1062,7 +1062,7 @@ public class VorbisFile{
     //return -1;
   }
 
-  // tell the current stream offset cursor.  Note that seek followed by
+  // tell the current getEntityStream offset cursor.  Note that seek followed by
   // tell will likely not give the set offset due to caching
   public long raw_tell(){
     return (offset);

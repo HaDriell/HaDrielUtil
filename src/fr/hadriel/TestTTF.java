@@ -23,35 +23,36 @@ public class TestTTF {
         Widget w = new Widget() {
             private TrueTypeFont font;
             private String text = "Look at my Awesome Helloworld";
-            private float fontSize = 30f;
-            private float fontSizeSpeed = 0;
+            private float fontHeight = 30f;
+            private float fontHeightSpeed = 0;
+
             {
                 addEventHandler(KeyPressedEvent.class, (event) -> {
-                    if(event.key == GLFW.GLFW_KEY_KP_ADD) fontSizeSpeed = 2;
-                    if(event.key == GLFW.GLFW_KEY_MINUS) fontSizeSpeed = -2;
+                    if(event.key == GLFW.GLFW_KEY_UP) fontHeightSpeed = 4;
+                    if(event.key == GLFW.GLFW_KEY_DOWN) fontHeightSpeed = -4;
                 });
                 addEventHandler(KeyReleasedEvent.class, (event) -> {
-                    if(event.key == GLFW.GLFW_KEY_KP_ADD) fontSizeSpeed = 0;
-                    if(event.key == GLFW.GLFW_KEY_KP_SUBTRACT) fontSizeSpeed = 0;
+                    if(event.key == GLFW.GLFW_KEY_UP) fontHeightSpeed = 0;
+                    if(event.key == GLFW.GLFW_KEY_DOWN) fontHeightSpeed = 0;
                 });
-
             }
 
             private Timer t = new Timer();
 
             protected void onRender(BatchGraphics g) {
-                fontSize += fontSizeSpeed * t.elapsed();
+                fontHeight += fontHeightSpeed * t.elapsed();
                 t.reset();
 
                 if(font == null) {
                     try {
-                        font = new TrueTypeFont("AGENCYR.TTF");
+                        font = new TrueTypeFont("berylium.TTF");
                     } catch (IOException ignore) {}
                 }
+                String fulltext = String.format("%s in %.2f p", text, fontHeight);
 
-                Vec2 textSize = font.getSizeOfString(text, fontSize);
+                Vec2 textSize = font.getSizeOfString(fulltext, fontHeight);
                 g.push(Matrix3f.Translation((window.getWidth() - textSize.x) / 2, (window.getHeight() - textSize.y) / 2));
-                font.drawText(g, text, fontSize, new Vec4(1, 1, 1, 1));
+                font.drawText(g, fulltext, fontHeight, new Vec4(1, 1, 1, 1));
                 g.pop();
             }
         };

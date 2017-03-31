@@ -246,7 +246,7 @@ class Floor1 extends FuncFloor{
     InfoFloor1 info=look.vi;
     CodeBook[] books=vb.vd.fullbooks;
 
-    /* unpack wrapped/predicted values from stream */
+    /* unpack wrapped/predicted values from getEntityStream */
     if(vb.opb.read(1)==1){
       int[] fit_value=null;
       if(memo instanceof int[]){

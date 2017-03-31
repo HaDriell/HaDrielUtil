@@ -51,7 +51,7 @@ public class Info{
   // all three set to the same value: 
   // implies a fixed rate bitstream
   // only nominal set: 
-  // implies a VBR stream that averages the nominal bitrate.  No hard 
+  // implies a VBR getEntityStream that averages the nominal bitrate.  No hard
   // upper/lower limit
   // upper and or lower set: 
   // implies a VBR bitstream that obeys the bitrate limits. nominal 
@@ -364,7 +364,7 @@ public class Info{
     opb.write(0x01, 8);
     opb.write(_vorbis);
 
-    // basic information about the stream
+    // basic information about the getEntityStream
     opb.write(0x00, 32);
     opb.write(channels, 8);
     opb.write(rate, 32);

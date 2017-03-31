@@ -1,57 +1,73 @@
 package fr.hadriel;
 
-import fr.hadriel.entities.Entity;
-import fr.hadriel.entities.EntityProcessor;
-import fr.hadriel.entities.World;
+import fr.hadriel.ecs.ECSEngine;
+import fr.hadriel.ecs.EntityDataManager;
+import fr.hadriel.ecs.EntitySystem;
+import fr.hadriel.ecs.filter.Filters;
+import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.util.Timer;
 
-
 /**
- * Created by glathuiliere on 09/01/2017.
+ * Created by glathuiliere on 31/03/2017.
  */
 public class TestECS {
 
-    public static final String POSITION = "position";
-    public static final String SPEED = "speed";
+    private static class MovementSystem extends EntitySystem {
 
+        private int count;
+        private Timer timer;
+
+        public MovementSystem() {
+            super(
+                    Filters.Require("position", Vec2.class),
+                    Filters.Require("speed", Vec2.class)
+            );
+        }
+
+        protected void begin() {
+            count = 0;
+            timer = new Timer();
+        }
+
+        protected void update(EntityDataManager manager, long id, float delta) {
+            Vec2 position = manager.getComponent(id, "position", Vec2.class);
+            Vec2 speed = manager.getComponent(id, "speed", Vec2.class);
+            position.x += speed.x * delta;
+            position.y += speed.y * delta;
+            if(count == 3) System.out.println("Entity 3 position:" + position);
+            count++;
+        }
+
+        protected void end() {
+            System.out.println(String.format("Processed %d Entities in %.2f ms", count, timer.elapsed() * 1000));
+        }
+    }
+
+
+    private static final int ENTITY_COUNT = 100_000;
     public static void main(String[] args) {
-        World world = new World();
+        ECSEngine engine = new ECSEngine();
+        engine.addSystem(new MovementSystem());
 
-
-
-        //Mover processor
-        world.addProcessor(new EntityProcessor() {
-            public void beforeUpdate() {}
-            public void update(World world, Entity entity, float delta) {
-                Vec2 position = entity.get(POSITION, Vec2.class);
-                Vec2 speed = entity.get(SPEED, Vec2.class);
-
-                if(position == null || speed == null) {
-                    System.out.println("error");
-                    return;
-                }
-                position.add(speed.x * delta, speed.y * delta);
-                entity.set(POSITION, position);
-                System.out.println("Processed Entity " + entity.id + " POSITION=" + position);
+        System.out.println("Creating " + ENTITY_COUNT + " Entities");
+        for(int id = 0; id < ENTITY_COUNT; id++) {
+            engine.createEntity(id);
+            engine.setComponent(id, "position", new Vec2(Mathf.random(), Mathf.random()));
+            if(Mathf.random() > 0.1f) {
+                engine.setComponent(id, "speed", new Vec2(Mathf.random(), Mathf.random()));
             }
-            public void afterUpdate() {}
-        });
-        new Thread(() -> {
-            Timer t = new Timer();
-            while(!Thread.interrupted()) {
-                float dt = t.elapsed();
-                t.reset();
-                world.pollEvents();
-                world.update(dt);
-                try {
-                    Thread.sleep(30);
-                } catch (InterruptedException ignore) {}
-            }
-        }).start();
+        }
+        System.out.println("Creation Done");
 
-        world.createEntity(1);
-        world.setProperty(1, POSITION, new Vec2(0, 0));
-        world.setProperty(1, SPEED, new Vec2(1, 0));
+        Timer timer = new Timer();
+        while(!Thread.interrupted()) {
+            float delta = timer.elapsed();
+            timer.reset();
+            engine.update(delta);
+
+            int ms = (int) (timer.elapsed() * 1000);
+            if(ms < 16) try { Thread.sleep(16 - ms); } catch (InterruptedException ignore) {}
+        }
     }
 }

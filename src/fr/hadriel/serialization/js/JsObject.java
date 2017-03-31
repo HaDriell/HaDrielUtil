@@ -1,8 +1,8 @@
 package fr.hadriel.serialization.js;
 
 import fr.hadriel.serialization.SerialException;
-import fr.hadriel.util.ArrayMap;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ public class JsObject implements JsPrimitive, Iterable<Map.Entry<String, JsPrimi
     private Map<String, JsPrimitive> members;
 
     public JsObject() {
-        this.members = new ArrayMap<>();
+        this.members = new HashMap<>();
     }
 
     public void clear() {
