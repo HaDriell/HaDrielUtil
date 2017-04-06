@@ -1,8 +1,11 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="HaDrielUtil:jar">
+  <artifact name="HaDrielUtil:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/HaDrielUtil_jar</output-path>
-    <root id="archive" name="HaDrielUtil.jar">
-      <element id="module-output" name="HaDrielUtil" />
+    <root id="root">
+      <element id="archive" name="HaDrielUtil.jar">
+        <element id="module-output" name="HaDrielUtil" />
+      </element>
+      <element id="library" level="project" name="libs" />
     </root>
   </artifact>
 </component>

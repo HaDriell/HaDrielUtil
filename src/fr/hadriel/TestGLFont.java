@@ -1,5 +1,6 @@
 package fr.hadriel;
 
+import fr.hadriel.lwjgl.font.GLFont;
 import fr.hadriel.lwjgl.font.TrueTypeFont;
 import fr.hadriel.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.lwjgl.g2d.G2DWindow;
@@ -13,21 +14,22 @@ import fr.hadriel.math.Vec4;
 import fr.hadriel.util.Timer;
 import org.lwjgl.glfw.GLFW;
 
-import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
  * Created by glathuiliere on 13/02/2017.
  */
-public class TestTTF {
+public class TestGLFont {
     public static void main(String[] args) throws IOException {
         G2DWindow window = new G2DWindow();
         Widget w = new Widget() {
-            private TrueTypeFont font;
+            private GLFont font;
             private String text = "Look at my Awesome Helloworld";
-            private float fontHeight = 40f;
+            private float fontHeight = 10f;
             private float fontHeightSpeed = 0;
+
             {
                 addEventHandler(KeyPressedEvent.class, (event) -> {
                     if(event.key == GLFW.GLFW_KEY_UP) fontHeightSpeed = 4;
@@ -42,13 +44,15 @@ public class TestTTF {
             private Timer t = new Timer();
 
             protected void onRender(BatchGraphics g) {
-                fontHeight = Math.abs( 40 * Mathf.sin( 0.3f * t.elapsed()) );
+//                fontHeight += fontHeightSpeed * t.elapsed();
+                fontHeight += Math.abs(40 * Mathf.sin(0.2f * t.elapsed()));
+                t.reset();
 
                 if(font == null) {
                     try {
-                        font = new TrueTypeFont("berylium.TTF", 80, 4);
-                        font  = new TrueTypeFont(new JLabel().getFont(), 80, 4);
-                    } catch (IOException | FontFormatException ignore) {}
+                        Font input = Font.createFont(Font.TRUETYPE_FONT, new File("berylium.TTF")).deriveFont(20f);
+                        font = new GLFont(input);
+                    } catch (Exception ignore) {}
                 }
                 String fulltext = String.format("%s in %.2f p", text, fontHeight);
 

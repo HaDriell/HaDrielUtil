@@ -1,7 +1,6 @@
 package fr.hadriel.lwjgl.glfw;
 
 import fr.hadriel.threading.Loop;
-import fr.hadriel.util.ArrayMap;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
