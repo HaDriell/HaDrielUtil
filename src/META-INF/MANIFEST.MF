@@ -11,5 +11,5 @@ Class-Path: lwjgl.jar lwjgl-stb.jar lwjgl-glfw.jar dyn4j-3.2.3.jar lwj
  lfw-natives-windows.jar lwjgl-openal-natives-linux.jar lwjgl-jemalloc
  -natives-linux.jar lwjgl-openal-natives-windows.jar lwjgl-jemalloc-na
  tives-windows.jar
-Main-Class: fr.hadriel.TestECS
+Main-Class: fr.hadriel.test.TestECS
 

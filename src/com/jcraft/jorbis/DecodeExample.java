@@ -95,7 +95,7 @@ class DecodeExample{
         System.exit(1);
       }
 
-      // Get the serial number and set up the rest of decode.
+      // Get the api number and set up the rest of decode.
       // serialno first; use it to set up a logical getEntityStream
       os.init(og.serialno());
 

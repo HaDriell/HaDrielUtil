@@ -349,7 +349,7 @@ public class VorbisFile{
         }
       }
 
-      // get the serial number and PCM length of this link. To do this,
+      // get the api number and PCM length of this link. To do this,
       // get the last page of the getEntityStream
       {
         long end=offsets[i+1]; //!!!
@@ -411,7 +411,7 @@ public class VorbisFile{
     // moer than one logical bitstream?
     if(og.serialno()!=serialno){
       // Chained bitstream. Bisect-search each logical bitstream
-      // section.  Do so based on serial number only
+      // section.  Do so based on api number only
       if(bisect_forward_serialno(0, 0, end+1, serialno, 0)<0){
         clear();
         return OV_EREAD;

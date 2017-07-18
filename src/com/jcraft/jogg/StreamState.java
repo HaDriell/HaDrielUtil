@@ -121,7 +121,7 @@ public class StreamState{
     }
   }
 
-  /* submit data to the internal buffer of the framing engine */
+  /* submit data to the internal buffer of the framing main */
   public int packetin(Packet op){
     int lacing_val=op.bytes/255+1;
 
@@ -270,7 +270,7 @@ public class StreamState{
       }
     }
 
-    // check the serial number
+    // check the api number
     if(_serialno!=serialno)
       return (-1);
     if(version>0)
@@ -428,7 +428,7 @@ public class StreamState{
       granule_pos>>>=8;
     }
 
-    /* 32 bits of getEntityStream serial number */
+    /* 32 bits of getEntityStream api number */
     {
       int _serialno=serialno;
       for(i=14; i<18; i++){
