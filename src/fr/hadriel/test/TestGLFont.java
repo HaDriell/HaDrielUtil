@@ -3,15 +3,13 @@ package fr.hadriel.test;
 import fr.hadriel.main.lwjgl.font.GLFont;
 import fr.hadriel.main.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.main.lwjgl.g2d.G2DWindow;
-import fr.hadriel.main.lwjgl.g2d.event.KeyPressedEvent;
-import fr.hadriel.main.lwjgl.g2d.event.KeyReleasedEvent;
+import fr.hadriel.main.lwjgl.g2d.ui.UIContext;
 import fr.hadriel.main.lwjgl.g2d.ui.Widget;
 import fr.hadriel.main.math.Mathf;
 import fr.hadriel.main.math.Matrix3f;
 import fr.hadriel.main.math.Vec2;
 import fr.hadriel.main.math.Vec4;
 import fr.hadriel.main.util.Timer;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.io.File;
@@ -31,7 +29,7 @@ public class TestGLFont {
 
             private Timer t = new Timer();
 
-            protected void onRender(BatchGraphics g,  float width, float height) {
+            protected void onRender(BatchGraphics g, float width, float height, UIContext context) {
 //                fontHeight += fontHeightSpeed * t.elapsed();
                 fontHeight += Math.abs(40 * Mathf.sin(0.2f * t.elapsed()));
                 t.reset();
@@ -50,6 +48,6 @@ public class TestGLFont {
                 g.pop();
             }
         };
-        window.getRoot().add(w);
+        window.getScene().add(w);
     }
 }

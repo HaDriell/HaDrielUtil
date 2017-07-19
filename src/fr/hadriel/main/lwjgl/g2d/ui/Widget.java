@@ -23,9 +23,7 @@ public abstract class Widget implements BatchRenderable {
 
     //GUI states
     private Group parent;
-    private boolean active;
-    private boolean focused;
-    private boolean hovered;
+    private boolean enbaled;
     private final Vec2 size;
     private final Transform2D transform;
     private boolean valid;
@@ -33,47 +31,71 @@ public abstract class Widget implements BatchRenderable {
     private final Matrix3f absoluteInverse;
 
     protected Widget() {
+        this(0, 0);
+    }
+
+    protected Widget(float width, float height) {
         this.bubbleListeners = new ArrayList<>();
         this.captureListeners = new ArrayList<>();
 
         this.parent = null;
-        this.active = true;
-        this.focused = false;
-        this.hovered = false;
-        this.size = new Vec2();
+        this.enbaled = true;
+        this.size = new Vec2(width, height);
         this.transform = new Transform2D();
         this.valid = false;
         this.absoluteMatrix = new Matrix3f();
         this.absoluteInverse = new Matrix3f();
         //Initialize the internal behaviors
-        MultiEventListener listener = new MultiEventListener();
-        listener.setEventHandler(MouseEnterEvent.class, this::handle);
-        listener.setEventHandler(MouseExitEvent.class, this::handle);
-        listener.setEventHandler(MouseMovedEvent.class, this::handle);
-        listener.setEventHandler(FocusChangedEvent.class, this::handle);
-        addEventListener(listener, true);
+        MultiEventListener internalInterceptor = new MultiEventListener();
+        internalInterceptor.setEventHandler(FocusGainEvent.class, this::handle);
+        internalInterceptor.setEventHandler(FocusLostEvent.class, this::handle);
+        internalInterceptor.setEventHandler(MouseEnterEvent.class, this::handle);
+        internalInterceptor.setEventHandler(MouseExitEvent.class, this::handle);
+        internalInterceptor.setEventHandler(MouseMovedEvent.class, this::handle);
+        internalInterceptor.setEventHandler(MousePressedEvent.class, this::handle);
+        addEventListener(internalInterceptor, true);
+    }
+
+    private UIEvent handle(MousePressedEvent event) {
+        UIContext context = requireUIContext();
+        if (isInsideAbsolute(event.x, event.y)) {
+            if(!context.isFocused(this))
+                context.setFocused(this);
+            event.capture();
+        }
+        return event;
     }
 
     private UIEvent handle(MouseMovedEvent event) {
-        boolean inside = isInsideAbsolute(event.x, event.y);
-        if(inside) event.capture();
-        if(inside && !hovered) onEvent(new MouseEnterEvent(event.x, event.y));
-        if(!inside && hovered) onEvent(new MouseExitEvent(event.x, event.y));
+        UIContext context = requireUIContext();
+        if(isInsideAbsolute(event.x, event.y)) {
+            if(!context.isHovered(this))
+                context.setHovered(this);
+            event.capture();
+        }
         return event;
     }
 
     private UIEvent handle(MouseEnterEvent event) {
-        hovered = true;
+        System.out.println("Mouse Enter " + this);
+        event.capture();
         return event;
     }
 
     private UIEvent handle(MouseExitEvent event) {
-        hovered = false;
+        System.out.println("Mouse Exit "+ this);
+        event.capture();
         return event;
     }
 
-    private UIEvent handle(FocusChangedEvent event) {
-        focused = event.widget == this;
+    private UIEvent handle(FocusGainEvent event) {
+        event.capture();
+        System.out.println("Focus is on " + this);
+        return event;
+    }
+
+    private UIEvent handle(FocusLostEvent event) {
+        event.capture();
         return event;
     }
 
@@ -131,41 +153,70 @@ public abstract class Widget implements BatchRenderable {
     }
 
     public void render(BatchGraphics g) {
-        if(active) {
+        if(enbaled) {
             g.push(transform.getMatrix());
-            onRender(g, size.x, size.y);
+            onRender(g, size.x, size.y, requireUIContext());
             g.pop();
         }
     }
 
-    protected abstract void onRender(BatchGraphics g, float width, float height);
+    protected abstract void onRender(BatchGraphics g, float width, float height, UIContext context);
 
-    public void onEvent(UIEvent event) {
-        //If Consumed, stop propagation
-        if(!active || event == null || event.isConsummed()) return; //skip dispatch
-
-        //Fire the Event to the current Node using the correct set of Listeners
-        Phase currentPhase = event.phase();
-        List<IEventListener> listeners = (event.isCapturing() ? captureListeners : bubbleListeners);
-        for(IEventListener listener : listeners) {
-            if(event.phase() != currentPhase) break;
+    protected void onEventCapture(UIEvent event) {
+        for(IEventListener listener : captureListeners) {
+            if(!event.isCapturing())
+                break;
             listener.onEvent(event);
         }
+    }
 
-        //When Bubbling, the Event is fired to the Parent if not handled
-        if(event.isBubbling() && parent != null) parent.onEvent(event);
+    protected void onEventBubble(UIEvent event) {
+        for(IEventListener listener : bubbleListeners) {
+            if(!event.isBubbling())
+                break;
+            listener.onEvent(event);
+        }
+    }
+
+    public final void onEvent(UIEvent event) {
+        //If Consumed, stop propagation
+        if(!enbaled || event == null || event.isConsummed()) return; //skip dispatch
+
+        //Try to capture the event using Capture Listeners
+        if(event.isCapturing()) {
+            onEventCapture(event);
+        }
+
+        if(event.isBubbling()) {
+            onEventBubble(event);
+        }
     }
 
         /* Configuration / Accessors */
 
+
+    public void addEventListener(IEventListener listener) {
+        addEventListener(listener, false);
+    }
+
     public void addEventListener(IEventListener listener, boolean onCapturePhase) {
-        if(listener != null)
-            (onCapturePhase ? captureListeners : bubbleListeners).add(listener);
+        if(listener == null) return;
+        if(onCapturePhase)
+            captureListeners.add(listener);
+        else
+            bubbleListeners.add(listener);
+    }
+
+    public void rmeoveEventListener(IEventListener listener) {
+        removeEventListener(listener, false);
     }
 
     public void removeEventListener(IEventListener listener, boolean onCapturePhase) {
-        if(listener != null)
-            (onCapturePhase ? captureListeners : bubbleListeners).remove(listener);
+        if(listener == null) return;
+        if(onCapturePhase)
+            captureListeners.remove(listener);
+        else
+            bubbleListeners.remove(listener);
     }
 
     public Group getParent() {
@@ -179,6 +230,16 @@ public abstract class Widget implements BatchRenderable {
         invalidate();
     }
 
+    public UIContext getUIContext() {
+        return parent == null ? null : parent.getUIContext();
+    }
+
+    private UIContext requireUIContext() {
+        UIContext context = getUIContext();
+        if(context == null)
+            throw new RuntimeException("No UIContext setup for the Widget when required" + this);
+        return context;
+    }
 
     public Vec2 getSize() {
         return size;
@@ -188,19 +249,11 @@ public abstract class Widget implements BatchRenderable {
         size.set(width, height);
     }
 
-    public boolean isFocused() {
-        return focused;
+    public boolean isEnbaled() {
+        return enbaled;
     }
 
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isHovered() {
-        return hovered;
+    public void setEnbaled(boolean enbaled) {
+        this.enbaled = enbaled;
     }
 }

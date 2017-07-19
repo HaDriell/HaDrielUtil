@@ -2,6 +2,7 @@ package fr.hadriel.main.lwjgl.g2d.ui;
 
 
 import fr.hadriel.main.lwjgl.g2d.BatchGraphics;
+import fr.hadriel.main.lwjgl.g2d.event.Phase;
 import fr.hadriel.main.lwjgl.g2d.event.UIEvent;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class Group extends Widget {
         return widgets;
     }
 
-    protected void onRender(BatchGraphics g, float width, float height) {
+    protected void onRender(BatchGraphics g, float width, float height, UIContext context) {
         for(Widget w : widgets)
             w.render(g);
     }
@@ -45,13 +46,16 @@ public class Group extends Widget {
         widgets.forEach(Widget::invalidate); // must forward the invalidation
     }
 
-    public void onEvent(UIEvent event) {
-        super.onEvent(event);
+    public void onEventCapture(UIEvent event) {
+        super.onEventCapture(event);
+
         //When Capturing, fire event to the children while not captured
-        for(Widget child : widgets) {
-            if(!event.isCapturing())
-                break;
-            child.onEvent(event);
+        if(event.isCapturing()) {
+            for (int i = widgets.size() - 1; i >= 0; i--) {
+                if (!event.isCapturing())
+                    break;
+                widgets.get(i).onEvent(event);
+            }
         }
     }
 }

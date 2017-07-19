@@ -3,15 +3,13 @@ package fr.hadriel.test;
 import fr.hadriel.main.lwjgl.font.TrueTypeFont;
 import fr.hadriel.main.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.main.lwjgl.g2d.G2DWindow;
-import fr.hadriel.main.lwjgl.g2d.event.KeyPressedEvent;
-import fr.hadriel.main.lwjgl.g2d.event.KeyReleasedEvent;
+import fr.hadriel.main.lwjgl.g2d.ui.UIContext;
 import fr.hadriel.main.lwjgl.g2d.ui.Widget;
 import fr.hadriel.main.math.Mathf;
 import fr.hadriel.main.math.Matrix3f;
 import fr.hadriel.main.math.Vec2;
 import fr.hadriel.main.math.Vec4;
 import fr.hadriel.main.util.Timer;
-import org.lwjgl.glfw.GLFW;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +30,7 @@ public class TestTTF {
 
             private Timer t = new Timer();
 
-            protected void onRender(BatchGraphics g, float width, float height) {
+            protected void onRender(BatchGraphics g, float width, float height, UIContext context) {
                 fontHeight = Math.abs( 40 * Mathf.sin( 0.3f * t.elapsed()) );
 
                 if(font == null) {
@@ -49,6 +47,6 @@ public class TestTTF {
                 g.pop();
             }
         };
-        window.getRoot().add(w);
+        window.getScene().add(w);
     }
 }

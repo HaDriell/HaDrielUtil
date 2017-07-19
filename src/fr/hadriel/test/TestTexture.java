@@ -2,6 +2,7 @@ package fr.hadriel.test;
 
 import fr.hadriel.main.lwjgl.g2d.BatchGraphics;
 import fr.hadriel.main.lwjgl.g2d.G2DWindow;
+import fr.hadriel.main.lwjgl.g2d.ui.UIContext;
 import fr.hadriel.main.lwjgl.g2d.ui.Widget;
 import fr.hadriel.main.lwjgl.opengl.Texture;
 import fr.hadriel.main.lwjgl.opengl.TextureHint;
@@ -18,14 +19,14 @@ public class TestTexture {
 
     public static void main(String[] args) {
         G2DWindow window = new G2DWindow();
-        window.getRoot().add(new Widget() {
+        window.getScene().add(new Widget() {
 
             Texture normal;
             Texture mipmap;
 
             Timer t = new Timer();
 
-            protected void onRender(BatchGraphics g, float w, float h) {
+            protected void onRender(BatchGraphics g, float w, float h, UIContext context) {
                 if(normal == null) {
                     t.reset();
                     try {

@@ -14,7 +14,7 @@ public class UIEvent implements IEvent {
     }
 
     public final void capture() {
-        if(phase == Phase.CAPTURING) phase = Phase.BUBBLING;
+        if(phase != Phase.CONSUMED) phase = Phase.BUBBLING;
     }
 
     public final void consume() {
@@ -23,6 +23,10 @@ public class UIEvent implements IEvent {
 
     public final Phase phase() {
         return phase;
+    }
+
+    public final boolean phase(Phase phase) {
+        return this.phase == phase;
     }
 
     public final boolean isCapturing() {

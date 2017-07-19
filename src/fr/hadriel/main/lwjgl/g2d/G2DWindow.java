@@ -2,6 +2,7 @@ package fr.hadriel.main.lwjgl.g2d;
 
 import fr.hadriel.main.lwjgl.g2d.event.*;
 import fr.hadriel.main.lwjgl.g2d.ui.Group;
+import fr.hadriel.main.lwjgl.g2d.ui.Scene;
 import fr.hadriel.main.lwjgl.glfw.GLFWWindow;
 import fr.hadriel.main.lwjgl.glfw.GLFWWindowHint;
 import fr.hadriel.main.math.Vec2;
@@ -16,7 +17,7 @@ public class G2DWindow extends GLFWWindow {
     private GLFWWindowHint properties;
     private BatchRenderer renderer;
     private BatchGraphics g;
-    private final Group root;
+    private Scene scene;
 
     private Vec2 mouse;
 
@@ -24,7 +25,7 @@ public class G2DWindow extends GLFWWindow {
         super(hint);
         this.properties = hint;
         this.mouse = new Vec2();
-        this.root = new Group();
+        this.scene = new Scene();
     }
 
     public G2DWindow() {
@@ -39,8 +40,12 @@ public class G2DWindow extends GLFWWindow {
         return properties.height;
     }
 
-    public Group getRoot() {
-        return root;
+    public Scene getScene() {
+        return scene;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
     }
 
     public void onInit() {
@@ -53,28 +58,41 @@ public class G2DWindow extends GLFWWindow {
     }
 
     public void onKey(long window, int key, int scancode, int action, int mods) {
-        if(action == GLFW.GLFW_RELEASE) root.onEvent(new KeyReleasedEvent(key, mods));
-        if(action == GLFW.GLFW_PRESS) root.onEvent(new KeyPressedEvent(key, mods));
+        if(action == GLFW.GLFW_RELEASE) scene.onEvent(new KeyReleasedEvent(key, mods));
+        if(action == GLFW.GLFW_PRESS) scene.onEvent(new KeyPressedEvent(key, mods));
     }
 
     public void onMouseButton(long window, int button, int action, int mods) {
-        if(action == GLFW.GLFW_RELEASE) root.onEvent(new MouseReleasedEvent(mouse.x, mouse.y, button));
-        if(action == GLFW.GLFW_PRESS) root.onEvent(new MousePressedEvent(mouse.x, mouse.y, button));
+        if(action == GLFW.GLFW_RELEASE) scene.onEvent(new MouseReleasedEvent(mouse.x, mouse.y, button));
+        if(action == GLFW.GLFW_PRESS) scene.onEvent(new MousePressedEvent(mouse.x, mouse.y, button));
     }
 
     public void onMousePos(long window, double xpos, double ypos) {
         mouse.set((float) xpos, (float) ypos);
-        root.onEvent(new MouseMovedEvent(mouse, false));
+        scene.onEvent(new MouseMovedEvent(mouse, false));
     }
 
-    public void onCursorEnter(long window, boolean entered) {}
-    public void onWindowFocus(long window, boolean focus) {}
+    public void onCursorEnter(long window, boolean entered) {
+        if(entered)
+            scene.onEvent(new MouseEnterEvent());
+        else
+            scene.onEvent(new MouseExitEvent());
+    }
+
+    public void onWindowFocus(long window, boolean focus) {
+        if(focus)
+            scene.onEvent(new FocusGainEvent());
+        else
+            scene.onEvent(new FocusLostEvent());
+    }
 
     public void onRender(long window) {
         g.begin();
         g.setColor(0, 0, 0, 1);
         g.fillRect(0, 0, properties.width, properties.height);
-        root.render(g);
+        if(scene != null) {
+            scene.render(g);
+        }
         g.end();
         g.clear();
     }
