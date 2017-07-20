@@ -43,7 +43,7 @@ public class TestGLFont {
                 String fulltext = String.format("%s in %.2f p", text, fontHeight);
 
                 Vec2 textSize = font.getSizeOfString(fulltext, fontHeight);
-                g.push(Matrix3f.Translation((window.getWidth() - textSize.x) / 2, (window.getHeight() - textSize.y) / 2));
+                g.push(Matrix3f.Translation((window.getSize().x - textSize.x) / 2, (window.getSize().y - textSize.y) / 2));
                 font.drawText(g, fulltext, fontHeight, new Vec4(1, 1, 1, 1));
                 g.pop();
             }

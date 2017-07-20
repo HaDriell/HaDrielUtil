@@ -1,7 +1,7 @@
 package fr.hadriel.test;
 
 import fr.hadriel.main.lwjgl.g2d.BatchGraphics;
-import fr.hadriel.main.lwjgl.g2d.G2DWindow;
+import fr.hadriel.main.lwjgl.g2d.G2DWindowOld;
 import fr.hadriel.main.lwjgl.g2d.ui.UIContext;
 import fr.hadriel.main.lwjgl.g2d.ui.Widget;
 import fr.hadriel.main.lwjgl.opengl.Texture;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class TestTexture {
 
     public static void main(String[] args) {
-        G2DWindow window = new G2DWindow();
+        G2DWindowOld window = new G2DWindowOld();
         window.getScene().add(new Widget() {
 
             Texture normal;

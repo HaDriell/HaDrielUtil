@@ -9,10 +9,12 @@ import fr.hadriel.main.math.Vec2;
 import fr.hadriel.main.math.Vec4;
 import org.lwjgl.opengl.GL11;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,8 +23,7 @@ import java.util.Map;
  */
 public class GLFont {
 
-    private static final int FONT_TEXTURE_SIZE = 2048; //Maximum OpenGL standard Texture renderSize support
-
+    private static final int FONT_TEXTURE_SIZE = 2048; //Maximum OpenGL standard Texture size support
 
     private final Texture texture;
     private final Map<Integer, TTFChar> cmap;

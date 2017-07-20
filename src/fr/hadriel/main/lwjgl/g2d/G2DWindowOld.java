@@ -1,53 +1,42 @@
 package fr.hadriel.main.lwjgl.g2d;
 
-import fr.hadriel.main.lwjgl.core.GraphicsThread;
 import fr.hadriel.main.lwjgl.g2d.event.*;
 import fr.hadriel.main.lwjgl.g2d.ui.Scene;
-import fr.hadriel.main.lwjgl.glfw3.GLFW3Handle;
-import fr.hadriel.main.lwjgl.glfw3.WindowHint;
+import fr.hadriel.main.lwjgl.glfw.GLFWWindow;
+import fr.hadriel.main.lwjgl.glfw.GLFWWindowHint;
 import fr.hadriel.main.math.Vec2;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 /**
  * Created by glathuiliere on 08/02/2017.
- *
- * TODO : not an inheritance. way too permissive for the Handle to be corrupt
  */
-public class G2DWindow extends GLFW3Handle {
+public class G2DWindowOld extends GLFWWindow {
 
+    private GLFWWindowHint properties;
     private BatchRenderer renderer;
     private BatchGraphics g;
     private Scene scene;
 
     private Vec2 mouse;
-    private WindowHint properties;
 
-    public G2DWindow(WindowHint hint) {
+    public G2DWindowOld(GLFWWindowHint hint) {
         super(hint);
         this.properties = hint;
-        this.scene = new Scene();
         this.mouse = new Vec2();
-        //Make sure the OpenGL context is initialized in the GLFW Thread
-        GraphicsThread.submit(() -> {
-                renderer = new BatchRenderer(0, hint.width, 0, hint.height);
-                g = new BatchGraphics(renderer);
-        });
-        //Input Callbacks
-        bindKey(this::onKey);
-        bindMouseButton(this::onMouseButton);
-        bindCursorPos(this::onMousePos);
-        bindCursorEnter(this::onCursorEnter);
-        //Window Callbacks
-        bindWindowClose(this::onWindowClose);
-        bindWindowFocus(this::onWindowFocus);
-        bindWindowSize(this::onWindowSize);
-        //Render Callback
-        bindWindowRender(this::onRender);
+        this.scene = new Scene();
     }
 
-    public G2DWindow() {
-        this(new WindowHint()); //default hints
+    public G2DWindowOld() {
+        this(new GLFWWindowHint()); //default hints
+    }
+
+    public int getWidth() {
+        return properties.width;
+    }
+
+    public int getHeight() {
+        return properties.height;
     }
 
     public Scene getScene() {
@@ -56,6 +45,15 @@ public class G2DWindow extends GLFW3Handle {
 
     public void setScene(Scene scene) {
         this.scene = scene;
+    }
+
+    public void onInit() {
+        renderer = new BatchRenderer(0, properties.width, 0, properties.height);
+        g = new BatchGraphics(renderer);
+    }
+
+    public void onDestroy() {
+        //Sadly not supported yet
     }
 
     public void onKey(long window, int key, int scancode, int action, int mods) {
@@ -88,7 +86,6 @@ public class G2DWindow extends GLFW3Handle {
     }
 
     public void onRender(long window) {
-        if(g == null) return; //initialization is async now :/
         g.begin();
         g.setColor(0, 0, 0, 1);
         g.fillRect(0, 0, properties.width, properties.height);
