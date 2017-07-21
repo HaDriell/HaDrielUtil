@@ -44,24 +44,25 @@ public class GLFont {
         FontMetrics metrics = g.getFontMetrics();
         lineheight = metrics.getAscent() + metrics.getDescent();
         AffineTransform transform = new AffineTransform();
-        Vec2 offset = new Vec2(0, lineheight);
+        float offsetX = 0;
+        float offsetY = lineheight;
         for(int c = 31; c < 256; c++) {
-            transform.setToTranslation(offset.x, offset.y);
+            transform.setToTranslation(offsetX, offsetY);
             g.setTransform(transform);
             TextLayout layout = new TextLayout("" + (char) c, font, g.getFontRenderContext());
             layout.draw(g, 0, 0);
             TTFChar ttfc = new TTFChar(
-                    offset.x,
-                    offset.y - layout.getAscent(),
+                    offsetX,
+                    offsetY - layout.getAscent(),
                     layout.getAdvance(),
                     layout.getAdvance(),
                     lineheight);
             cmap.put(c, ttfc);
 
-            offset.x += layout.getAdvance() + 4; // 4 pixels spacing for the render safety
-            if(offset.x + layout.getAdvance() > FONT_TEXTURE_SIZE) {
-                offset.x = 0;
-                offset.y += lineheight + 4; // 4 pixels spacing for the render safety
+            offsetX += layout.getAdvance() + 4; // 4 pixels spacing for the render safety
+            if(offsetX + layout.getAdvance() > FONT_TEXTURE_SIZE) {
+                offsetX = 0;
+                offsetY += lineheight + 4; // 4 pixels spacing for the render safety
             }
         }
         g.dispose();

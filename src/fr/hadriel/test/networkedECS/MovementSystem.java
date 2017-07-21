@@ -25,8 +25,7 @@ public class MovementSystem extends EntitySystem {
         Vec2 speed = manager.getComponent(id, "speed", Vec2.class);
 
         //Actual gameplay rule
-        position.x += speed.x * delta;
-        position.y += speed.y * delta;
+        position = position.add(speed.scale(delta, delta));
 
         //Set components (optional here, they're not )
         manager.setComponent(id, "position", position);

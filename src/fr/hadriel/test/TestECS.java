@@ -33,8 +33,7 @@ public class TestECS {
         protected void update(EntityDataManager manager, long id, float delta) {
             Vec2 position = manager.getComponent(id, "position", Vec2.class);
             Vec2 speed = manager.getComponent(id, "speed", Vec2.class);
-            position.x += speed.x * delta;
-            position.y += speed.y * delta;
+            position = position.add(speed.scale(delta, delta));
             if(count == 3) System.out.println("Entity 3 position:" + position);
             count++;
         }

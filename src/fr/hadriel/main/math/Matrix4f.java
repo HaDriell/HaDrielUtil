@@ -335,7 +335,7 @@ public class Matrix4f {
     public Vec2 multiply(Vec2 v) {
         float x = elements[M00] * v.x + elements[M10] * v.y + elements[M30];
         float y = elements[M01] * v.x + elements[M11] * v.y + elements[M31];
-        return v.set(x, y);
+        return new Vec2(x, y);
     }
 
     // assumed Vec4(x, y, z, 1)
@@ -343,7 +343,7 @@ public class Matrix4f {
         float x = elements[M00] * v.x + elements[M10] * v.y + elements[M20] * v.z + elements[M30];
         float y = elements[M01] * v.x + elements[M11] * v.y + elements[M21] * v.z + elements[M31];
         float z = elements[M02] * v.x + elements[M12] * v.y + elements[M22] * v.z + elements[M32];
-        return v.set(x, y, z);
+        return new Vec3(x, y, z);
     }
 
     public Vec4 multiply(Vec4 v) {
@@ -351,7 +351,7 @@ public class Matrix4f {
         float y = elements[M01] * v.x + elements[M11] * v.y + elements[M21] * v.z + elements[M31] * v.w;
         float z = elements[M02] * v.x + elements[M12] * v.y + elements[M22] * v.z + elements[M32] * v.w;
         float w = elements[M03] * v.x + elements[M13] * v.y + elements[M23] * v.z + elements[M33] * v.w;
-        return v.set(x, y, z, w);
+        return new Vec4(x, y, z, w);
     }
 
     public Matrix4f copy() {

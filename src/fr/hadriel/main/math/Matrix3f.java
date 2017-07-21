@@ -161,15 +161,21 @@ public class Matrix3f {
         return this;
     }
 
-    //ORIGINAL
-    public Vec2 multiply(Vec2 v) {
-        float x = v.x * elements[M00] + v.y * elements[M01] + elements[M02];
-        float y = v.x * elements[M10] + v.y * elements[M11] + elements[M12];
-        return v.set(x, y);
+
+    public Vec2 multiply(Vec2 v) { return multiply(v.x, v.y); }
+    public Vec3 multiply(Vec3 v) { return multiply(v.x, v.y, v.z); }
+
+    public Vec2 multiply(float x, float y) {
+        float dx = x * elements[M00] + y * elements[M01] + elements[M02];
+        float dy = x * elements[M10] + y * elements[M11] + elements[M12];
+        return new Vec2(dx, dy);
     }
 
-    public Vec2 getTransformed(Vec2 v) {
-        return multiply(new Vec2(v));
+    public Vec3 multiply(float x, float y, float z) {
+        float dx = elements[M00] * x + elements[M01] * y + elements[M02] * z;
+        float dy = elements[M10] * x + elements[M11] * y + elements[M12] * z;
+        float dz = elements[M20] * x + elements[M21] * y + elements[M22] * z;
+        return new Vec3(dx, dy, dz);
     }
 
     public float det() {

@@ -8,10 +8,11 @@ public class Vec3 {
     public static final Vec3 X = new Vec3(1, 0, 0);
     public static final Vec3 Y = new Vec3(0, 1, 0);
     public static final Vec3 Z = new Vec3(0, 0, 1);
+    public static final Vec3 ZERO = new Vec3(0, 0, 0);
 
-    public float x;
-    public float y;
-    public float z;
+    public final float x;
+    public final float y;
+    public final float z;
 
     public Vec3(float x, float y, float z) {
         this.x = x;
@@ -35,62 +36,42 @@ public class Vec3 {
         return new Vec3(this);
     }
 
-    public Vec3 set(Vec3 v) { return set(v.x, v.y, v.z); }
     public Vec3 add(Vec3 v) { return add(v.x, v.y, v.z); }
     public Vec3 sub(Vec3 v) { return sub(v.x, v.y, v.z); }
     public Vec3 mul(Vec3 v) { return mul(v.x, v.y, v.z); }
-    public Vec3 div(Vec3 v) { return div(v.x, v.y, v.z); }
-
-    public Vec3 set(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        return this;
-    }
 
     public Vec3 add(float x, float y, float z) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
-        return this;
+        float dx = this.x + x;
+        float dy = this.y + y;
+        float dz = this.z + z;
+        return new Vec3(dx, dy, dz);
     }
 
     public Vec3 sub(float x, float y, float z) {
-        this.x -= x;
-        this.y -= y;
-        this.z -= z;
-        return this;
+        float dx = this.x - x;
+        float dy = this.y - y;
+        float dz = this.z - z;
+        return new Vec3(dx, dy, dz);
     }
 
     public Vec3 mul(float x, float y, float z) {
-        this.x *= x;
-        this.y *= y;
-        this.z *= z;
-        return this;
+        float dx = this.x * x;
+        float dy = this.y * y;
+        float dz = this.z * z;
+        return new Vec3(dx, dy, dz);
     }
 
-    public Vec3 div(float x, float y, float z) {
-        this.x /= x;
-        this.y /= y;
-        this.z /= z;
-        return this;
+    public Vec3 invert() {
+        return new Vec3(-x, -y, -z);
     }
 
-
-    public Vec3 reverse() {
-        x = -x;
-        y = -y;
-        z = -z;
-        return this;
-    }
-
-    public float magnitude() {
+    public float len() {
         return (float) Math.sqrt(x*x + y*y + z*z);
     }
 
     public Vec3 normalize() {
-        float mag = magnitude();
-        return new Vec3(x / mag, y / mag, z / mag);
+        float mag = len();
+        return mag == 0 ? ZERO : new Vec3(x / mag, y / mag, z / mag);
     }
 
     public Vec3 cross(Vec3 v) {

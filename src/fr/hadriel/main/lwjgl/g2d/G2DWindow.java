@@ -69,7 +69,7 @@ public class G2DWindow extends GLFW3Handle {
     }
 
     public void onMousePos(long window, double xpos, double ypos) {
-        mouse.set((float) xpos, (float) ypos);
+        mouse = new Vec2((float) xpos, (float) ypos);
         scene.onEvent(new MouseMovedEvent(mouse, false));
     }
 

@@ -36,8 +36,12 @@ public class BatchGraphics {
         setColor(r, g, b, a);
     }
 
+    public void setColor(Vec4 color) {
+        this.color = color == null ? Vec4.ZERO : color;
+    }
+
     public void setColor(float r, float g, float b, float a) {
-        color.set(r, g, b, a);
+        color = new Vec4(r, g, b, a);
     }
 
     public Vec4 getColor() {
@@ -53,7 +57,7 @@ public class BatchGraphics {
     }
 
     public void clear() {
-        color.set(1, 1, 1, 1);
+        color = new Vec4(1, 1, 1, 1);
         strokeWidth = 1f;
         stack.clear();
     }
@@ -79,34 +83,34 @@ public class BatchGraphics {
     public void fillRect(float x, float y, float width, float height) {
         float dx = x + width;
         float dy = y + height;
-        Vec2 p = new Vec2();
+        Vec2 position;
         Matrix3f matrix = stack.top();
-        matrix.multiply(p.set(x, y));
-        batch.submit(p.x, p.y, color, 0, 0, null);
-        matrix.multiply(p.set(dx, y));
-        batch.submit(p.x, p.y, color, 0, 0, null);
-        matrix.multiply(p.set(dx, dy));
-        batch.submit(p.x, p.y, color, 0, 0, null);
-        matrix.multiply(p.set(x, dy));
-        batch.submit(p.x, p.y, color, 0, 0, null);
+        position = matrix.multiply(x, y);
+        batch.submit(position.x, position.y, color, 0, 0, null);
+        position = matrix.multiply(dx, y);
+        batch.submit(position.x, position.y, color, 0, 0, null);
+        position = matrix.multiply(dx, dy);
+        batch.submit(position.x, position.y, color, 0, 0, null);
+        position = matrix.multiply(x, dy);
+        batch.submit(position.x, position.y, color, 0, 0, null);
     }
 
     public void drawLine(float xa, float ya, float xb, float yb) {
         float weight = strokeWidth / 2;
         Vec2 line = new Vec2(xb - xa, yb - ya);
-        Vec2 heavyness = line.getNormalLeft().scale(weight, weight);
-        Vec2 p = new Vec2();
+        Vec2 heavyness = line.normalLeft().scale(weight, weight);
+        Vec2 position;
         Matrix3f matrix = stack.top();
 
         //Basically draws a quad
-        matrix.multiply(p.set(xa + heavyness.x, ya + heavyness.y));
-        batch.submit(p.x, p.y, color);
-        matrix.multiply(p.set(xa - heavyness.x, ya - heavyness.y));
-        batch.submit(p.x, p.y, color);
-        matrix.multiply(p.set(xb - heavyness.x, yb - heavyness.y));
-        batch.submit(p.x, p.y, color);
-        matrix.multiply(p.set(xb + heavyness.x, yb + heavyness.y));
-        batch.submit(p.x, p.y, color);
+        position = matrix.multiply(xa + heavyness.x, ya + heavyness.y);
+        batch.submit(position.x, position.y, color);
+        position = matrix.multiply(xa - heavyness.x, ya - heavyness.y);
+        batch.submit(position.x, position.y, color);
+        position = matrix.multiply(xb - heavyness.x, yb - heavyness.y);
+        batch.submit(position.x, position.y, color);
+        position = matrix.multiply(xb + heavyness.x, yb + heavyness.y);
+        batch.submit(position.x, position.y, color);
     }
 
     public void drawBezierCurve(float sx, float sy, float cx, float cy, float ex, float ey) {
@@ -116,21 +120,23 @@ public class BatchGraphics {
         float dy2 = ey - cy;
         float stepTime = 1f / Mathf.min(Mathf.sqrt(dx1 * dx1 + dy1 * dy1) + Mathf.sqrt(dx2 * dx2 + dy2 * dy2), 25); // stepTime estimation
 
-        Vec2 c = new Vec2(); //current
-        Vec2 p = new Vec2(); //previous
+        Vec2 current;
+        Vec2 previous;
 
         //Bézier Curve approximation
-        c.set(sx, sy);
+
+        //Initial setup
+        current = new Vec2(sx, sy);
         float t = 0;
         while (t < 1f) {
-            p.set(c);
+            previous = current;
             t += stepTime;
             if(t > 1f) t = 1f;
-            c.set(
+            current = new Vec2(
                     (1 - t) * (1 - t) * sx + 2 * (1 - t) * t * cx + t * t * ex,
                     (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * cy + t * t * ey
             );
-            drawLine(p.x, p.y, c.x, c.y);
+            drawLine(previous.x, previous.y, current.x, current.y);
         }
     }
 
@@ -139,16 +145,16 @@ public class BatchGraphics {
     }
 
     public void drawTextureRegion(float x, float y, float width, float height, TextureRegion region, Vec4 color) {
-        Vec2 p = new Vec2();
+        Vec2 position;
         Matrix3f matrix = stack.top();
-        matrix.multiply(p.set(x, y));
-        batch.submit(p.x, p.y, color, region.u[0], region.v[0], region.texture);
-        matrix.multiply(p.set(x + width, y));
-        batch.submit(p.x, p.y, color, region.u[1], region.v[1], region.texture);
-        matrix.multiply(p.set(x + width, y + height));
-        batch.submit(p.x, p.y, color, region.u[2], region.v[2], region.texture);
-        matrix.multiply(p.set(x, y + height));
-        batch.submit(p.x, p.y, color, region.u[3], region.v[3], region.texture);
+        position = matrix.multiply(x, y);
+        batch.submit(position.x, position.y, color, region.u[0], region.v[0], region.texture);
+        position = matrix.multiply(x + width, y);
+        batch.submit(position.x, position.y, color, region.u[1], region.v[1], region.texture);
+        position = matrix.multiply(x + width, y + height);
+        batch.submit(position.x, position.y, color, region.u[2], region.v[2], region.texture);
+        position = matrix.multiply(x, y + height);
+        batch.submit(position.x, position.y, color, region.u[3], region.v[3], region.texture);
     }
 
     public void drawTextureRegion(float x, float y, TextureRegion region, Vec4 color) {

@@ -24,7 +24,7 @@ public abstract class Widget implements BatchRenderable {
     //GUI states
     private Group parent;
     private boolean enbaled;
-    private final Vec2 size;
+    private Vec2 size;
     private final Transform2D transform;
     private boolean valid;
     private final Matrix3f absoluteMatrix;
@@ -246,7 +246,7 @@ public abstract class Widget implements BatchRenderable {
     }
 
     public void setSize(float width, float height) {
-        size.set(width, height);
+        size = new Vec2(width, height);
     }
 
     public boolean isEnbaled() {
