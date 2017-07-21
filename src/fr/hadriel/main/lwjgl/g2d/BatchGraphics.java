@@ -98,18 +98,18 @@ public class BatchGraphics {
     public void drawLine(float xa, float ya, float xb, float yb) {
         float weight = strokeWidth / 2;
         Vec2 line = new Vec2(xb - xa, yb - ya);
-        Vec2 heavyness = line.normalLeft().scale(weight, weight);
+        Vec2 normal = line.normalLeft().scale(weight, weight);
         Vec2 position;
         Matrix3f matrix = stack.top();
 
         //Basically draws a quad
-        position = matrix.multiply(xa + heavyness.x, ya + heavyness.y);
+        position = matrix.multiply(xa + normal.x, ya + normal.y);
         batch.submit(position.x, position.y, color);
-        position = matrix.multiply(xa - heavyness.x, ya - heavyness.y);
+        position = matrix.multiply(xa - normal.x, ya - normal.y);
         batch.submit(position.x, position.y, color);
-        position = matrix.multiply(xb - heavyness.x, yb - heavyness.y);
+        position = matrix.multiply(xb - normal.x, yb - normal.y);
         batch.submit(position.x, position.y, color);
-        position = matrix.multiply(xb + heavyness.x, yb + heavyness.y);
+        position = matrix.multiply(xb + normal.x, yb + normal.y);
         batch.submit(position.x, position.y, color);
     }
 

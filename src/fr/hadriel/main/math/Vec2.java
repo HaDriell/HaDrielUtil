@@ -74,7 +74,7 @@ public class Vec2 {
     }
 
     public float len() {
-        return (float) Math.sqrt(x * x + y * y);
+        return Mathf.sqrt(x * x + y * y);
     }
 
     public float dot(Vec2 v) {
@@ -129,15 +129,13 @@ public class Vec2 {
     public Vec2 normalLeft() {
         float length = len();
         if(length == 0) return ZERO;
-        float ilength = 1f / length;
-        return new Vec2(y / ilength, -x / ilength);
+        return new Vec2(y / length, -x / length);
     }
 
     public Vec2 normalRight() {
         float length = len();
         if(length == 0) return ZERO;
-        float ilength = 1f / length;
-        return new Vec2(-y / ilength, x / ilength);
+        return new Vec2(-y / length, x / length);
     }
 
     public Vec2 transform(Matrix3f matrix) {
