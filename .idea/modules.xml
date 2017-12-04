@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Event/Event.iml" filepath="$PROJECT_DIR$/Event/Event.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Graphics/Graphics.iml" filepath="$PROJECT_DIR$/Graphics/Graphics.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HUtils/HUtils.iml" filepath="$PROJECT_DIR$/HUtils/HUtils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HaDrielUtil.iml" filepath="$PROJECT_DIR$/.idea/HaDrielUtil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Math/Math.iml" filepath="$PROJECT_DIR$/Math/Math.iml" />
+    </modules>
+  </component>
+</project>

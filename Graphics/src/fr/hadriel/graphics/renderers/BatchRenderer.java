@@ -28,7 +28,7 @@ public class BatchRenderer {
     public BatchRenderer(float left, float right, float top, float bottom) {
         this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
         this.blendMode = new BlendMode();
-        this.shader = Shader.GLSL(getClass().getResourceAsStream("batch.glsl"));
+        this.shader = Shader.GLSL(getClass().getResourceAsStream("batch_shader.glsl"));
         this.vao = new SingleBufferVertexArray(MAX_QUADS * 4, // using GL_QUADS, so 4 vertices only
                 new AttribPointer("position", GLType.FLOAT, 2),
                 new AttribPointer("color", GLType.FLOAT, 4),

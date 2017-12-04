@@ -52,7 +52,7 @@ public class Texture {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.pixels);
 
         //Generate mipmaps only when not using LINEAR / NEAREST min filters
-        if(hint.GL_MIN_FILTER != GL_NEAREST && hint.GL_MIN_FILTER != GL_LINEAR) {
+        if(hint.GL_MIN_FILTER != GL_LINEAR && hint.GL_MIN_FILTER != GL_NEAREST) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, Math.max(1, hint.GL_TEXTURE_MIPMAP_COUNT));
             glGenerateMipmap(GL_TEXTURE_2D);

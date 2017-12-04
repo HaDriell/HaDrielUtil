@@ -61,6 +61,10 @@ public class Vec2 {
         return scale(v.x, v.y);
     }
 
+    public Vec2 scale(float scale) {
+        return scale(scale, scale);
+    }
+
     public Vec2 add(Vec2 v) {
         return add(v.x, v.y);
     }

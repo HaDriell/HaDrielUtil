@@ -10,6 +10,10 @@ import fr.hadriel.math.*;
  */
 public class Graphics {
 
+    public static final int BEZIER_SUBDIVISION_COUNT = 25;
+    public static final float BEZIER_QUANTUM_T_ADVANCE = 1f / BEZIER_SUBDIVISION_COUNT;
+
+    private float curveFlatnessApproximation = 2f;
     private float strokeWidth = 1f;
     private Matrix3fStack stack;
     private Vec4 color;
@@ -20,6 +24,14 @@ public class Graphics {
         this.batch = batch;
         this.stack = new Matrix3fStack();
         this.color = new Vec4();
+    }
+
+    public void setCurveFlatnessApproximation(float curveFlatnessApproximation) {
+        this.curveFlatnessApproximation = curveFlatnessApproximation;
+    }
+
+    public float getCurveFlatnessApproximation() {
+        return curveFlatnessApproximation;
     }
 
     public void setStrokeWidth(float strokeWidth) {
@@ -115,31 +127,42 @@ public class Graphics {
         batch.submit(position.x, position.y, color);
     }
 
-    public void drawBezierCurve(float sx, float sy, float cx, float cy, float ex, float ey) {
-        float dx1 = cx - sx;
-        float dy1 = cy - sy;
-        float dx2 = ex - cx;
-        float dy2 = ey - cy;
-        float stepTime = 1f / Mathf.min(Mathf.sqrt(dx1 * dx1 + dy1 * dy1) + Mathf.sqrt(dx2 * dx2 + dy2 * dy2), 25); // stepTime estimation
+    public void drawBezierCurve(float ax, float ay, float cx, float cy, float bx, float by) {
+        drawBezierCurve(new QuadraticBezierCurve(ax, ay, cx, cy, bx, by));
+    }
 
-        Vec2 current;
-        Vec2 previous;
+    public void drawBezierCurve(float ax, float ay, float c1x, float c1y, float c2x, float c2y, float bx, float by) {
+        drawBezierCurve(new CubicBezierCurve(ax, ay, c1x, c1y, c2x, c2y, bx, by));
+    }
 
-        //Bézier Curve approximation
-
-        //Initial setup
-        current = new Vec2(sx, sy);
+    // unoptimized way : draw BEZIER_SUBFIVISION_COUNT segments to represent de cubic bezier curve
+    public void drawBezierCurve(CubicBezierCurve curve) {
         float t = 0;
-        while (t < 1f) {
-            previous = current;
-            t += stepTime;
-            if(t > 1f) t = 1f;
-            current = new Vec2(
-                    (1 - t) * (1 - t) * sx + 2 * (1 - t) * t * cx + t * t * ex,
-                    (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * cy + t * t * ey
-            );
-            drawLine(previous.x, previous.y, current.x, current.y);
+        Vec2 a = curve.getPoint(t);
+        Vec2 b;
+        for(int i = 0; i < BEZIER_SUBDIVISION_COUNT; i++) {
+            //Shift to the next position
+            t += BEZIER_QUANTUM_T_ADVANCE;
+            if(t > 1f)
+                t = 1f;
+            b = a;
+            a = curve.getPoint(t);
+            //Render line
+            drawLine(a.x, a.y, b.x, b.y);
         }
+   }
+
+    //Recursive divide & conquer method
+    public void drawBezierCurve(QuadraticBezierCurve curve) {
+        if(curve.getFlatness() < curveFlatnessApproximation) {
+            drawLine(curve.a.x, curve.a.y, curve.b.x, curve.b.y);
+            return;
+        }
+        QuadraticBezierCurve l = new QuadraticBezierCurve();
+        QuadraticBezierCurve r = new QuadraticBezierCurve();
+        curve.subdivide(l, r);
+        drawBezierCurve(l);
+        drawBezierCurve(r);
     }
 
     public void drawTextureRegion(float x, float y, float width, float height, TextureRegion region) {
