@@ -10,7 +10,7 @@ import java.io.*;
 /**
  * Created by glathuiliere on 13/02/2017.
  */
-public class TrueTypeFont {
+public class TrueTypeFont implements IFont {
 
     private static final float DEFAULT_MAX_RENDER_SIZE = 80f;
     private static final int DEFAULT_MIPMAP_COUNT = 4;

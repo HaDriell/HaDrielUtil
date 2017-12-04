@@ -30,7 +30,7 @@ public class G2DWindow extends GLFW3Handle {
         this.scene = new Scene();
         this.mouse = new Vec2();
         //Make sure the OpenGL context is initialized in the GLFW Thread
-        GraphicsThread.submit(() -> {
+        GraphicsThread.runLater(() -> {
                 renderer = new BatchRenderer(0, hint.width, 0, hint.height);
                 g = new Graphics(renderer);
         });

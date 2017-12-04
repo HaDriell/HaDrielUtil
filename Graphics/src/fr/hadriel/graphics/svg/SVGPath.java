@@ -1,8 +1,6 @@
 package fr.hadriel.graphics.svg;
 
-import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -6,6 +6,7 @@ import fr.hadriel.util.Timer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -25,18 +26,28 @@ public class GraphicsThread extends Loop {
         if (!instance.isRunning()) instance.start();
     }
 
-    public static void submit(Task... task) {
-        instance.submitTasks(task);
+    public static void runAndWait(Task... tasks) {
+        final CountDownLatch cd = new CountDownLatch(1);
+        instance.submitTasks(() -> {
+            for(Task task : tasks)
+                task.execute();
+            cd.countDown();
+        });
+        try { cd.await(); } catch (InterruptedException ignore) {}
+    }
+
+    public static void runLater(Task... tasks) {
+        instance.submitTasks(tasks);
         wakeup();
     }
 
     public static void register(Hook hook) {
-        submit(() -> instance.addHook(hook)); //Tasks resolve before the Hooks are called
+        runLater(() -> instance.addHook(hook)); //Tasks resolve before the Hooks are called
         wakeup(); //make sure the Thread is running again
     }
 
     public static void unregister(Hook hook) {
-        submit(() -> instance.removeHook(hook)); //Tasks resolve before the Hooks are called
+        runLater(() -> instance.removeHook(hook)); //Tasks resolve before the Hooks are called
         wakeup(); //make sure the Thread is running again
     }
 

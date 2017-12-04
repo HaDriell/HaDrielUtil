@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by glathuiliere on 06/04/2017.
  */
-public class BitmapFont {
+public class BitmapFont implements IFont {
 
     private static final int FONT_TEXTURE_SIZE = 2048; //Maximum OpenGL standard Texture size support
 

@@ -16,11 +16,11 @@ public class GLFW3WindowManager extends Hook {
     private static final GLFW3WindowManager instance = new GLFW3WindowManager();
 
     public static void register(GLFW3Handle handle) {
-        GraphicsThread.submit(() -> instance.registerHandle(handle)); // async in order to avoid comodification Exceptions
+        GraphicsThread.runLater(() -> instance.registerHandle(handle)); // async in order to avoid comodification Exceptions
     }
 
     public static void unregister(GLFW3Handle handle) {
-        GraphicsThread.submit(() -> instance.unregisterHandle(handle)); // async in order to avoid comodification Exceptions
+        GraphicsThread.runLater(() -> instance.unregisterHandle(handle)); // async in order to avoid comodification Exceptions
     }
 
     //Single Definition

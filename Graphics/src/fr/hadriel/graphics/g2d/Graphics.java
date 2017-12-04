@@ -15,8 +15,8 @@ public class Graphics {
 
     private float curveFlatnessApproximation = 2f;
     private float strokeWidth = 1f;
-    private Matrix3fStack stack;
     private Vec4 color;
+    private Matrix3fStack stack;
 
     private BatchRenderer batch;
 

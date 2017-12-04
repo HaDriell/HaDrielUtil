@@ -23,7 +23,7 @@ public class GLFW3Handle {
         final WindowHint hint = windowHint == null ? new WindowHint() : windowHint;
         final CountDownLatch cd = new CountDownLatch(1);
 
-        GraphicsThread.submit(() -> {
+        GraphicsThread.runLater(() -> {
             GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             //Configure the Window properties
