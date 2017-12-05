@@ -107,9 +107,9 @@ public class Vec2 {
 
     //Rotates counter clockwise
     public Vec2 rotate(float angle) {
-        double rad = Math.toRadians(angle);
-        float cos = (float) Math.cos(rad);
-        float sin = (float) Math.sin(rad);
+        float rad = Mathf.toRadians(angle);
+        float cos = Mathf.cos(rad);
+        float sin = Mathf.sin(rad);
         float nx = x * cos - y * sin;
         float ny = x * sin + y * cos;
         return new Vec2(nx, ny);
@@ -130,16 +130,12 @@ public class Vec2 {
         return new Vec2(-x, -y);
     }
 
-    public Vec2 normalLeft() {
-        float length = len();
-        if(length == 0) return ZERO;
-        return new Vec2(y / length, -x / length);
+    public Vec2 left() {
+        return new Vec2(y, -x);
     }
 
-    public Vec2 normalRight() {
-        float length = len();
-        if(length == 0) return ZERO;
-        return new Vec2(-y / length, x / length);
+    public Vec2 right() {
+        return new Vec2(-y, x);
     }
 
     public Vec2 transform(Matrix3f matrix) {
@@ -160,5 +156,13 @@ public class Vec2 {
         float acy = a.y - c.y;
         float bcy = b.y - c.y;
         return acx * bcy - acy * bcx;
+    }
+
+    public Vec2 to(Vec2 v) {
+        return new Vec2(v.x - x, v.y - y);
+    }
+
+    public boolean equals(Vec2 v) {
+        return v.x == x && v.y == y;
     }
 }

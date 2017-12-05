@@ -7,7 +7,6 @@ import fr.hadriel.graphics.g2d.event.*;
 import fr.hadriel.graphics.g2d.Graphics;
 import fr.hadriel.graphics.g2d.IRenderable;
 import fr.hadriel.math.Matrix3f;
-import fr.hadriel.math.Transform2D;
 import fr.hadriel.math.Vec2;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public abstract class Widget implements IRenderable {
     private Group parent;
     private boolean enbaled;
     private Vec2 size;
-    private final Transform2D transform;
+    private final Matrix3f transform;
     private boolean valid;
     private final Matrix3f absoluteMatrix;
     private final Matrix3f absoluteInverse;
@@ -42,7 +41,7 @@ public abstract class Widget implements IRenderable {
         this.parent = null;
         this.enbaled = true;
         this.size = new Vec2(width, height);
-        this.transform = new Transform2D();
+        this.transform = new Matrix3f();
         this.valid = false;
         this.absoluteMatrix = new Matrix3f();
         this.absoluteInverse = new Matrix3f();
@@ -123,7 +122,7 @@ public abstract class Widget implements IRenderable {
         if(!valid) {
             absoluteMatrix.setToIdentity();
             if (parent != null) absoluteMatrix.multiply(parent.getAbsoluteMatrix());
-            absoluteMatrix.multiply(transform.getMatrix());
+            absoluteMatrix.multiply(transform);
             absoluteInverse.set(absoluteMatrix).invert();
             valid = true;
         }
@@ -153,9 +152,13 @@ public abstract class Widget implements IRenderable {
         invalidate();
     }
 
+    public void transform(Matrix3f matrix3f) {
+        transform.multiply(matrix3f);
+    }
+
     public void render(Graphics g) {
         if(enbaled) {
-            g.push(transform.getMatrix());
+            g.push(transform);
             onRender(g, size.x, size.y, requireUIContext());
             g.pop();
         }

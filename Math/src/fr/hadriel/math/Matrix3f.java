@@ -20,6 +20,7 @@ public class Matrix3f {
     public static final byte M21 = 7;
     public static final byte M22 = 8;
 
+
     private static final float[] IDENTITY = new float[] {
             1, 0, 0,
             0, 1, 0,
@@ -164,6 +165,7 @@ public class Matrix3f {
 
     public Vec2 multiply(Vec2 v) { return multiply(v.x, v.y); }
     public Vec3 multiply(Vec3 v) { return multiply(v.x, v.y, v.z); }
+    public Vec2 multiplyInverse(Vec2 v) { return multiplyInverse(v.x, v.y); }
 
     public Vec2 multiply(float x, float y) {
         float dx = x * elements[M00] + y * elements[M01] + elements[M02];
@@ -176,6 +178,37 @@ public class Matrix3f {
         float dy = elements[M10] * x + elements[M11] * y + elements[M12] * z;
         float dz = elements[M20] * x + elements[M21] * y + elements[M22] * z;
         return new Vec3(dx, dy, dz);
+    }
+
+    //Credits to Thomas Lathuilière for his awesome work around inversion optimizations
+    public Vec2 multiplyInverse(float x, float y) {
+        x -= elements[M02];
+        y -= elements[M12];
+        float det22_inv = 1f / (elements[M00] * elements[M11] - elements[M01] * elements[M10]);
+        float m00 =  det22_inv * elements[M11];
+        float m01 =  det22_inv * -elements[M01];
+        float m10 =  det22_inv * -elements[M10];
+        float m11 =  det22_inv * elements[M00];
+        float dx = x * m00 + y * m01;
+        float dy = x * m10 + y * m11;
+        return new Vec2(dx, dy);
+    }
+
+    public Vec2 getTranslation() {
+        return new Vec2(elements[M02], elements[M12]);
+    }
+
+    public float getRotation() {
+        Vec2 scale = getScale();
+        float cos = elements[M00] / scale.x;
+        float sin = -elements[M10] / scale.x;
+        return Mathf.toDegrees(Mathf.atan2(cos, sin));
+    }
+
+    public Vec2 getScale() {
+        float sx = new Vec2(elements[M00], elements[M10]).len();
+        float sy = new Vec2(elements[M01], elements[M11]).len();
+        return new Vec2(sx, sy);
     }
 
     public float det() {
@@ -194,7 +227,7 @@ public class Matrix3f {
     public Matrix3f invert() {
         float det = det();
         if(det == 0)
-            throw new RuntimeException("Can'torque Invert Matrix");
+            throw new RuntimeException("Can't Invert Matrix");
 
         float invDet = 1f / det;
         float[] tmp = new float[9];
@@ -214,6 +247,7 @@ public class Matrix3f {
 
         for(int i = 0; i < tmp.length; i++)
             tmp[i] *= invDet;
+
         set(tmp);
         return this;
     }

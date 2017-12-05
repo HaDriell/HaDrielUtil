@@ -4,6 +4,8 @@ import fr.hadriel.graphics.opengl.TextureRegion;
 import fr.hadriel.graphics.renderers.BatchRenderer;
 import fr.hadriel.graphics.opengl.Matrix3fStack;
 import fr.hadriel.math.*;
+import fr.hadriel.math.geometry.Polygon;
+import fr.hadriel.math.geometry.Triangle;
 
 /**
  * Created by HaDriel on 11/12/2016.
@@ -85,6 +87,31 @@ public class Graphics {
         batch.end();
     }
 
+    public void draw(Triangle triangle) {
+        Vec2 a = triangle.vertices[0];
+        Vec2 b = triangle.vertices[1];
+        Vec2 c = triangle.vertices[2];
+        drawLine(a.x, a.y, b.x, b.y);
+        drawLine(b.x, b.y, c.x, c.y);
+        drawLine(c.x, c.y, a.x, a.y);
+    }
+
+    public void fill(Triangle triangle) {
+        Vec2 a = triangle.vertices[0];
+        Vec2 b = triangle.vertices[1];
+        Vec2 c = triangle.vertices[2];
+        batch.submit(a.x, a.y, color);
+        batch.submit(b.x, b.y, color);
+        batch.submit(c.x, c.y, color);
+        batch.submit(c.x, c.y, color); // GL_QUADS, pretty inefficient but that's a test for now T_T
+    }
+
+    public void draw(Polygon polygon) {
+    }
+
+    public void fill(Polygon polygon) {
+    }
+
     public void drawRect(float x, float y, float width, float height) {
         float dx = x + width;
         float dy = y + height;
@@ -112,7 +139,7 @@ public class Graphics {
     public void drawLine(float xa, float ya, float xb, float yb) {
         float weight = strokeWidth / 2;
         Vec2 line = new Vec2(xb - xa, yb - ya);
-        Vec2 normal = line.normalLeft().scale(weight, weight);
+        Vec2 normal = line.left().scale(weight, weight);
         Vec2 position;
         Matrix3f matrix = stack.top();
 

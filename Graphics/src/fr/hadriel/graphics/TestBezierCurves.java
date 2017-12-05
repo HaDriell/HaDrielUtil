@@ -9,7 +9,7 @@ import fr.hadriel.math.*;
 
 import java.io.IOException;
 
-public class TestBatchGraphics {
+public class TestBezierCurves {
 
     public static void main(String[] args) {
         G2DWindow window = new G2DWindow();
@@ -38,4 +38,5 @@ public class TestBatchGraphics {
             }
         });
     }
+
 }
