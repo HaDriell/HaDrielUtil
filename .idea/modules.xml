@@ -4,10 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ECS/ECS.iml" filepath="$PROJECT_DIR$/ECS/ECS.iml" />
       <module fileurl="file://$PROJECT_DIR$/Event/Event.iml" filepath="$PROJECT_DIR$/Event/Event.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Graphics/Graphics.iml" filepath="$PROJECT_DIR$/Graphics/Graphics.iml" />
       <module fileurl="file://$PROJECT_DIR$/HUtils/HUtils.iml" filepath="$PROJECT_DIR$/HUtils/HUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/HaDrielUtil.iml" filepath="$PROJECT_DIR$/.idea/HaDrielUtil.iml" />
       <module fileurl="file://$PROJECT_DIR$/Math/Math.iml" filepath="$PROJECT_DIR$/Math/Math.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Media/Media.iml" filepath="$PROJECT_DIR$/Media/Media.iml" />
     </modules>
   </component>
 </project>

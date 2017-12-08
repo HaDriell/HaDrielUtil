@@ -21,6 +21,7 @@ public abstract class Loop {
             throw new IllegalStateException(this + " must be running to call this method!");
     }
 
+
     public synchronized void start() {
         if(running)
             return;
@@ -54,7 +55,7 @@ public abstract class Loop {
     }
 
     /**
-     * this method is called when the thread started successfully
+     * this method is called when the media started successfully
      */
     protected abstract void onStart();
 

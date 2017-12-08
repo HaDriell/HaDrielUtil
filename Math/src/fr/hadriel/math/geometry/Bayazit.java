@@ -45,7 +45,7 @@ public class Bayazit {
     /* (non-Javadoc)
      * @see org.dyn4j.geometry.decompose.Decomposer#decompose(org.dyn4j.geometry.Vec2[])
      */
-    public static List<Polygon> decompose(Vec2... points) {
+    public static List<Convex> decompose(Vec2... points) {
         // check for null array
         if (points == null) throw new NullPointerException("geometry.decompose.nullArray");
         // get the number of points
@@ -68,7 +68,7 @@ public class Bayazit {
         Collections.addAll(polygon, points);
 
         // create a list for the polygons to live
-        List<Polygon> polygons = new ArrayList<>();
+        List<Convex> polygons = new ArrayList<>();
 
         // decompose the polygon
         decomposePolygon(polygon, polygons);
@@ -82,7 +82,7 @@ public class Bayazit {
      * @param polygon the polygon to decompose
      * @param polygons the list to store the convex polygons resulting from the decomposition
      */
-    public static void decomposePolygon(List<Vec2> polygon, List<Polygon> polygons) {
+    public static void decomposePolygon(List<Vec2> polygon, List<Convex> polygons) {
         // get the size of the given polygon
         int size = polygon.size();
 
@@ -96,8 +96,8 @@ public class Bayazit {
         int lowerIndex = 0;
         int closestIndex = 0;
 
-        List<Vec2> lower = new ArrayList<Vec2>();
-        List<Vec2> upper = new ArrayList<Vec2>();
+        List<Vec2> lower = new ArrayList<>();
+        List<Vec2> upper = new ArrayList<>();
 
         // loop over all the vertices
         for (int i = 0; i < size; i++) {
@@ -246,7 +246,7 @@ public class Bayazit {
         }
         Vec2[] vertices = new Vec2[polygon.size()];
         polygon.toArray(vertices);
-        polygons.add(new Polygon(vertices));
+        polygons.add(new Convex(vertices));
     }
 
     /**
@@ -437,11 +437,54 @@ public class Bayazit {
         return true;
     }
 
-    public static float getLocation(Vec2 a, Vec2 b, Vec2 c) {
-        return 0f;
+    public static double getLocation(Vec2 point, Vec2 a, Vec2 b) {
+        return (b.x - a.x) * (point.y - a.y) -
+                (point.x - a.x) * (b.y - a.y);
     }
 
     public static Vec2 getSegmentIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d) {
         return null;
+    }
+
+    public static Vec2 getLineIntersection(Vec2 ap1, Vec2 ap2, Vec2 bp1, Vec2 bp2) {
+        Vec2 A = ap1.to(ap2);
+        Vec2 B = bp1.to(bp2);
+
+        // compute the bottom
+        float BxA = B.cross(A);
+        if (Math.abs(BxA) <= Epsilon.E) {
+            // the lines are parallel and don't intersect
+            return null;
+        }
+
+        // compute the top
+        float ambxA = ap1.sub(bp1).cross(A);
+        if (Math.abs(ambxA) <= Epsilon.E) {
+            // the lines are coincident
+            return null;
+        }
+
+
+
+        // compute tb
+        float tb = ambxA / BxA;
+        if (tb < 0.0 || tb > 1.0) {
+            // no intersection
+            return null;
+        }
+
+        // compute the intersection point
+        Vec2 ip = B.scale(tb).add(bp1);
+
+        // since both are segments we need to verify that
+        // ta is also valid.
+        // compute ta
+        float ta = ip.sub(ap1).dot(A) / A.dot(A);
+        if (ta < 0.0 || ta > 1.0) {
+            // no intersection
+            return null;
+        }
+
+        return ip;
     }
 }
