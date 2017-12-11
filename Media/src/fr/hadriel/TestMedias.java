@@ -1,4 +1,4 @@
-package fr.hadriel.core;
+package fr.hadriel;
 
 import fr.hadriel.core.media.MediaTask;
 import fr.hadriel.core.media.Medias;

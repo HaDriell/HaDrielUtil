@@ -1,8 +1,10 @@
-package fr.hadriel.graphics.glfw3;
+package fr.hadriel.graphics.glfw;
 
 /**
  * Created by glathuiliere on 22/07/2016.
  */
+
+//TODO : extend the WindowHint support to the majority of GLFW Window Hints creation + make some tests about that
 public class WindowHint {
     public int x = -1;
     public int y = -1;

@@ -1,6 +1,6 @@
 package fr.hadriel.graphics.font;
 
-import fr.hadriel.graphics.g2d.Graphics;
+import fr.hadriel.gui.Graphics;
 import fr.hadriel.graphics.io.ImageData;
 import fr.hadriel.graphics.opengl.Texture;
 import fr.hadriel.graphics.opengl.TextureHint;
@@ -57,10 +57,10 @@ public class BitmapFont implements IFont {
                     lineheight);
             cmap.put(c, ttfc);
 
-            offsetX += layout.getAdvance() + 4; // 4 pixels spacing for the render safety
+            offsetX += layout.getAdvance() + 4; // 4 pixels spacing for the draw safety
             if(offsetX + layout.getAdvance() > FONT_TEXTURE_SIZE) {
                 offsetX = 0;
-                offsetY += lineheight + 4; // 4 pixels spacing for the render safety
+                offsetY += lineheight + 4; // 4 pixels spacing for the draw safety
             }
         }
         g.dispose();

@@ -40,7 +40,6 @@ public final class Medias {
     }
 
     private static void run() {
-        System.out.println("Worker Started");
         Timer timer = new Timer();
         while (actions.size() > 0) {
             //get delta time
@@ -59,7 +58,6 @@ public final class Medias {
         }
         //remove the reference from the media so that wakeup() can insanciate another one
         Medias.thread = null;
-        System.out.println("Worker Stopped");
     }
 
 }

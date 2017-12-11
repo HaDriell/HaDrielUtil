@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.glfw3;
+package fr.hadriel.graphics.glfw;
 
 import fr.hadriel.core.application.GUIApplication;
 import fr.hadriel.core.application.GUIHandle;
@@ -31,6 +31,7 @@ public class GLFWwindow extends GUIHandle {
 
     // Class Definition
 
+    //TODO : make a "Property-like" access to the properties so it is synchronized with the actual GLFW context.
     protected WindowHint properties;
 
     private long window = -1;
@@ -43,7 +44,6 @@ public class GLFWwindow extends GUIHandle {
     }
 
     private void checkHandle() {
-
         if(window < 0)
             throw new RuntimeException("Unable to use an unitialized GLFWwindow");
     }
@@ -51,9 +51,7 @@ public class GLFWwindow extends GUIHandle {
     protected void onInit() {
         glfwWindowCreated(); // ensure glfw is initialized before actually creating the window
 
-
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
         //Configure the Window properties
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_RESIZABLE, properties.fullscreen ? GLFW_FALSE : properties.resizable ? GLFW_TRUE : GLFW_FALSE);

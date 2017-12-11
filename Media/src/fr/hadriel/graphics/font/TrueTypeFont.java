@@ -1,6 +1,6 @@
 package fr.hadriel.graphics.font;
 
-import fr.hadriel.graphics.g2d.Graphics;
+import fr.hadriel.gui.Graphics;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
 
@@ -21,7 +21,6 @@ public class TrueTypeFont implements IFont {
         mipmaps = new BitmapFont[mipmapCount];
         float size = maxRenderSize;
         for(int i = 0; i < mipmapCount; i++) {
-            System.out.println("Generating mipmap with size : " + size);
             Font mipmapFont = font.deriveFont(size);
             mipmaps[i] = new BitmapFont(mipmapFont);
             size /= 2;

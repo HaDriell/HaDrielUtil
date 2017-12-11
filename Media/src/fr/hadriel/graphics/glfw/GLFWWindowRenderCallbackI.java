@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.glfw3;
+package fr.hadriel.graphics.glfw;
 
 /**
  * Created by glathuiliere on 20/07/2017.

@@ -1,8 +1,7 @@
 package fr.hadriel.core.application;
 
 import fr.hadriel.application.IHDUApplication;
-import fr.hadriel.graphics.g2d.G2DWindow;
-import fr.hadriel.graphics.glfw3.GLFWwindow;
+import fr.hadriel.gui.Window;
 import fr.hadriel.util.Timer;
 
 import java.util.ArrayList;
@@ -20,6 +19,15 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class GUIApplication implements IHDUApplication {
 
     private static GUIApplication application = null;
+    private static Thread graphicsThread = null;
+
+    private static void requireGUIApplication() {
+        if(application == null) throw new RuntimeException("GUIApplication not initialized !");
+    }
+
+    public static boolean isCurrentThreadGraphics() {
+        return Thread.currentThread() == graphicsThread;
+    }
 
     public static void runLater(Runnable runnable) {
         runLater((dt) -> {
@@ -29,10 +37,12 @@ public abstract class GUIApplication implements IHDUApplication {
     }
 
     public static void runLater(GUITask task) {
-        application.submit(task); // TODO : null application error handling
+        requireGUIApplication();
+        application.submit(task);
     }
 
     public static void runAndWait(GUITask task) {
+        requireGUIApplication();
         CountDownLatch cd = new CountDownLatch(1);
         application.submit((dt) -> {
             if(task.execute(dt)) {
@@ -54,17 +64,22 @@ public abstract class GUIApplication implements IHDUApplication {
     }
 
     public final void run(String[] args) {
+        if(graphicsThread != null && graphicsThread != Thread.currentThread())
+            throw new IllegalStateException("Trying to set Application while not Graphics Thread");
         if(application != null)
             throw new RuntimeException("Unable create multiple GUIApplications at the same time !");
+
+        graphicsThread = Thread.currentThread();
         application = this;
 
-        //TODO : create a first window and pass it to the GUIApplication ?
-        G2DWindow window = new G2DWindow();
 
-        new Thread(() -> start(window), "Application Thread").start(); // real run function
+        final Window window = new Window();
+        //We must delay the Application start for the next update because of the Window initialization step
+        runLater(() -> {
+            new Thread(() -> start(window), "Application Thread").start(); // real run function
+        });
+
         Timer timer = new Timer();
-
-        System.out.println("Tasks:" + tasks.size());
         do {
             float dt = timer.elapsed();
             timer.reset();
@@ -81,5 +96,5 @@ public abstract class GUIApplication implements IHDUApplication {
         lock.unlock();
     }
 
-    protected abstract void start(G2DWindow window); // TODO : add a Window in param
+    protected abstract void start(Window window); // TODO : add a Window in param
 }

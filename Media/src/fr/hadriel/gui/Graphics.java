@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.g2d;
+package fr.hadriel.gui;
 
 import fr.hadriel.graphics.opengl.TextureRegion;
 import fr.hadriel.graphics.renderers.BatchRenderer2D;
@@ -10,40 +10,46 @@ import fr.hadriel.math.*;
  */
 public class Graphics {
 
-    public static final int BEZIER_SUBDIVISION_COUNT = 25;
-    public static final float BEZIER_QUANTUM_T_ADVANCE = 1f / BEZIER_SUBDIVISION_COUNT;
+    //TODO : setup beter settings options
+    public static final class Settings {
+        public float strokeWidth;
+        public float bzFlatnessFactor;
+        public int bzCubicSubdivisionCount;
 
-    private float curveFlatnessApproximation = 2f;
-    private float strokeWidth = 1f;
+        public Settings() {
+            reset();
+        }
+
+        public void reset() {
+            this.strokeWidth = 1f;
+            this.bzFlatnessFactor = 1f;
+            this.bzCubicSubdivisionCount = 25;
+        }
+    }
+
     private Vec4 color;
-    private Matrix3fStack stack;
+    private final Settings settings;
+    private final Matrix3fStack stack;
 
     private BatchRenderer2D batch;
+
+    public Graphics(float width, float height) {
+        this(0, width, 0, height);
+    }
 
     public Graphics(float left, float right, float top, float bottom) {
         this(new BatchRenderer2D(left, right, top, bottom));
     }
 
     public Graphics(BatchRenderer2D batch) {
+        this.settings = new Settings();
         this.batch = batch;
         this.stack = new Matrix3fStack();
         this.color = new Vec4();
     }
 
-    public void setCurveFlatnessApproximation(float curveFlatnessApproximation) {
-        this.curveFlatnessApproximation = curveFlatnessApproximation;
-    }
-
-    public float getCurveFlatnessApproximation() {
-        return curveFlatnessApproximation;
-    }
-
-    public void setStrokeWidth(float strokeWidth) {
-        this.strokeWidth = strokeWidth;
-    }
-
-    public float getStrokeWidth() {
-        return strokeWidth;
+    public Settings settings() {
+        return settings;
     }
 
     public void setColor(int packed) {
@@ -76,7 +82,7 @@ public class Graphics {
 
     public void clear() {
         color = new Vec4(1, 1, 1, 1);
-        strokeWidth = 1f;
+        settings.reset();
         stack.clear();
     }
 
@@ -115,7 +121,7 @@ public class Graphics {
     }
 
     public void drawLine(float xa, float ya, float xb, float yb) {
-        float weight = strokeWidth / 2;
+        float weight = settings.strokeWidth / 2;
         Vec2 lineVector = new Vec2(xb - xa, yb - ya);
         Vec2 normal = lineVector.left().normalize().scale(weight, weight);
         Vec2 position;
@@ -144,11 +150,12 @@ public class Graphics {
     // unoptimized way : draw BEZIER_SUBFIVISION_COUNT segments to represent de cubic bezier curve
     public void drawBezierCurve(CubicBezierCurve curve) {
         float t = 0;
+        float dt = 1f / settings.bzCubicSubdivisionCount;
         Vec2 a = curve.getPoint(t);
         Vec2 b;
-        for(int i = 0; i < BEZIER_SUBDIVISION_COUNT; i++) {
+        for(int i = 0; i < settings.bzCubicSubdivisionCount; i++) {
             //Shift to the next position
-            t += BEZIER_QUANTUM_T_ADVANCE;
+            t += dt;
             if(t > 1f)
                 t = 1f;
             b = a;
@@ -160,7 +167,7 @@ public class Graphics {
 
     //Recursive divide & conquer method
     public void drawBezierCurve(QuadraticBezierCurve curve) {
-        if(curve.getFlatness() < curveFlatnessApproximation) {
+        if(curve.getFlatness() < settings.bzFlatnessFactor) {
             drawLine(curve.a.x, curve.a.y, curve.b.x, curve.b.y);
             return;
         }
@@ -179,13 +186,13 @@ public class Graphics {
         Vec2 position;
         Matrix3f matrix = stack.top();
         position = matrix.multiply(x, y);
-        batch.vertex(position.x, position.y, color, region.u[0], region.v[0], region.texture);
+        batch.vertex(position.x, position.y, color, region.uvs[0].x, region.uvs[0].y, region.texture);
         position = matrix.multiply(x + width, y);
-        batch.vertex(position.x, position.y, color, region.u[1], region.v[1], region.texture);
+        batch.vertex(position.x, position.y, color, region.uvs[1].x, region.uvs[1].y, region.texture);
         position = matrix.multiply(x + width, y + height);
-        batch.vertex(position.x, position.y, color, region.u[2], region.v[2], region.texture);
+        batch.vertex(position.x, position.y, color, region.uvs[2].x, region.uvs[2].y, region.texture);
         position = matrix.multiply(x, y + height);
-        batch.vertex(position.x, position.y, color, region.u[3], region.v[3], region.texture);
+        batch.vertex(position.x, position.y, color, region.uvs[3].x, region.uvs[3].y, region.texture);
         batch.indices(0, 1, 2, 2, 3, 0);
     }
 

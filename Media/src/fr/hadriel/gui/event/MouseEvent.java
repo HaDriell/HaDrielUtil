@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.g2d.event;
+package fr.hadriel.gui.event;
 
 import fr.hadriel.math.Vec2;
 

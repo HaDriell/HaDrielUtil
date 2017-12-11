@@ -1,7 +1,7 @@
 package fr.hadriel.graphics.svg;
 
 import fr.hadriel.graphics.font.IFont;
-import fr.hadriel.graphics.g2d.Graphics;
+import fr.hadriel.gui.Graphics;
 import fr.hadriel.math.Vec4;
 
 /**

@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.g2d.ui;
+package fr.hadriel.gui.ui;
 
 /**
  * Created by glathuiliere on 19/07/2017.

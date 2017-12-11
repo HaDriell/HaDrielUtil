@@ -2,7 +2,7 @@ package fr.hadriel;
 
 import fr.hadriel.application.Launcher;
 import fr.hadriel.core.application.GUIApplication;
-import fr.hadriel.graphics.g2d.G2DWindow;
+import fr.hadriel.gui.Window;
 
 /**
  * TODO comment
@@ -11,8 +11,14 @@ import fr.hadriel.graphics.g2d.G2DWindow;
  */
 public class TestGUIApplication extends GUIApplication {
 
-    protected void start(G2DWindow window) {
+    protected void start(Window window) {
         window.hide();
+        new Thread(() -> {
+            try { Thread.sleep(1000); } catch (InterruptedException ignore) {}
+            window.show();
+            try { Thread.sleep(1000); } catch (InterruptedException ignore) {}
+            window.close();
+        }).start();
     }
 
     public static void main(String[] args) {

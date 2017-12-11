@@ -1,8 +1,8 @@
-package fr.hadriel.graphics.g2d.ui;
+package fr.hadriel.gui.ui;
 
 
-import fr.hadriel.graphics.g2d.Graphics;
-import fr.hadriel.graphics.g2d.event.UIEvent;
+import fr.hadriel.gui.Graphics;
+import fr.hadriel.gui.event.UIEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class Group extends Widget {
 
     protected void onRender(Graphics g, float width, float height, UIContext context) {
         for(Widget w : widgets)
-            w.render(g);
+            w.draw(g);
     }
 
     public void invalidate() {

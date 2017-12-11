@@ -1,11 +1,11 @@
-package fr.hadriel.graphics.g2d.ui;
+package fr.hadriel.gui.ui;
 
 
 import fr.hadriel.event.IEventListener;
 import fr.hadriel.event.MultiEventListener;
-import fr.hadriel.graphics.g2d.event.*;
-import fr.hadriel.graphics.g2d.Graphics;
-import fr.hadriel.graphics.g2d.IRenderable;
+import fr.hadriel.gui.event.*;
+import fr.hadriel.gui.Graphics;
+import fr.hadriel.gui.IDrawable;
 import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec2;
 
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by glathuiliere on 07/02/2017.
  */
-public abstract class Widget implements IRenderable {
+public abstract class Widget implements IDrawable {
 
     //Event Framework Implementation
     private List<IEventListener> bubbleListeners;
@@ -77,20 +77,17 @@ public abstract class Widget implements IRenderable {
     }
 
     private UIEvent handle(MouseEnterEvent event) {
-        System.out.println("Mouse Enter " + this);
         event.capture();
         return event;
     }
 
     private UIEvent handle(MouseExitEvent event) {
-        System.out.println("Mouse Exit "+ this);
         event.capture();
         return event;
     }
 
     private UIEvent handle(FocusGainEvent event) {
         event.capture();
-        System.out.println("Focus is on " + this);
         return event;
     }
 
@@ -156,7 +153,7 @@ public abstract class Widget implements IRenderable {
         transform.multiply(matrix3f);
     }
 
-    public void render(Graphics g) {
+    public void draw(Graphics g) {
         if(enbaled) {
             g.push(transform);
             onRender(g, size.x, size.y, requireUIContext());

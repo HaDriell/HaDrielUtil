@@ -1,5 +1,7 @@
 package fr.hadriel.graphics.opengl;
 
+import fr.hadriel.math.Vec2;
+
 /**
  * Created by HaDriel on 08/12/2016.
  */
@@ -8,30 +10,24 @@ public class TextureRegion {
     public final Texture texture;
     public final float width;
     public final float height;
-    public final float[] u;
-    public final float[] v;
+    public final Vec2[] uvs;
 
     public TextureRegion(Texture texture, float x, float y, float width, float height) {
         this.texture = texture;
         this.width = width;
         this.height = height;
-        u = new float[]{
-                x,
-                x + width,
-                x + width,
-                x
-        };
-        v = new float[]{
-                y,
-                y,
-                y + height,
-                y + height
-        };
+        this.uvs = new Vec2[4];
 
-        //Discrete UV [0 : 1]
-        for(int i = 0; i < 4; i++) {
-            u[i] /= texture.width;
-            v[i] /= texture.height;
-        }
+        float u0 = x / texture.width;
+        float u1 = (x + width) / texture.width;
+        float v0 = y / texture.height;
+        float v1 = (y + height) / texture.height;
+
+
+
+        uvs[0] = new Vec2(u0, v0);
+        uvs[1] = new Vec2(u1, v0);
+        uvs[2] = new Vec2(u1, v1);
+        uvs[3] = new Vec2(u0, v1);
     }
 }

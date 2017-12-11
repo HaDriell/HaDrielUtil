@@ -1,9 +1,9 @@
-package fr.hadriel.graphics.g2d;
+package fr.hadriel.gui;
 
-import fr.hadriel.graphics.g2d.event.*;
-import fr.hadriel.graphics.g2d.ui.Scene;
-import fr.hadriel.graphics.glfw3.GLFWwindow;
-import fr.hadriel.graphics.glfw3.WindowHint;
+import fr.hadriel.gui.event.*;
+import fr.hadriel.gui.ui.Scene;
+import fr.hadriel.graphics.glfw.GLFWwindow;
+import fr.hadriel.graphics.glfw.WindowHint;
 import fr.hadriel.math.Vec2;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -13,20 +13,21 @@ import org.lwjgl.opengl.GL11;
  *
  * TODO : not an inheritance. way too permissive for the Handle to be corrupt
  */
-public final class G2DWindow extends GLFWwindow {
+public final class Window extends GLFWwindow {
 
     private Graphics g;
     private Scene scene;
 
     private Vec2 mouse;
-    public G2DWindow(WindowHint hint) {
+
+    public Window() {
+        this(new WindowHint()); //default hints
+    }
+
+    public Window(WindowHint hint) {
         super(hint);
         this.scene = new Scene();
         this.mouse = new Vec2();
-    }
-
-    public G2DWindow() {
-        this(new WindowHint()); //default hints
     }
 
     protected void onInit() {
@@ -88,7 +89,7 @@ public final class G2DWindow extends GLFWwindow {
         g.setColor(0, 0, 0, 1);
         g.fillRect(0, 0, properties.width, properties.height);
         if(scene != null) {
-            scene.render(g);
+            scene.draw(g);
         }
         g.end();
         g.clear();

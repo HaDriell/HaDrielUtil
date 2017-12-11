@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.g2d.event;
+package fr.hadriel.gui.event;
 
 /**
  * Created by glathuiliere on 02/02/2017.

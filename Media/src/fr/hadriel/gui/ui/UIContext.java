@@ -1,9 +1,9 @@
-package fr.hadriel.graphics.g2d.ui;
+package fr.hadriel.gui.ui;
 
-import fr.hadriel.graphics.g2d.event.FocusGainEvent;
-import fr.hadriel.graphics.g2d.event.FocusLostEvent;
-import fr.hadriel.graphics.g2d.event.MouseEnterEvent;
-import fr.hadriel.graphics.g2d.event.MouseExitEvent;
+import fr.hadriel.gui.event.FocusGainEvent;
+import fr.hadriel.gui.event.FocusLostEvent;
+import fr.hadriel.gui.event.MouseEnterEvent;
+import fr.hadriel.gui.event.MouseExitEvent;
 
 /**
  * Created by glathuiliere on 19/07/2017.
