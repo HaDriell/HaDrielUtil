@@ -18,8 +18,10 @@ public class GLFWwindow extends GUIHandle {
     private static int handleCount;
 
     private static synchronized void glfwWindowCreated() {
-        if(handleCount == 0)
+        if(handleCount == 0) {
             glfwInit();
+            glfwSwapInterval(GLFW_TRUE);
+        }
         handleCount++;
     }
 

@@ -60,12 +60,36 @@ public class Texture {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    public TextureRegion getRegion(float x, float y, float width, float height, boolean xFlip, boolean yFlip) {
+        float nx = x;
+        float ny = y;
+        float nwidth = width;
+        float nheight = height;
+
+        //Handle x inversion
+        if(xFlip) {
+            nx += width;
+            nwidth = -width;
+        }
+
+        //Handle y inversion
+        if(yFlip) {
+            ny += height;
+            nheight = -height;
+        }
+        return new TextureRegion(this, nx, ny, nwidth, nheight);
+    }
+
     public TextureRegion getRegion(float x, float y, float width, float height) {
-        return new TextureRegion(this, x, y, width, height);
+        return getRegion(x, y, width, height, false, false);
+    }
+
+    public TextureRegion getRegion(boolean xFlip, boolean yFlip) {
+        return getRegion(0, 0, width, height, xFlip, yFlip);
     }
 
     public TextureRegion getRegion() {
-        return new TextureRegion(this, 0, 0, width, height);
+        return getRegion(false, false);
     }
 
     public void setData(ImageData image) {

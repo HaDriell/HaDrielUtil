@@ -1,6 +1,6 @@
 package fr.hadriel.graphics.font;
 
-import fr.hadriel.gui.Graphics;
+import fr.hadriel.graphics.Graphics;
 import fr.hadriel.math.Vec4;
 
 /**

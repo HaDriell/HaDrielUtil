@@ -12,7 +12,6 @@ import fr.hadriel.gui.Window;
 public class TestGUIApplication extends GUIApplication {
 
     protected void start(Window window) {
-        window.hide();
         new Thread(() -> {
             try { Thread.sleep(1000); } catch (InterruptedException ignore) {}
             window.show();

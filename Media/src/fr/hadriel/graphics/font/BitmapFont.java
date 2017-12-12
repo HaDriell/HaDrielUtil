@@ -1,6 +1,6 @@
 package fr.hadriel.graphics.font;
 
-import fr.hadriel.gui.Graphics;
+import fr.hadriel.graphics.Graphics;
 import fr.hadriel.graphics.io.ImageData;
 import fr.hadriel.graphics.opengl.Texture;
 import fr.hadriel.graphics.opengl.TextureHint;
@@ -91,11 +91,7 @@ public class BitmapFont implements IFont {
             TTFChar ttfc = getTTFChar(string.charAt(i));
             matrix.setToTransform(scale, scale, 0, offsetX, 0);
             g.push(matrix);
-            g.drawTextureRegion(
-                    0,
-                    0,
-                    ttfc.getRegion(texture),
-                    color);
+            g.drawTexture(0, 0, ttfc.getRegion(texture), color);
             g.pop();
             offsetX += ttfc.advance * scale;
         }

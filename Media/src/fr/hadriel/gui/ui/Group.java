@@ -1,7 +1,7 @@
 package fr.hadriel.gui.ui;
 
 
-import fr.hadriel.gui.Graphics;
+import fr.hadriel.graphics.IGraphics;
 import fr.hadriel.gui.event.UIEvent;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class Group extends Widget {
         return widgets;
     }
 
-    protected void onRender(Graphics g, float width, float height, UIContext context) {
+    protected void onRender(IGraphics g, float width, float height, UIContext context) {
         for(Widget w : widgets)
             w.draw(g);
     }

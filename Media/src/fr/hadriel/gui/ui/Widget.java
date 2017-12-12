@@ -3,9 +3,9 @@ package fr.hadriel.gui.ui;
 
 import fr.hadriel.event.IEventListener;
 import fr.hadriel.event.MultiEventListener;
+import fr.hadriel.graphics.IGraphics;
 import fr.hadriel.gui.event.*;
-import fr.hadriel.gui.Graphics;
-import fr.hadriel.gui.IDrawable;
+import fr.hadriel.graphics.IDrawable;
 import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec2;
 
@@ -153,7 +153,7 @@ public abstract class Widget implements IDrawable {
         transform.multiply(matrix3f);
     }
 
-    public void draw(Graphics g) {
+    public void draw(IGraphics g) {
         if(enbaled) {
             g.push(transform);
             onRender(g, size.x, size.y, requireUIContext());
@@ -161,7 +161,7 @@ public abstract class Widget implements IDrawable {
         }
     }
 
-    protected abstract void onRender(Graphics g, float width, float height, UIContext context);
+    protected abstract void onRender(IGraphics g, float width, float height, UIContext context);
 
     protected void onEventCapture(UIEvent event) {
         for(IEventListener listener : captureListeners) {

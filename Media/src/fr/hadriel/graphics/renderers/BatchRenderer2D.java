@@ -22,6 +22,7 @@ public class BatchRenderer2D {
 
     private Matrix4f projection; // projection uniform
 
+    private FaceCulling faceCulling;
     private BlendMode blendMode;
     private Shader shader;
     private TextureSampler sampler;
@@ -36,12 +37,17 @@ public class BatchRenderer2D {
 
     public BatchRenderer2D(float left, float right, float top, float bottom) {
         this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
+        this.faceCulling = new FaceCulling();
         this.blendMode = new BlendMode();
         this.shader = Shader.GLSL(getClass().getResourceAsStream("batch_shader.glsl"));
         this.vao = new SingleBufferVertexArray(MAX_ELEMENT_COUNT, BATCH_SHADER_LAYOUT);
         this.vbo = vao.getBuffer(0);
         this.ibo = new IndexBuffer(MAX_ELEMENT_COUNT, GLType.UINT);
         this.sampler = new TextureSampler();
+    }
+
+    public FaceCulling getFaceCulling() {
+        return faceCulling;
     }
 
     public BlendMode getBlendMode() {
@@ -105,6 +111,7 @@ public class BatchRenderer2D {
         vbo.bind().unmap(); // update the vertex buffer data
 
         //Render
+        faceCulling.enable();
         blendMode.enable();
         shader.bind();
         sampler.bindTextures();
@@ -117,5 +124,7 @@ public class BatchRenderer2D {
         vao.unbind();
         ibo.unbind();
         shader.unbind();
+        blendMode.disable();
+        faceCulling.disable();
     }
 }

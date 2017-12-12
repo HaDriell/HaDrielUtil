@@ -1,5 +1,6 @@
 package fr.hadriel.gui;
 
+import fr.hadriel.graphics.Graphics;
 import fr.hadriel.gui.event.*;
 import fr.hadriel.gui.ui.Scene;
 import fr.hadriel.graphics.glfw.GLFWwindow;
@@ -86,7 +87,7 @@ public final class Window extends GLFWwindow {
     public void onRender(long window) {
         if(g == null) return; //initialization is async now :/
         g.begin();
-        g.setColor(0, 0, 0, 1);
+        g.settings().color(0, 0, 0, 1);
         g.fillRect(0, 0, properties.width, properties.height);
         if(scene != null) {
             scene.draw(g);
