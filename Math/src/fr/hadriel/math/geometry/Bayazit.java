@@ -24,7 +24,6 @@
  */
 package fr.hadriel.math.geometry;
 
-import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class Bayazit {
     /* (non-Javadoc)
      * @see org.dyn4j.geometry.decompose.Decomposer#decompose(org.dyn4j.geometry.Vec2[])
      */
-    public static List<Polygon> decompose(Vec2... points) {
+    public static List<Convex> decompose(Vec2... points) {
         // check for null array
         if (points == null) throw new NullPointerException("geometry.decompose.nullArray");
         // get the number of points
@@ -69,7 +68,7 @@ public class Bayazit {
         Collections.addAll(polygon, points);
 
         // create a list for the polygons to live
-        List<Polygon> polygons = new ArrayList<>();
+        List<Convex> polygons = new ArrayList<>();
 
         // decompose the polygon
         decomposePolygon(polygon, polygons);
@@ -83,16 +82,16 @@ public class Bayazit {
      * @param polygon the polygon to decompose
      * @param polygons the list to store the convex polygons resulting from the decomposition
      */
-    public static void decomposePolygon(List<Vec2> polygon, List<Polygon> polygons) {
+    public static void decomposePolygon(List<Vec2> polygon, List<Convex> polygons) {
         // get the size of the given polygon
         int size = polygon.size();
 
         // initialize
-        Vec2 upperIntersection = null;
-        Vec2 lowerIntersection = null;
-        float upperDistance = Float.MAX_VALUE;
-        float lowerDistance = Float.MAX_VALUE;
-        float closestDistance = Float.MAX_VALUE;
+        Vec2 upperIntersection = new Vec2();
+        Vec2 lowerIntersection = new Vec2();
+        double upperDistance = Double.MAX_VALUE;
+        double lowerDistance = Double.MAX_VALUE;
+        double closestDistance = Double.MAX_VALUE;
         int upperIndex = 0;
         int lowerIndex = 0;
         int closestIndex = 0;
@@ -123,19 +122,18 @@ public class Bayazit {
                     Vec2 q1 = polygon.get(j + 1 == size ? 0 : j + 1);
 
                     // create a storage location for the intersection point
-                    Vec2 s = null;
+                    Vec2 s = new Vec2();
 
                     // extend the previous edge
                     // does the line p0->p go between the vertices q and q0
                     if (left(p0, p, q) && rightOn(p0, p, q0)) {
                         // get the intersection point
-                        s = getIntersection(p0, p, q, q0);
-                        if (s != null) {
+                        if (getIntersection(p0, p, q, q0, s)) {
                             // make sure the intersection point is to the right of
                             // the edge p1->p (this makes sure its inside the polygon)
                             if (right(p1, p, s)) {
                                 // get the distance from p to the intersection point s
-                                float dist = p.distance2(s);
+                                double dist = p.distance2(s);
                                 // only save the smallest
                                 if (dist < lowerDistance) {
                                     lowerDistance = dist;
@@ -150,13 +148,12 @@ public class Bayazit {
                     // does the line p1->p go between q and q1
                     if (left(p1, p, q1) && rightOn(p1, p, q)) {
                         // get the intersection point
-                        s = getIntersection(p1, p, q, q1);
-                        if (s != null) {
+                        if (getIntersection(p1, p, q, q1, s)) {
                             // make sure the intersection point is to the left of
                             // the edge p0->p (this makes sure its inside the polygon)
                             if (left(p0, p, s)) {
                                 // get the distance from p to the intersection point s
-                                float dist = p.distance2(s);
+                                double dist = p.distance2(s);
                                 // only save the smallest
                                 if (dist < upperDistance) {
                                     upperDistance = dist;
@@ -207,7 +204,7 @@ public class Bayazit {
 
                         // check the distance first, since this is generally
                         // a much faster operation than checking if its visible
-                        float dist = p.distance2(q);
+                        double dist = p.distance2(q);
                         if (dist < closestDistance) {
                             if (isVisible(polygon, i, jmod)) {
                                 closestDistance = dist;
@@ -249,7 +246,7 @@ public class Bayazit {
         }
         Vec2[] vertices = new Vec2[polygon.size()];
         polygon.toArray(vertices);
-        polygons.add(new Polygon(vertices));
+        polygons.add(new Convex(vertices));
     }
 
     /**
@@ -323,9 +320,10 @@ public class Bayazit {
      * @param a2 the second point of the first line
      * @param b1 the first point of the second line
      * @param b2 the second point of the second line
+     * @param p the destination object for the intersection point
      * @return boolean
      */
-    public static Vec2 getIntersection(Vec2 a1, Vec2 a2, Vec2 b1, Vec2 b2) {
+    public static boolean getIntersection(Vec2 a1, Vec2 a2, Vec2 b1, Vec2 b2, Vec2 p) {
         // any point on a line can be found by the parametric equation:
         // P = (1 - t)A + tB
         // or
@@ -375,7 +373,7 @@ public class Bayazit {
         // make sure the matrix isn't singular (the lines could be parallel)
         if (Math.abs(det) <= Epsilon.E) {
             // return false since there is no way that the segments could be intersecting
-            return null;
+            return false;
         } else {
             // pre-divide the determinant
             det = 1f / det;
@@ -385,7 +383,10 @@ public class Bayazit {
 
             // compute the intersection point
             // P = B1(1.0 - t2) + B2(t2)
-            return new Vec2(b1.x * (1f - t2) + b2.x * t2, b1.y * (1f - t2) + b2.y * t2);
+            p = new Vec2(b1.x * (1f - t2) + b2.x * t2, b1.y * (1f - t2) + b2.y * t2);
+
+            // return that they intersect
+            return true;
         }
     }
 
@@ -436,32 +437,54 @@ public class Bayazit {
         return true;
     }
 
-    public static float getLocation(Vec2 point, Vec2 a, Vec2 b) {
+    public static double getLocation(Vec2 point, Vec2 a, Vec2 b) {
         return (b.x - a.x) * (point.y - a.y) -
                 (point.x - a.x) * (b.y - a.y);
     }
 
-    public static Vec2 getSegmentIntersection(Vec2 ap1, Vec2 ap2, Vec2 bp1, Vec2 bp2) {
+    public static Vec2 getSegmentIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d) {
+        return null;
+    }
+
+    public static Vec2 getLineIntersection(Vec2 ap1, Vec2 ap2, Vec2 bp1, Vec2 bp2) {
         Vec2 A = ap1.to(ap2);
         Vec2 B = bp1.to(bp2);
 
         // compute the bottom
         float BxA = B.cross(A);
-        if (Mathf.abs(BxA) <= Epsilon.E) {
+        if (Math.abs(BxA) <= Epsilon.E) {
             // the lines are parallel and don't intersect
             return null;
         }
 
         // compute the top
         float ambxA = ap1.sub(bp1).cross(A);
-        if (Mathf.abs(ambxA) <= Epsilon.E) {
+        if (Math.abs(ambxA) <= Epsilon.E) {
             // the lines are coincident
             return null;
         }
 
+
+
         // compute tb
         float tb = ambxA / BxA;
+        if (tb < 0.0 || tb > 1.0) {
+            // no intersection
+            return null;
+        }
+
         // compute the intersection point
-        return B.scale(tb).add(bp1);
+        Vec2 ip = B.scale(tb).add(bp1);
+
+        // since both are segments we need to verify that
+        // ta is also valid.
+        // compute ta
+        float ta = ip.sub(ap1).dot(A) / A.dot(A);
+        if (ta < 0.0 || ta > 1.0) {
+            // no intersection
+            return null;
+        }
+
+        return ip;
     }
 }

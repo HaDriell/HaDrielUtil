@@ -8,7 +8,7 @@ import fr.hadriel.math.geometry.Polygon;
  *
  * @author glathuiliere
  */
-public class Triangle extends Polygon {
+public class Triangle extends Convex {
 
     public Triangle(Vec2 a, Vec2 b, Vec2 c) {
         super(a, b, c);
