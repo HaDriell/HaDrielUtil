@@ -99,12 +99,12 @@ public class Mathf {
         return (float) Math.pow(f, p);
     }
 
-    public static float lerp(float start, float end, float t) {
+    public static float lerp(float t, float start, float end) {
         return start + (end - start) * t;
     }
 
-    public static Vec2 lerp(Vec2 start, Vec2 end, float t) {
-        return new Vec2(lerp(start.x, end.x, t), lerp(start.y, end.y, t));
+    public static Vec2 lerp(float t, Vec2 start, Vec2 end) {
+        return new Vec2(lerp(t, start.x, end.x), lerp(t, start.y, end.y));
     }
 
     public static float bezier(float t, float a, float b, float c) {
@@ -117,15 +117,23 @@ public class Mathf {
         return (it * it * it * a) + (3 * it * it * t * b) + (3 * it * t * t * c) + (t * t * t * d);
     }
 
+    public static Vec2 bezier(float t, QuadraticBezierCurve curve) {
+        return bezier(t, curve.a, curve.control, curve.b);
+    }
+
     public static Vec2 bezier(float t, Vec2 a, Vec2 b, Vec2 c) {
         float x = bezier(t, a.x, b.x, c.x);
         float y = bezier(t, a.y, b.y, c.y);
         return new Vec2(x, y);
     }
 
-    public static Vec2 bezier(float t, Vec2 a, Vec2 b, Vec2 c, Vec2 d) {
-        float x = bezier(t, a.x, b.x, c.x, d.x);
-        float y = bezier(t, a.y, b.y, c.y, d.y);
+    public static Vec2 bezier(float t, CubicBezierCurve curve) {
+        return bezier(t, curve.a, curve.c1, curve.c2, curve.b);
+    }
+
+    public static Vec2 bezier(float t, Vec2 a, Vec2 c1, Vec2 c2, Vec2 b) {
+        float x = bezier(t, a.x, c1.x, c2.x, b.x);
+        float y = bezier(t, a.y, c1.y, c2.y, b.y);
         return new Vec2(x, y);
     }
 

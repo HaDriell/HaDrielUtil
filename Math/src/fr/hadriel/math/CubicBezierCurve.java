@@ -1,5 +1,8 @@
 package fr.hadriel.math;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO comment
  *
@@ -13,6 +16,13 @@ public class CubicBezierCurve {
     public Vec2 b;
 
     public CubicBezierCurve() {}
+
+    public CubicBezierCurve(CubicBezierCurve copy) {
+        this.a = copy.a;
+        this.c1 = copy.c1;
+        this.c2 = copy.c2;
+        this.b = copy.b;
+    }
 
     public CubicBezierCurve(Vec2 a, Vec2 c1, Vec2 c2, Vec2 b) {
         this.a = a;
@@ -72,5 +82,32 @@ public class CubicBezierCurve {
             left.setCurve(a, ctrl1, ctrl2, center);
         if(right != null)
             right.setCurve(center, ctrl3, ctrl4, b);
+    }
+
+    public void subdivisions(List<CubicBezierCurve> curves, float flatnessTolerance2) {
+        if(curves == null)
+            return;
+
+        if(getFlatness2() <= flatnessTolerance2)
+            curves.add(new CubicBezierCurve(this)); // deep copy
+        else {
+            CubicBezierCurve l = new CubicBezierCurve();
+            CubicBezierCurve r = new CubicBezierCurve();
+            subdivide(l, r);
+            l.subdivisions(curves, flatnessTolerance2); // semi recursive
+            r.subdivisions(curves, flatnessTolerance2); // semi recursive
+        }
+    }
+
+    public List<Vec2> toVertices(int subdivisionCount) {
+        List<Vec2> vertices = new ArrayList<>(subdivisionCount + 1);
+        float t = 0f;
+        float dt = 1f / subdivisionCount;
+        for(int i = 0; i < subdivisionCount; i++) {
+            vertices.add(Mathf.bezier(t, a, c1, c2, b));
+            t += dt;
+        }
+        vertices.add(Mathf.bezier(1f, a, c1, c2, b));
+        return vertices;
     }
 }

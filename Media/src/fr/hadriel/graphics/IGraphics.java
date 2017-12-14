@@ -57,8 +57,8 @@ public interface IGraphics {
 
     public void draw(IDrawable drawable);
 
-    public void draw(float x, float y, Polygon polygon);
-    public void fill(float x, float y, Polygon polygon);
+    public void draw(Polygon polygon);
+    public void fill(Polygon polygon);
 
     public void drawLine(float ax, float ay, float bx, float by);
     public void drawCurve(float ax, float ay, float cx, float cy, float bx, float by);

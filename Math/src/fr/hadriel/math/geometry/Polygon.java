@@ -1,9 +1,10 @@
 package fr.hadriel.math.geometry;
 
-import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.math.geometry.Epsilon;
-import fr.hadriel.math.geometry.Geometry;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -22,5 +23,15 @@ public class Polygon {
     public Polygon(Vec2... vertices) {
         this.vertices = vertices;
         this.normals = Geometry.getCounterClockwiseEdgeNormals(vertices);
+    }
+
+    public List<Convex> decompose() {
+        return Bayazit.decompose(vertices);
+    }
+
+    public List<Triangle> triangulate() {
+        List<Triangle> triangles = new ArrayList<>();
+        decompose().forEach(convex -> triangles.addAll(convex.triangulate()));
+        return triangles;
     }
 }

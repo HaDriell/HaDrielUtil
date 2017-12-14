@@ -1,5 +1,8 @@
 package fr.hadriel.math;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO comment
  *
@@ -14,6 +17,12 @@ public class QuadraticBezierCurve {
         this.a = Vec2.ZERO;
         this.control = Vec2.ZERO;
         this.b = Vec2.ZERO;
+    }
+
+    public QuadraticBezierCurve(QuadraticBezierCurve copy) {
+        this.a = copy.a;
+        this.control = copy.control;
+        this.b = copy.b;
     }
 
     public QuadraticBezierCurve(Vec2 a, Vec2 control, Vec2 b) {
@@ -56,5 +65,30 @@ public class QuadraticBezierCurve {
             left.setCurve(a, control1, mid);
         if(right != null)
             right.setCurve(mid, control2, b);
+    }
+
+
+    public void subdivisions(List<QuadraticBezierCurve> curves, float flatnessTolerance2) {
+        if(curves == null)
+            return;
+
+        if(getFlatness2() <= flatnessTolerance2)
+            curves.add(new QuadraticBezierCurve(this)); // deep copy
+        else {
+            QuadraticBezierCurve l = new QuadraticBezierCurve();
+            QuadraticBezierCurve r = new QuadraticBezierCurve();
+            subdivide(l, r);
+            l.subdivisions(curves, flatnessTolerance2); // semi recursive
+            r.subdivisions(curves, flatnessTolerance2); // semi recursive
+        }
+    }
+
+    public List<Vec2> toVertices(float flatnessTolerance2) {
+        List<QuadraticBezierCurve> curves = new ArrayList<>();
+        subdivisions(curves, flatnessTolerance2);
+        List<Vec2> vertices = new ArrayList<>(curves.size() + 1);
+        vertices.add(a);
+        curves.forEach(c -> vertices.add(c.b));
+        return vertices;
     }
 }

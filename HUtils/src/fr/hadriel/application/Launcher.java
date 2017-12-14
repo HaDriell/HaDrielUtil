@@ -7,11 +7,7 @@ package fr.hadriel.application;
 public final class Launcher {
     private Launcher() {}
 
-    public static void launch(Class<? extends IHDUApplication> applicationClass) {
-        launch(applicationClass, new String[]{});
-    }
-
-    public static void launch(Class<? extends IHDUApplication> applicationClass, String[] args) {
+    public static void launch(Class<? extends IHDUApplication> applicationClass, String... args) {
         try {
             launch(applicationClass.newInstance(), args);
         } catch (Exception e) {
@@ -20,7 +16,7 @@ public final class Launcher {
         }
     }
 
-    public static void launch(IHDUApplication application, String[] args) {
+    public static void launch(IHDUApplication application, String... args) {
         application.run(args);
     }
 }

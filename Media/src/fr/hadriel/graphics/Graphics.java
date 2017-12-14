@@ -4,7 +4,9 @@ import fr.hadriel.graphics.opengl.TextureRegion;
 import fr.hadriel.graphics.renderers.BatchRenderer2D;
 import fr.hadriel.graphics.opengl.Matrix3fStack;
 import fr.hadriel.math.*;
+import fr.hadriel.math.geometry.Convex;
 import fr.hadriel.math.geometry.Polygon;
+import fr.hadriel.math.geometry.Triangle;
 
 /**
  * Created by HaDriel on 11/12/2016.
@@ -56,24 +58,39 @@ public class Graphics implements IGraphics {
         drawable.draw(this);
     }
 
-    public void draw(float x, float y, Polygon polygon) {
+    public void draw(Polygon polygon) {
         for(int i = 0; i < polygon.vertices.length; i++) {
             Vec2 a = polygon.vertices[i];
-            Vec2 b = i + 1 == polygon.vertices.length ? polygon.vertices[0] : polygon.vertices[i + 1];
+            Vec2 b = polygon.vertices[i + 1 == polygon.vertices.length ? 0 : i + 1];
             drawLine(a.x, a.y, b.x, b.y);
         }
     }
 
-    public void fill(float x, float y, Polygon polygon) {
+    public void fill(Polygon polygon) {
+        if(polygon instanceof Triangle)
+            fillTriangle((Triangle) polygon);
+        else if(polygon instanceof Convex)
+            fillConvex((Convex) polygon);
+        else
+            polygon.decompose().forEach(this::fillConvex);
+    }
+
+    public void fillConvex(Convex convex) {
+        convex.triangulate().forEach(this::fillTriangle);
+    }
+
+    public void fillTriangle(Triangle triangle) {
         Vec2 position;
         Matrix3f matrix = stack.top();
-        int[] indices = new int[polygon.vertices.length];
-        for(int i = 0; i < polygon.vertices.length; i++) {
-            position = matrix.multiply(polygon.vertices[i].x + x, polygon.vertices[i].y + y);
-            batch.vertex(position.x, position.y, settings.color(), 0, 0, null);
-            indices[i] = i;
-        }
-        batch.indices(indices);
+
+        //Triangles are drawn backface front... reverse them
+        position = matrix.multiply(triangle.vertices[2]);
+        batch.vertex(position.x, position.y, settings.color(), 0, 0, null);
+        position = matrix.multiply(triangle.vertices[1]);
+        batch.vertex(position.x, position.y, settings.color(), 0, 0, null);
+        position = matrix.multiply(triangle.vertices[0]);
+        batch.vertex(position.x, position.y, settings.color(), 0, 0, null);
+        batch.indices(0, 1, 2);
     }
 
     public void end() {

@@ -6,6 +6,7 @@ import fr.hadriel.graphics.Graphics;
 import fr.hadriel.graphics.opengl.Texture;
 import fr.hadriel.gui.Window;
 import fr.hadriel.math.Mathf;
+import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.geometry.Circle;
 import fr.hadriel.math.geometry.Polygon;
@@ -21,7 +22,7 @@ public class TestBatchRendering {
 
     public static Vec2 cursor = new Vec2(100, 100);
 
-    public static final Polygon CIRCLE = new Circle(8, 5);
+    public static final Polygon CIRCLE = new Circle(8, 20);
 
     public static class App extends GUIApplication {
         protected void start(Window window) {
@@ -59,9 +60,11 @@ public class TestBatchRendering {
 
                         //Polygon drawing test
                         g.settings().color(0, 0, 1, 1);
-                        g.draw(cursor.x, cursor.y + 10, CIRCLE);
+                        g.push(Matrix3f.Translation(cursor.x - 30, cursor.y + 30));
+                        g.draw(CIRCLE);
                         g.settings().color(0, 0, 1, 0.8f);
-                        g.fill(cursor.x, cursor.y + 20, CIRCLE);
+                        g.fill(CIRCLE);
+                        g.pop();
 
                         g.end();
                     });

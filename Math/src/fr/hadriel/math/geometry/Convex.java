@@ -3,6 +3,9 @@ package fr.hadriel.math.geometry;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO comment
  *
@@ -14,7 +17,6 @@ public class Convex extends Polygon {
         super(vertices);
         validate(vertices);
     }
-
 
     private static void validate(Vec2... vertices) {
         if (vertices == null) throw new NullPointerException("geometry.polygon.nullArray");
@@ -44,4 +46,18 @@ public class Convex extends Polygon {
             throw new IllegalArgumentException("geometry.polygon.invalidWinding");
     }
 
+
+    public List<Triangle> triangulate() {
+        List<Triangle> result = new ArrayList<>(vertices.length - 2);
+        int i = 0;
+        Vec2 a = vertices[i++]; // i = 0
+        Vec2 b = vertices[i++]; // i = 1
+        do {
+            Vec2 c = vertices[i++]; // next i
+            result.add(new Triangle(a, b, c));
+            b = c;
+        } while (i < vertices.length);
+
+        return result;
+    }
 }
