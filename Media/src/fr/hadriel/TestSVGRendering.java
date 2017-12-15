@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class TestSVGRendering {
 
-    private static final String PATH = ""
+    private static final String PATH_1 = ""
             + "M 5 5 "
             + "L 5 10 "
             + "L -5 10"
@@ -35,12 +35,14 @@ public class TestSVGRendering {
             + "L 10 5"
             ;
 
+    private static final String PATH_2 = "M33 0H15A15 15 0 0 0 0 15v8A15 15 0 0 0 15 38h3v9a1 1 0 0 0 1.71.71L29.41 38H33A15 15 0 0 0 48 23V15A15 15 0 0 0 33 0ZM46 23A13 13 0 0 1 33 36H29a1 1 0 0 0-.71.29L20 44.59V37a1 1 0 0 0-1-1H15A13 13 0 0 1 2 23V15A13 13 0 0 1 15 2H33A13 13 0 0 1 46 15Z";
+
     private static Vec2 cursor = Vec2.ZERO;
 
     public static class App extends GUIApplication {
         protected void start(Window window) {
             Vec2 size = window.getSize();
-            Path path = SVG.parse(PATH);
+            Path path = SVG.parse(PATH_2);
             Polygon polygonPath = path.toPolygon();
             List<Triangle> triangles = polygonPath.triangulate();
 
