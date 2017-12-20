@@ -1,5 +1,6 @@
 package fr.hadriel.serialization.js;
 
+import fr.hadriel.serialization.Serial;
 import fr.hadriel.serialization.SerialException;
 
 /**
@@ -53,6 +54,10 @@ public class JsNumber implements JsPrimitive {
 
     public String toString() {
         return asString();
+    }
+
+    public int serialize(byte[] buffer, int pointer) {
+        return Serial.write(buffer, pointer, toString().getBytes());
     }
 
     public static JsNumber deserialize(String input) throws SerialException {

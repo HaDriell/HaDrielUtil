@@ -1,0 +1,39 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Media:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Media_jar</output-path>
+    <root id="archive" name="Media.jar">
+      <element id="module-output" name="Media" />
+      <element id="module-output" name="Math" />
+      <element id="module-output" name="Event" />
+      <element id="module-output" name="HUtils" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-stb.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-glfw.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-openal.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-opengl.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-jemalloc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-stb-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-stb-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-glfw-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-glfw-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-openal-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-openal-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-opengl-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-opengl-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-jemalloc-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-jemalloc-sources.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-stb-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-glfw-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-stb-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-glfw-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-openal-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-jemalloc-natives-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-openal-natives-windows.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Media/libs/lwjgl-jemalloc-natives-windows.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

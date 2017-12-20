@@ -1,7 +1,7 @@
 package fr.hadriel.test;
 
-import fr.hadriel.ecs.managers.DirectEntityManager;
-import fr.hadriel.ecs.managers.SignatureTrackingEntityManager;
+import fr.hadriel.ecs.DirectEntityManager;
+import fr.hadriel.ecs.SignatureTrackingEntityManager;
 
 public class TestSignatureTrackingEntityManager {
 

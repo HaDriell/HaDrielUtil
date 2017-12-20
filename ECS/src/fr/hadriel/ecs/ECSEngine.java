@@ -1,9 +1,5 @@
 package fr.hadriel.ecs;
 
-import fr.hadriel.ecs.managers.SignatureTrackingEntityManager;
-import fr.hadriel.ecs.managers.LockableEntityManager;
-import fr.hadriel.ecs.managers.DirectEntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,21 +7,21 @@ public class ECSEngine {
 
     private List<EntitySystem> systems;
 
-    private DirectEntityManager raw;
-    private SignatureTrackingEntityManager intern;
-    private LockableEntityManager extern;
+    private DirectEntityManager rawManager;
+    private SignatureTrackingEntityManager internalManager;
+    private LockableEntityManager publicManager;
 
     public ECSEngine() {
         this.systems = new ArrayList<>();
-        this.raw = new DirectEntityManager();
-        this.intern = new SignatureTrackingEntityManager(raw);
-        this.extern = new LockableEntityManager(intern);
+        this.rawManager = new DirectEntityManager();
+        this.internalManager = new SignatureTrackingEntityManager(rawManager);
+        this.publicManager = new LockableEntityManager(internalManager);
     }
 
     public int count() {
-        extern.lock();
-        int count = (int) raw.entities().count();
-        extern.unlock();
+        publicManager.lock();
+        int count = (int) rawManager.entities().count();
+        publicManager.unlock();
         return count;
     }
 
@@ -33,12 +29,12 @@ public class ECSEngine {
         if(systems.contains(system))
             return;
         systems.add(system);
-        raw.entities().forEach(id -> system.onEntitySignatureChanged(id, intern)); // virtual update for runtime setup
+        rawManager.entities().forEach(id -> system.onEntitySignatureChanged(id, internalManager)); // virtual update for runtime setup
     }
 
     public synchronized void removeEntitySystem(EntitySystem system) {
         systems.remove(system);
-        raw.entities().forEach(id -> system.onEntityDestroyed(id)); // virtual destruction for runtime cleaning
+        rawManager.entities().forEach(id -> system.onEntityDestroyed(id)); // virtual destruction for runtime cleaning
     }
 
     public EntitySystem addEntitySystem(Profile.Builder profiler, IEntityProcessor processor) {
@@ -48,23 +44,23 @@ public class ECSEngine {
     }
 
     private void notifyEntityModifications() {
-        if(intern.getEditedEntities().size() > 0) {
-            for (long id : intern.getEditedEntities())
-                systems.forEach(s -> s.onEntitySignatureChanged(id, intern));
-            intern.clearEditedEntities();
+        if(internalManager.getEditedEntities().size() > 0) {
+            for (long id : internalManager.getEditedEntities())
+                systems.forEach(s -> s.onEntitySignatureChanged(id, internalManager));
+            internalManager.clearEditedEntities();
         }
     }
 
     public synchronized void update(float deltaTime) {
-        extern.lock();
+        publicManager.lock();
         for(EntitySystem system : systems) {
             notifyEntityModifications(); // clear modifications before system-scale update
-            system.update(intern, deltaTime);
+            system.update(internalManager, deltaTime);
         }
-        extern.unlock();
+        publicManager.unlock();
     }
 
     public IEntityManager entities() {
-        return extern;
+        return publicManager;
     }
 }

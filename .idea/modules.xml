@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/HaDrielUtil.iml" filepath="$PROJECT_DIR$/.idea/HaDrielUtil.iml" />
       <module fileurl="file://$PROJECT_DIR$/Math/Math.iml" filepath="$PROJECT_DIR$/Math/Math.iml" />
       <module fileurl="file://$PROJECT_DIR$/Media/Media.iml" filepath="$PROJECT_DIR$/Media/Media.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Networking/Networking.iml" filepath="$PROJECT_DIR$/Networking/Networking.iml" />
     </modules>
   </component>
 </project>

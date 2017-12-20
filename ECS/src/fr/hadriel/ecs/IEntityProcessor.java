@@ -1,6 +1,6 @@
 package fr.hadriel.ecs;
 
-public interface IEntityProcessor {
+public strictfp interface IEntityProcessor {
 
     public void onEntityRegistered(long id);
 
