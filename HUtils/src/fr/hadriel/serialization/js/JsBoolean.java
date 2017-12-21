@@ -54,6 +54,10 @@ public class JsBoolean implements JsPrimitive {
         return asString();
     }
 
+    public int serialize(byte[] buffer, int pointer) {
+        return Serial.write(buffer, pointer, toString().getBytes());
+    }
+
     public static JsBoolean deserialize(String input) throws SerialException {
         if(input.equals("true")) return new JsBoolean(true);
         if(input.equals("false")) return new JsBoolean(false);

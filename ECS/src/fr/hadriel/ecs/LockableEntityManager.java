@@ -1,4 +1,4 @@
-package fr.hadriel.ecs.managers;
+package fr.hadriel.ecs;
 
 import fr.hadriel.ecs.IEntityManager;
 

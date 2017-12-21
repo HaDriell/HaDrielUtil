@@ -1,6 +1,6 @@
 package fr.hadriel.test;
 
-import fr.hadriel.ecs.managers.DirectEntityManager;
+import fr.hadriel.ecs.DirectEntityManager;
 import fr.hadriel.ecs.IEntityManager;
 import fr.hadriel.ecs.Profile;
 
