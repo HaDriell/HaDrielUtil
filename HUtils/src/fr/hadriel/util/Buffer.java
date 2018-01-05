@@ -1,6 +1,7 @@
 package fr.hadriel.util;
 
-import java.util.Objects;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 /**
  * Created by gauti on 19/12/2017.
@@ -9,20 +10,26 @@ public class Buffer {
     private static final byte FALSE = 0;
     private static final byte TRUE = 1;
 
+    private ByteBuffer ghost; // used for nio compatibility
+
     private final byte[] buffer;
     private int position;
     private int save;
     private int limit;
 
-    public Buffer(byte[] array) {
-        this.buffer = Objects.requireNonNull(array);
-        this.position = 0;
-        this.save = -1;
-        this.limit = buffer.length;
-    }
-
     public Buffer(int capacity) {
         this(new byte[capacity]);
+    }
+
+    public Buffer(byte[] array) {
+        this(array, 0, array.length);
+    }
+
+    public Buffer(byte[] array, int offset, int length) {
+        this.buffer = Arrays.copyOfRange(array, offset, offset + length);
+        this.position = 0;
+        this.save = -1;
+        this.limit = length;
     }
 
     public byte[] array() {
@@ -135,6 +142,59 @@ public class Buffer {
         return write(Double.doubleToLongBits(value));
     }
 
+    public Buffer write(boolean[] array) {
+        for(boolean b : array)
+            write(b);
+        return this;
+    }
+
+    public Buffer write(byte[] array) {
+        for(byte b : array)
+            write(b);
+        return this;
+    }
+
+    public Buffer write(short[] array) {
+        for(short b : array)
+            write(b);
+        return this;
+    }
+
+
+    public Buffer write(char[] array) {
+        for(char b : array)
+            write(b);
+        return this;
+    }
+
+
+    public Buffer write(int[] array) {
+        for(int b : array)
+            write(b);
+        return this;
+    }
+
+
+    public Buffer write(long[] array) {
+        for(long b : array)
+            write(b);
+        return this;
+    }
+
+
+    public Buffer write(float[] array) {
+        for(float b : array)
+            write(b);
+        return this;
+    }
+
+
+    public Buffer write(double[] array) {
+        for(double b : array)
+            write(b);
+        return this;
+    }
+
     public boolean readBoolean() {
         boolean value = buffer[position] != 0;
         position += 1;
@@ -200,5 +260,15 @@ public class Buffer {
         for(int i = position; i < limit; i++)
             out.append(String.format(byteFormat, buffer[i]));
         return out.toString();
+    }
+
+    public ByteBuffer asByteBuffer() {
+        if(ghost == null) {
+            ghost = ByteBuffer.wrap(buffer);
+        }
+        ghost.clear();
+        ghost.position(position);
+        ghost.limit(limit);
+        return ghost;
     }
 }
