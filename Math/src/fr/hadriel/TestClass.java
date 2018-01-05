@@ -1,7 +1,6 @@
 package fr.hadriel;
 
 /**
- * TODO comment
  *
  * @author glathuiliere
  */

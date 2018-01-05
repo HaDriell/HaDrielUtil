@@ -3,7 +3,9 @@ package fr.hadriel.math;
 /**
  * Created by glathuiliere on 13/07/2016.
  */
-public class Mathf {
+public strictfp final class Mathf {
+    private Mathf() {}
+
     public static final float PI = 3.14159265358979323846264338327950288419716939937510582354687f;
 
     public static float min(float a, float b) {
@@ -27,8 +29,19 @@ public class Mathf {
         return value;
     }
 
+    public static Vec2 polarToCartesian(float ox, float oy, float radius,  float angle) {
+        float rad = toRadians(angle);
+        float x = ox + radius * cos(rad);
+        float y = oy + radius * sin(rad);
+        return new Vec2(x, y);
+    }
+
     public static boolean contains(float value, float min, float max) {
         return value >= min && value <= max;
+    }
+
+    public static boolean contains(Vec2 value, Vec2 min, Vec2 max) {
+        return contains(value.x, min.x, max.x) && contains(value.y, min.y, max.y);
     }
 
     public static float cos(float radians) {

@@ -100,9 +100,15 @@ public final class SVG {
                         path.curveToSmooth(parser.vec2(), parser.vec2(), true);
                     break;
                 case 'A':
-                    throw new UnsupportedOperationException("Arcs are not supported yet");
+                    path.arcTo(parser.vec2(), parser.a(), parser.b(), parser.b(), parser.vec2(), false);
+                    while (parser.nextIsNumber())
+                        path.arcTo(parser.vec2(), parser.a(), parser.b(), parser.b(), parser.vec2(), false);
+                    break;
                 case 'a':
-                    throw new UnsupportedOperationException("Arcs are not supported yet");
+                    path.arcTo(parser.vec2(), parser.a(), parser.b(), parser.b(), parser.vec2(), true);
+                    while (parser.nextIsNumber())
+                        path.arcTo(parser.vec2(), parser.a(), parser.b(), parser.b(), parser.vec2(), true);
+                    break;
                 case 'Z': case 'z': path.closePath(); break;
                 default:
                     throw new IllegalArgumentException("invalid command ("+cmd+ ") in SVG path at pos="+parser.pos);
@@ -217,6 +223,4 @@ public final class SVG {
             return b;
         }
     }
-
-    //TODO : support Oval & Arc ?
 }

@@ -31,6 +31,8 @@ public class Path {
         moveTo(0, 0, false);
     }
 
+    //Shortcuts
+
     public void moveTo(Vec2 position, boolean relative) {
         moveTo(position.x, position.y, relative);
     }
@@ -47,7 +49,6 @@ public class Path {
         curveTo(c1.x, c1.y, c2.x, c2.y, position.x, position.y, relative);
     }
 
-
     public void curveToSmooth(Vec2 position, boolean relative) {
         curveToSmooth(position.x, position.y, relative);
     }
@@ -56,7 +57,12 @@ public class Path {
         curveToSmooth(c2.x, c2.y, position.x, position.y, relative);
     }
 
+    public void arcTo(Vec2 radius, float rotation, boolean large, boolean sweep, Vec2 position, boolean relative) {
+        arcTo(radius.x, radius.y, rotation, large, sweep, position.x, position.y, relative);
+    }
 
+
+    // Default implementations
 
     public void moveTo(float x, float y, boolean relative) {
         move = new SVG.MoveTo(x, y);
@@ -130,6 +136,10 @@ public class Path {
         }
         last = new SVG.CubicCurveTo(position.x, position.y, c1.x, c1.y, c2x, c2y, x, y);
         commands.add(last);
+    }
+
+    public void arcTo(float rx, float ry, float rotation, boolean large, boolean sweep, float x, float y, boolean relative) {
+
     }
 
 

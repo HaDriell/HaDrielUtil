@@ -1,9 +1,9 @@
 package fr.hadriel;
 
 import fr.hadriel.net.UDPSocket;
+import fr.hadriel.util.Buffer;
 
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 
 /**
  * Created by gauti on 20/12/2017.
@@ -16,8 +16,8 @@ public class TestUDPSocket {
     }
 
     public static void testUDPSocketIO() {
-        ByteBuffer in = ByteBuffer.allocate(1024);
-        ByteBuffer out = ByteBuffer.allocate(1024);
+        Buffer in = new Buffer(1024);
+        Buffer out = new Buffer(1024);
         String message;
 
         UDPSocket a = new UDPSocket();
@@ -32,7 +32,7 @@ public class TestUDPSocket {
 
         //Send Data
         out.clear();
-        out.put(MESSAGE.getBytes());
+        out.write(MESSAGE.getBytes());
         out.flip();
         a.send(out, bAddress);
 
@@ -49,7 +49,7 @@ public class TestUDPSocket {
 
         //Send Data
         out.clear();
-        out.put(MESSAGE.getBytes());
+        out.write(MESSAGE.getBytes());
         out.flip();
         b.send(out, aAddress);
 

@@ -1,7 +1,6 @@
 package fr.hadriel.core.resource;
 
 /**
- * TODO comment
  *
  * @author glathuiliere
  */
