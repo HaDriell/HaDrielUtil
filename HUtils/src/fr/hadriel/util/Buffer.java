@@ -1,13 +1,13 @@
 package fr.hadriel.util;
 
-import fr.hadriel.serialization.Serial;
-
 import java.util.Objects;
 
 /**
  * Created by gauti on 19/12/2017.
  */
 public class Buffer {
+    private static final byte FALSE = 0;
+    private static final byte TRUE = 1;
 
     private final byte[] buffer;
     private int position;
@@ -86,7 +86,7 @@ public class Buffer {
     }
 
     public Buffer write(boolean value) {
-        buffer[position++] = value ? Serial.TRUE :Serial.FALSE;
+        buffer[position++] = value ? TRUE : FALSE;
         return this;
     }
 
@@ -135,52 +135,70 @@ public class Buffer {
         return write(Double.doubleToLongBits(value));
     }
 
-    // TODO : get rid of the Serial dependency when I've got time
     public boolean readBoolean() {
-        boolean value = Serial.readBoolean(buffer, position);
+        boolean value = buffer[position] != 0;
         position += 1;
         return value;
     }
 
     public byte readByte() {
-        byte value = Serial.readByte(buffer, position);
+        byte value = buffer[position];
         position += 1;
         return value;
     }
 
     public short readShort() {
-        short value = Serial.readShort(buffer, position);
+        short value = 0;
+        value |= (buffer[position + 0] & 0xFF) << 8;
+        value |= (buffer[position + 1] & 0xFF) << 0;
         position += 2;
         return value;
     }
 
     public char readChar() {
-        char value = Serial.readChar(buffer, position);
+        char value = 0;
+        value |= (buffer[position + 0] & 0xFF) << 8;
+        value |= (buffer[position + 1] & 0xFF) << 0;
         position += 2;
         return value;
     }
 
     public int readInt() {
-        int value = Serial.readInt(buffer, position);
-        position += 4;
-        return value;
-    }
-
-    public float readFloat() {
-        float value = Serial.readFloat(buffer, position);
+        int value = 0;
+        value |= (buffer[position + 0] & 0xFF) << 24;
+        value |= (buffer[position + 1] & 0xFF) << 16;
+        value |= (buffer[position + 2] & 0xFF) << 8;
+        value |= (buffer[position + 3] & 0xFF) << 0;
         position += 4;
         return value;
     }
 
     public long readLong() {
-        long value = Serial.readLong(buffer, position);
+        long value = 0;
+        value |= (buffer[position + 0] & 0xFFL) << 56;
+        value |= (buffer[position + 1] & 0xFFL) << 48;
+        value |= (buffer[position + 2] & 0xFFL) << 40;
+        value |= (buffer[position + 3] & 0xFFL) << 32;
+        value |= (buffer[position + 4] & 0xFFL) << 24;
+        value |= (buffer[position + 5] & 0xFFL) << 16;
+        value |= (buffer[position + 6] & 0xFFL) << 8;
+        value |= (buffer[position + 7] & 0xFFL) << 0;
         position += 8;
         return value;
     }
 
+    public float readFloat() {
+        return Float.intBitsToFloat(readInt());
+    }
+
     public double readDouble() {
-        double value = Serial.readDouble(buffer, position);
-        position += 8;
-        return value;
+        return Double.longBitsToDouble(readLong());
+    }
+
+    public String format(String byteFormat) {
+        StringBuilder out = new StringBuilder();
+        for(int i = position; i < limit; i++)
+            out.append(String.format(byteFormat, buffer[i]));
+        return out.toString();
     }
 }

@@ -23,10 +23,14 @@ public abstract class Loop {
 
 
     public synchronized void start() {
+        start(false);
+    }
+    public synchronized void start(boolean daemon) {
         if(running)
             return;
         running = true;
         thread = new Thread(this::run);
+        thread.setDaemon(daemon);
         thread.start();
     }
 
