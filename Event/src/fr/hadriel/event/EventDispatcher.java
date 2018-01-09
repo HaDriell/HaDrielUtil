@@ -8,10 +8,19 @@ import java.util.List;
  */
 public class EventDispatcher implements IEventListener {
 
-    private List<IEventListener> listeners;
+    private final boolean allowMutation;
+    private final List<IEventListener> listeners;
 
     public EventDispatcher() {
+        this(false);
+    }
+
+    /**
+     * @param allowMutation enables Listeners to mute the event while the chain is processing
+     */
+    public EventDispatcher(boolean allowMutation) {
         this.listeners = new ArrayList<>();
+        this.allowMutation = allowMutation;
     }
 
     public synchronized void addEventListener(IEventListener listener) {
@@ -29,7 +38,7 @@ public class EventDispatcher implements IEventListener {
     @SuppressWarnings("unchecked")
     public synchronized IEvent onEvent(IEvent event) {
         for(IEventListener listener : listeners) {
-            listener.onEvent(event);
+            event = allowMutation ? listener.onEvent(event) : event;
         }
         return event;
     }
