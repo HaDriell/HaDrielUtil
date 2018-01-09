@@ -47,12 +47,12 @@ public abstract class Widget implements IDrawable {
         this.absoluteInverse = new Matrix3f();
         //Initialize the internal behaviors
         MultiEventListener internalInterceptor = new MultiEventListener();
-        internalInterceptor.setEventHandler(FocusGainEvent.class, this::handle);
-        internalInterceptor.setEventHandler(FocusLostEvent.class, this::handle);
-        internalInterceptor.setEventHandler(MouseEnterEvent.class, this::handle);
-        internalInterceptor.setEventHandler(MouseExitEvent.class, this::handle);
-        internalInterceptor.setEventHandler(MouseMovedEvent.class, this::handle);
-        internalInterceptor.setEventHandler(MousePressedEvent.class, this::handle);
+        internalInterceptor.on(FocusGainEvent.class, this::handle);
+        internalInterceptor.on(FocusLostEvent.class, this::handle);
+        internalInterceptor.on(MouseEnterEvent.class, this::handle);
+        internalInterceptor.on(MouseExitEvent.class, this::handle);
+        internalInterceptor.on(MouseMovedEvent.class, this::handle);
+        internalInterceptor.on(MousePressedEvent.class, this::handle);
         addEventListener(internalInterceptor, true);
     }
 

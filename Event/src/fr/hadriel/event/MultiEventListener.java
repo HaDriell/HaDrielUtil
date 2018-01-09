@@ -14,7 +14,7 @@ public class MultiEventListener implements IEventListener {
         this.map = new HashMap<>();
     }
 
-    public synchronized <T extends IEvent> void setEventHandler(Class<T> type, IEventHandler<T> handler) {
+    public synchronized <T extends IEvent> void on(Class<T> type, IEventHandler<T> handler) {
         //Arg validation
         if(type == null)
             throw new NullPointerException();
@@ -24,6 +24,10 @@ public class MultiEventListener implements IEventListener {
             map.remove(type);
         else
             map.put(type, handler);
+    }
+
+    public synchronized void off(Class type) {
+        map.remove(type);
     }
 
     @SuppressWarnings("unchecked")

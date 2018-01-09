@@ -1,4 +1,4 @@
-package fr.hadriel.net;
+package fr.hadriel.net.p2p;
 
 /**
  *

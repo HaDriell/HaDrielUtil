@@ -14,22 +14,22 @@ public class Buffer {
 
     private final byte[] buffer;
     private int position;
-    private int save;
     private int limit;
+    private int save;
 
     public Buffer(int capacity) {
         this(new byte[capacity]);
     }
 
-    public Buffer(byte[] array) {
-        this(array, 0, array.length);
+    public Buffer(byte[] arrayToCopy, int offset, int length) {
+        this(Arrays.copyOfRange(arrayToCopy, offset, offset + length));
     }
 
-    public Buffer(byte[] array, int offset, int length) {
-        this.buffer = Arrays.copyOfRange(array, offset, offset + length);
+    public Buffer(byte[] backend) {
+        this.buffer = backend;
+        this.limit = buffer.length;
         this.position = 0;
         this.save = -1;
-        this.limit = length;
     }
 
     public byte[] array() {
@@ -42,6 +42,10 @@ public class Buffer {
 
     public int position() {
         return position;
+    }
+
+    public int limit() {
+        return limit;
     }
 
     public Buffer position(int position) {
@@ -195,6 +199,16 @@ public class Buffer {
         return this;
     }
 
+    public Buffer write(Buffer buffer) {
+        byte[] source = buffer.buffer;
+        int offset = buffer.position;
+        int length = buffer.remaining();
+        System.arraycopy(source, offset, this.buffer, this.position, length);
+        buffer.position(offset + length);
+        this.position += length;
+        return this;
+    }
+
     public boolean readBoolean() {
         boolean value = buffer[position] != 0;
         position += 1;
@@ -270,5 +284,33 @@ public class Buffer {
         ghost.position(position);
         ghost.limit(limit);
         return ghost;
+    }
+
+    public Buffer[] getChunks(int chunkSize) {
+        int length = remaining();
+        int count = (int) Math.ceil(length / chunkSize);
+        Buffer[] buffers = new Buffer[count];
+
+        //Spliting (Buffer creation deals with System.arraycopy
+        for(int i = 0; i < buffers.length; i++)
+            buffers[i] = new Buffer(buffer, position + i * chunkSize, chunkSize);
+
+        return buffers;
+    }
+
+    public static Buffer Merge(Buffer... buffers) {
+        int length = 0;
+        for(Buffer b : buffers)
+            length += b.remaining();
+
+        Buffer merge = new Buffer(length);
+
+        //Untouch Buffers
+        for (Buffer b : buffers) {
+            b.save();
+            merge.write(b);
+            b.load();
+        }
+        return merge;
     }
 }
