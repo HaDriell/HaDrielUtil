@@ -6,9 +6,9 @@ import fr.hadriel.net.p2p.Peer;
  *
  * @author glathuiliere
  */
-public class Disconnection extends P2PEvent {
+public class PeerDisconnection extends P2PEvent {
 
-    public Disconnection(Peer peer) {
+    public PeerDisconnection(Peer peer) {
         super(peer);
     }
 }

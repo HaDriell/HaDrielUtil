@@ -1,7 +1,6 @@
 package fr.hadriel.net.p2p;
 
-import fr.hadriel.event.EventDispatcher;
-import fr.hadriel.util.Buffer;
+import fr.hadriel.net.p2p.events.PeerObjectOutput;
 import fr.hadriel.util.Timer;
 
 import java.net.InetAddress;
@@ -17,31 +16,24 @@ public final class Peer {
     private final int port;
     private final Host host;
 
-    private final Timer watcher;
-    private final float timeout;
+    private final Timer timeoutWatcher;
+    private final int timeout;
     private boolean closed;
 
-    private final EventDispatcher dispatcher;
-
-    public Peer(Host host, InetAddress address, int port, float timeout) {
+    public Peer(Host host, InetAddress address, int port, int timeout) {
         this.address = Objects.requireNonNull(address);
         this.host = Objects.requireNonNull(host);
-        this.dispatcher = new EventDispatcher();
-        this.watcher = new Timer();
+        this.timeoutWatcher = new Timer();
         this.timeout = timeout;
         this.closed = false;
         this.port = port;
     }
 
-    public EventDispatcher getDispatcher() {
-        return dispatcher;
-    }
-
-    public InetAddress getAddress() {
+    public InetAddress address() {
         return address;
     }
 
-    public int getPort() {
+    public int port() {
         return port;
     }
 
@@ -49,9 +41,15 @@ public final class Peer {
      * @return true if the Peer timed out
      */
     public boolean isTimeout() {
-        return closed || watcher.elapsed() > timeout;
+        return closed || timeoutWatcher.elapsed() > timeout;
     }
 
+    /**
+     * @return true if 25% of the timeout limit has been reached
+     */
+    public boolean isIdle() {
+        return !closed && timeoutWatcher.elapsed() > timeout / 4;
+    }
     /**
      *
      * @param address the target address
@@ -62,6 +60,17 @@ public final class Peer {
         return !isTimeout() && this.port == port && this.address.equals(address);
     }
 
+    /**
+     * Resets the timeoutWatcher Timer. mainly used to locally keep connected a Peer
+     */
+    public void refresh() {
+        timeoutWatcher.reset();
+    }
+
+    public void send(Object object, boolean reliable) {
+        host.getDispatcher().onEvent(new PeerObjectOutput(this, object, reliable));
+    }
+
     public boolean equals(Object obj) {
         if(obj == this) return true;
         if(obj instanceof Peer) {
@@ -69,17 +78,5 @@ public final class Peer {
             return host == p.host && port == p.port && address.equals(p.address);
         }
         return super.equals(obj);
-    }
-
-    /**
-     * Resets the watcher Timer. mainly used to locally keep connected a Peer
-     */
-    public void refresh() {
-        watcher.reset();
-    }
-
-
-    public void send(Buffer buffer) {
-        host.send(this, buffer);
     }
 }

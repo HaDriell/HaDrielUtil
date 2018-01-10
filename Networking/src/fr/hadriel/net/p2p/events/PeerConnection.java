@@ -6,9 +6,9 @@ import fr.hadriel.net.p2p.Peer;
  *
  * @author glathuiliere
  */
-public class Connection extends P2PEvent {
+public class PeerConnection extends P2PEvent {
 
-    public Connection(Peer peer) {
+    public PeerConnection(Peer peer) {
         super(peer);
     }
 }

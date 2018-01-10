@@ -1,11 +1,9 @@
 package fr.hadriel.net.p2p;
 
-import fr.hadriel.event.DelegateEventListener;
 import fr.hadriel.event.EventDispatcher;
-import fr.hadriel.net.p2p.events.Connection;
-import fr.hadriel.net.p2p.events.Disconnection;
-import fr.hadriel.net.p2p.events.Packet;
-import fr.hadriel.util.Buffer;
+import fr.hadriel.net.p2p.events.PeerConnection;
+import fr.hadriel.net.p2p.events.PeerDisconnection;
+import fr.hadriel.serialization.Serialization;
 
 import java.io.IOException;
 import java.net.*;
@@ -22,6 +20,9 @@ public class Host {
     private static final int DEFAULT_MTU = 1400;
     private static final int DEFAULT_TIMEOUT = 5000;
 
+    //Serialization
+    private Serialization serialization;
+
     //Peers
     private List<Peer> peers;
     private Lock lock;
@@ -33,7 +34,7 @@ public class Host {
     //Net Config
     private DatagramSocket socket;
     private int mtu;
-    private int timeout;
+    private int peerTimeout;
 
     //Server Dispatcher
     private final EventDispatcher dispatcher;
@@ -46,16 +47,18 @@ public class Host {
         this(DEFAULT_MTU, timeout);
     }
 
-    public Host(int mtu, int timeout) {
+    public Host(int mtu, int peerTimeout) {
+        this.serialization = new Serialization();
         this.dispatcher = new EventDispatcher();
         this.peers = new ArrayList<>();
         this.lock = new ReentrantLock();
-        this.timeout = timeout;
+        this.peerTimeout = peerTimeout;
         this.socket = null;
         this.mtu = mtu;
+    }
 
-        //peer dispatcher data forward
-        dispatcher.addEventListener(new DelegateEventListener(Packet.class, (event) -> event.peer.getDispatcher().onEvent(event)));
+    public Serialization getSerialization() {
+        return serialization;
     }
 
     public EventDispatcher getDispatcher() {
@@ -134,13 +137,13 @@ public class Host {
     public Peer connect(InetAddress address, int port) {
         Peer peer = find(address, port);
         if(peer == null) {
-            peer = new Peer(this, address, port, timeout / 1000f);
+            peer = new Peer(this, address, port, peerTimeout);
             //Add effectively
             lock.lock();
             peers.add(peer);
             lock.unlock();
             //notify with a connection event
-            dispatcher.onEvent(new Connection(peer));
+            dispatcher.onEvent(new PeerConnection(peer));
         }
         return peer;
     }
@@ -149,13 +152,28 @@ public class Host {
         return mtu;
     }
 
+    private void watch() {
+        while (isBound()) {
+            DatagramPacket packet = new DatagramPacket(new byte[mtu], mtu);
+            try {
+                socket.setSoTimeout(100); // hardcoded for now, allow for Peer updates
+                socket.receive(packet);
+                Peer peer = connect(packet.getAddress(), packet.getPort());
+
+            } catch (SocketTimeoutException ignore) {
+            } catch (IOException e) {
+                throw new NetworkException("Issue while watch Socket", e);
+            }
+        }
+    }
+
     private void watchSocket() {
         while (isBound()) {
             DatagramPacket packet = new DatagramPacket(new byte[mtu], mtu);
             try {
-                socket.receive(packet); // blocks the watcher until a packet is received
+                socket.receive(packet); // blocks the watcher until a object is received
                 Peer peer = connect(packet.getAddress(), packet.getPort()); // if connection is created it will send a PeerConnection event
-                dispatcher.onEvent(new Packet(peer, packet)); //
+//                dispatcher.onEvent(new FlexPacket(peer, object)); //
             } catch (IOException e) {
                 throw new NetworkException("Issue while Listening to the Socket", e);
             }
@@ -166,7 +184,7 @@ public class Host {
         while(isBound()) {
             try {
                 lock.lock();
-                peers.stream().filter(Peer::isTimeout).forEach(p -> dispatcher.onEvent(new Disconnection(p))); // notify timeout with disconnection
+                peers.stream().filter(Peer::isTimeout).forEach(p -> dispatcher.onEvent(new PeerDisconnection(p))); // notify timeout with disconnection
                 peers.removeIf(Peer::isTimeout); // actually remove peers
             } finally {
                 lock.unlock();
@@ -187,23 +205,5 @@ public class Host {
 
     public synchronized boolean isBound() {
         return socket != null && socket.isBound();
-    }
-
-    void send(Peer peer, Buffer buffer) {
-        if(buffer.remaining() > mtu)
-            throw new NetworkException("Buffer size too large (MTU = " + mtu + ")");
-
-        try {
-            DatagramPacket packet = new DatagramPacket(
-                    buffer.array(),
-                    buffer.position(),
-                    buffer.limit(),
-                    peer.getAddress(),
-                    peer.getPort()
-            );
-            socket.send(packet);
-        } catch (IOException e) {
-            throw new NetworkException("Unable to send data ", e);
-        }
     }
 }
