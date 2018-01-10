@@ -1,7 +1,5 @@
 package fr.hadriel;
 
-import fr.hadriel.application.Launcher;
-import fr.hadriel.core.application.GUIApplication;
 import fr.hadriel.graphics.Graphics;
 import fr.hadriel.graphics.opengl.Texture;
 import fr.hadriel.gui.Window;

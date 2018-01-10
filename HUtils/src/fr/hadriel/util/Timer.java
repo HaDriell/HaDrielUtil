@@ -7,7 +7,11 @@ package fr.hadriel.util;
  */
 public class Timer {
 
-    private long anchor = System.nanoTime();
+    private long anchor;
+
+    public Timer() {
+        reset();
+    }
 
     /**
      *

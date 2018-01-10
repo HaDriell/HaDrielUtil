@@ -8,6 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="HUtils" />
+    <orderEntry type="module" module-name="Serialization" />
     <orderEntry type="module" module-name="Event" />
   </component>
 </module>
