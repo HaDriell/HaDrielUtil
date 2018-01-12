@@ -17,4 +17,8 @@ public class ShortSerializer implements ISerializer<Short> {
     public void serialize(Serialization serialization, Buffer buffer, Short object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Short instance) {
+        return 2;
+    }
 }

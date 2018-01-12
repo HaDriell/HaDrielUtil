@@ -23,4 +23,8 @@ public class StringSerializer implements ISerializer<String> {
         for(byte b : string.getBytes())
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, String instance) {
+        return 4 + instance.getBytes().length;
+    }
 }

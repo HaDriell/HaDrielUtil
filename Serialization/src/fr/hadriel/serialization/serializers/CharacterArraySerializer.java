@@ -23,4 +23,8 @@ public class CharacterArraySerializer implements ISerializer<char[]> {
         for(char b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, char[] instance) {
+        return 4 + instance.length * 2;
+    }
 }

@@ -50,22 +50,22 @@ public class TestSerialization {
         Serialization serialization = new Serialization();
         serialization.register(Integer[].class, new ArraySerializer<>(Integer.class));
 
-        Buffer buffer = new Buffer(128); // sounds like a decent Size for buffering single elements
         //Assert Primitives are serializable
-        assertSerializable(serialization, buffer, (byte) 200);
-        assertSerializable(serialization, buffer, (short) 20_000);
-        assertSerializable(serialization, buffer, 'c');
-        assertSerializable(serialization, buffer, 200);
-        assertSerializable(serialization, buffer, 1_000_000_000_000L);
-        assertSerializable(serialization, buffer, 1.5F);
-        assertSerializable(serialization, buffer, 0.5);
-        assertSerializable(serialization, buffer, false);
-        assertSerializable(serialization, buffer, "HelloWorld");
+        assertSerializable(serialization, (byte) 200);
+        assertSerializable(serialization, (short) 20_000);
+        assertSerializable(serialization, 'c');
+        assertSerializable(serialization, 200);
+        assertSerializable(serialization, 1_000_000_000_000L);
+        assertSerializable(serialization, 1.5F);
+        assertSerializable(serialization, 0.5);
+        assertSerializable(serialization, false);
+        assertSerializable(serialization, "HelloWorld");
 
         //Arrays are not support by assertSerializable
-        int[] array = new int[]{1, 2, 3};
-        buffer.clear();
+        int[] array = new int[] {1, 2, 3};
+        Buffer buffer = new Buffer(serialization.sizeof(array));
         serialization.serialize(buffer, array);
+        Assert.assertEqual(buffer.remaining(), 0, "Buffer should have no remaining bytes");
         buffer.flip();
         Object deserialization = serialization.deserialize(buffer);
         buffer.clear();
@@ -78,12 +78,14 @@ public class TestSerialization {
         //ObjectSerializer Test
         Assert.expect(TypeDefinitionException.class, () -> serialization.serialize(buffer, new Message()));
         serialization.register(Message.class, new ObjectSerializer<>(Message.class));
-        assertSerializable(serialization, buffer, new Message((byte) 1, 16, "Helloworld"));
+        assertSerializable(serialization, new Message((byte) 1, 16, "Helloworld"));
     }
 
-    private static <T> void assertSerializable(Serialization serialization, Buffer buffer, T object) {
-        buffer.clear();
-        serialization.serialize(buffer, object);
+    private static <T> void assertSerializable(Serialization serialization, T object) {
+        int size = serialization.sizeof(object);
+        Buffer buffer = new Buffer(size);
+        serialization.serialize(buffer, object); // will fail if Buffer is undersized
+        Assert.assertEqual(buffer.remaining(), 0, "Buffer should have no remaining bytes");
         buffer.flip();
         Object deserialization = serialization.deserialize(buffer);
         buffer.clear();

@@ -31,6 +31,10 @@ public final class Struct {
             pointer = object.serialize(array, pointer);
             buffer.position(pointer);
         }
+
+        public int sizeof(Serialization serialization, StType instance) {
+            return instance.getSize();
+        }
     }
 
     private static final StructSerializer<StBoolean> BOOLEAN_SERIALIZER = new StructSerializer<>();

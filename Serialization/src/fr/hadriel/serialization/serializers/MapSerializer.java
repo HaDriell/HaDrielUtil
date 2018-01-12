@@ -56,4 +56,13 @@ public class MapSerializer<Key, Value> implements ISerializer<Map<Key, Value>> {
             serialization.serialize(buffer, entry.getValue());
         }
     }
+
+    public int sizeof(Serialization serialization, Map<Key, Value> instance) {
+        int size = 4; // map.size
+        for(Map.Entry<Key, Value> entry : instance.entrySet()) {
+            size += serialization.sizeof(entry.getKey());
+            size += serialization.sizeof(entry.getValue());
+        }
+        return size;
+    }
 }

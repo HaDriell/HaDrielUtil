@@ -7,6 +7,7 @@ import fr.hadriel.util.Buffer;
  */
 public interface ISerializer<T> {
 
+    public int sizeof(Serialization serialization, T instance);
     public T deserialize(Serialization serialization, Buffer buffer);
     public void serialize(Serialization serialization, Buffer buffer, T object);
 }

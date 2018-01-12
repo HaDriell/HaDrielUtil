@@ -17,4 +17,8 @@ public class DoubleSerializer implements ISerializer<Double> {
     public void serialize(Serialization serialization, Buffer buffer, Double object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Double instance) {
+        return 8;
+    }
 }

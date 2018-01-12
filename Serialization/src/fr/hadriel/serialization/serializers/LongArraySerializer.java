@@ -23,4 +23,8 @@ public class LongArraySerializer implements ISerializer<long[]> {
         for(long b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, long[] instance) {
+        return 4 + instance.length * 8;
+    }
 }

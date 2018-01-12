@@ -23,4 +23,8 @@ public class DoubleArraySerializer implements ISerializer<double[]> {
         for(double b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, double[] instance) {
+        return 4 + instance.length * 8;
+    }
 }

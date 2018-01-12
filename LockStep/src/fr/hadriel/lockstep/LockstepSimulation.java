@@ -1,6 +1,6 @@
 package fr.hadriel.lockstep;
 
-import fr.hadriel.event.EventDispatcher;
+import fr.hadriel.event.EventListenerChain;
 import fr.hadriel.event.IEventListener;
 
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
  */
 public strictfp abstract class LockstepSimulation {
 
-    private EventDispatcher dispatcher;
+    private EventListenerChain dispatcher;
 
     public LockstepSimulation() {
-        this.dispatcher = new EventDispatcher();
+        this.dispatcher = new EventListenerChain();
     }
 
     public void add(IEventListener listener) {

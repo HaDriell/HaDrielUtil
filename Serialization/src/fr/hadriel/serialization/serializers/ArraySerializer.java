@@ -44,4 +44,11 @@ public class ArraySerializer<Element> implements ISerializer<Element[]> {
         for(Element element : array)
             serialization.serialize(buffer, element);
     }
+
+    public int sizeof(Serialization serialization, Element[] array) {
+        int size = 4; // array.length
+        for(Element element : array)
+            size += serialization.sizeof(element);
+        return size;
+    }
 }

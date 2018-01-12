@@ -2,6 +2,7 @@ package fr.hadriel.util;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Created by gauti on 19/12/2017.
@@ -12,10 +13,9 @@ public class Buffer {
 
     private ByteBuffer ghost; // used for nio compatibility
 
-    private final byte[] buffer;
-    private int position;
-    private int limit;
-    private int save;
+    protected byte[] buffer;
+    protected int position;
+    protected int limit;
 
     public Buffer(int capacity) {
         this(new byte[capacity]);
@@ -26,10 +26,14 @@ public class Buffer {
     }
 
     public Buffer(byte[] backend) {
-        this.buffer = backend;
+        wrap(backend);
+    }
+
+    public Buffer wrap(byte[] buffer) {
+        this.buffer = Objects.requireNonNull(buffer);
         this.limit = buffer.length;
         this.position = 0;
-        this.save = -1;
+        return this;
     }
 
     public byte[] array() {
@@ -52,7 +56,6 @@ public class Buffer {
         if(position > limit || position < 0)
             throw new IllegalArgumentException();
         this.position = position;
-        if(save > position) save = -1;
         return this;
     }
 
@@ -61,34 +64,18 @@ public class Buffer {
             throw new IllegalArgumentException();
         this.limit = limit;
         if(position > limit) position = limit;
-        if(save > position) save = -1;
-        return this;
-    }
-
-    public Buffer save() {
-        save = position;
-        return this;
-    }
-
-    public Buffer load() {
-        int save = this.save;
-        if(save < 0)
-            throw new IllegalStateException();
-        position = save;
         return this;
     }
 
     public Buffer clear() {
         position = 0;
         limit = buffer.length;
-        save = -1;
         return this;
     }
 
     public Buffer flip() {
         limit = position;
         position = 0;
-        save = -1;
         return this;
     }
 
@@ -299,18 +286,18 @@ public class Buffer {
     }
 
     public static Buffer Merge(Buffer... buffers) {
-        int length = 0;
+        int mergeSize = 0;
         for(Buffer b : buffers)
-            length += b.remaining();
+            mergeSize += b.remaining();
 
-        Buffer merge = new Buffer(length);
-
-        //Untouch Buffers
-        for (Buffer b : buffers) {
-            b.save();
-            merge.write(b);
-            b.load();
+        byte[] mergeArray = new byte[mergeSize];
+        int offset = 0;
+        for(Buffer b : buffers) {
+            int bufferSize = b.remaining();
+            System.arraycopy(b.buffer, b.position, mergeArray, offset, bufferSize);
+            offset += bufferSize;
         }
-        return merge;
+
+        return new Buffer(mergeArray);
     }
 }

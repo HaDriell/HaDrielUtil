@@ -23,4 +23,8 @@ public class BooleanArraySerializer implements ISerializer<boolean[]> {
         for(boolean b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, boolean[] instance) {
+        return 4 + instance.length;
+    }
 }

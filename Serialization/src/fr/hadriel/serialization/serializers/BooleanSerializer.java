@@ -17,4 +17,8 @@ public class BooleanSerializer implements ISerializer<Boolean> {
     public void serialize(Serialization serialization, Buffer buffer, Boolean object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Boolean instance) {
+        return 1;
+    }
 }

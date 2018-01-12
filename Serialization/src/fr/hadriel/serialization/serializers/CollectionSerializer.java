@@ -50,4 +50,11 @@ public class CollectionSerializer<Element> implements ISerializer<Collection<Ele
             serialization.serialize(buffer, element);
         }
     }
+
+    public int sizeof(Serialization serialization, Collection<Element> collection) {
+        int size = 4; // array.length
+        for(Element element : collection)
+            size += serialization.sizeof(element);
+        return size;
+    }
 }

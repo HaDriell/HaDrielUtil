@@ -20,6 +20,7 @@ public class Serialization {
         public static final class Serializer implements ISerializer<NullValue> {
             public NullValue deserialize(Serialization serialization, Buffer buffer) { return null; } // doesn't read anything
             public void serialize(Serialization serialization, Buffer buffer, NullValue object) { } // doesn't write anything
+            public int sizeof(Serialization serialization, NullValue instance) { return 0; }
         }
     }
     private static final NullValue NULL = new NullValue(); // value replacer
@@ -96,6 +97,18 @@ public class Serialization {
     public void unregister(long id) {
         Class type = types.resolve(id);
         serializers.remove(type);
+    }
+
+    public <T> int sizeof(T instance) {
+        return 8 + sizeofRaw(instance);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> int sizeofRaw(T instance) {
+        if(instance == null)
+            return sizeofRaw(NULL);
+        ISerializer serializer = serializers.get(instance.getClass());
+        return serializer.sizeof(this, instance);
     }
 
     @SuppressWarnings("unchecked")

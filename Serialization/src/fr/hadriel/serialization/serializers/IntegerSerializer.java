@@ -17,4 +17,8 @@ public class IntegerSerializer implements ISerializer<Integer> {
     public void serialize(Serialization serialization, Buffer buffer, Integer object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Integer instance) {
+        return 4;
+    }
 }

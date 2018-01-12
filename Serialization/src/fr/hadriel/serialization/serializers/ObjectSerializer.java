@@ -57,11 +57,10 @@ public class ObjectSerializer<T> implements ISerializer<T> {
             T instance = NEW_INSTANCE(constructor);
 
             int fieldCount = buffer.readByte() & 0xFF; // read unsigned byte
-
             while (fieldCount > 0) {
                 int index = buffer.readByte() & 0xFF; // read unsigned byte
                 Object object = serialization.deserialize(buffer); // deserialize member
-                System.out.println("Field (" + fields[index].getName() + "): " + (object == null ? "null" : object.getClass().getName()));
+//                System.out.println("Field " + index + " (" + fields[index].getName() + "): " + (object == null ? "null" : object.getClass().getName()));
                 SET(fields[index], instance, object);
                 fieldCount--;
             }
@@ -78,18 +77,41 @@ public class ObjectSerializer<T> implements ISerializer<T> {
         * Null values are not serialized (saving space)
         * once serialized, the object layout is : [fieldCount] [fieldIndex][object] [fieldIndex][object]...
         * */
-        buffer.write((byte) fields.length); // write the field count
         try {
+            byte count = 0;
+            int countPosition = buffer.position();
+            buffer.position(countPosition + 1);
             for(int i = 0; i < fields.length; i++) {
                 Object value = GET(fields[i], object);
                 if(value != null) {
+                    count++;
                     buffer.write((byte) i); // index (byte)
-                    serialization.serialize(buffer, value); // type (long) + data (vairable)
+                    serialization.serialize(buffer, value); // type (long) + data (variable)
                 }
             }
+            int endPosisition = buffer.position();
+            buffer.position(countPosition); // move back to initial index
+            buffer.write(count); // write the serialized Field count
+            buffer.position(endPosisition); // move forward to the last position
         } catch (Exception e) {
             throw new RuntimeException("Failed to serialize object", e);
         }
+    }
+
+    public int sizeof(Serialization serialization, T instance) {
+        int size = 1; // fields.length
+        try {
+            for (int i = 0; i < fields.length; i++) {
+                Object value = GET(fields[i], instance);
+                if(value != null) {
+                    size += 1; // field index
+                    size += serialization.sizeof(value); // field serialization
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get size of object", e);
+        }
+        return size;
     }
 
     /* FIELD Quick accessors*/

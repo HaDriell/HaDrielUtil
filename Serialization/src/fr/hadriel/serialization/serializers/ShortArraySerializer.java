@@ -23,4 +23,8 @@ public class ShortArraySerializer implements ISerializer<short[]> {
         for(short b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, short[] instance) {
+        return 4 + instance.length * 2;
+    }
 }

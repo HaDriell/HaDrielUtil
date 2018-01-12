@@ -23,4 +23,8 @@ public class ByteArraySerializer implements ISerializer<byte[]> {
         for(byte b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, byte[] instance) {
+        return 4 + instance.length;
+    }
 }

@@ -6,4 +6,7 @@ package fr.hadriel.event;
  */
 public interface IEvent {
 
+    public static <T extends IEvent> IEvent dispatch(IEvent event, Class<T> eventType, IEventHandler<T> handler) {
+        return eventType.isInstance(event) ? handler.handle(eventType.cast(event)) : event;
+    }
 }

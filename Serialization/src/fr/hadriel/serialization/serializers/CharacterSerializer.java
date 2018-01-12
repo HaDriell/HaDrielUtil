@@ -17,4 +17,8 @@ public class CharacterSerializer implements ISerializer<Character> {
     public void serialize(Serialization serialization, Buffer buffer, Character object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Character instance) {
+        return 2;
+    }
 }

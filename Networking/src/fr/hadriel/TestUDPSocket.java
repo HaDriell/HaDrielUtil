@@ -1,17 +1,33 @@
 package fr.hadriel;
 
+import fr.hadriel.net.p2p.Host;
+import fr.hadriel.net.p2p.UDPConnection;
+
 /**
  * Created by gauti on 20/12/2017.
  */
 public class TestUDPSocket {
 
-    private static final byte UNSIGNED = 0x7F;
+    private static final class Message {
+        public String author;
+        public String content;
 
+        private Message() {}
+        public Message(String author, String content) {
+            this.content = content;
+            this.author = author;
+        }
+    }
 
     public static void main(String[] args) {
-        byte sequence = UNSIGNED;
+        Host host_0 = new Host();
+        Host host_1 = new Host();
+        host_0.getSerialization().register(Message.class);
+        host_1.getSerialization().register(Message.class);
+        host_0.bind();
+        host_1.bind();
 
-        for(int i = 0; i < 10_000; i++)
-            System.out.println(sequence++ & UNSIGNED); // works
+        UDPConnection UDPConnection_0 = host_0.connect("localhost", host_1.port());
+        UDPConnection UDPConnection_1 = host_1.connect("localhost", host_0.port());
     }
 }

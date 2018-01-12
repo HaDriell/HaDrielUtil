@@ -17,4 +17,8 @@ public class FloatSerializer implements ISerializer<Float> {
     public void serialize(Serialization serialization, Buffer buffer, Float object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Float instance) {
+        return 4;
+    }
 }

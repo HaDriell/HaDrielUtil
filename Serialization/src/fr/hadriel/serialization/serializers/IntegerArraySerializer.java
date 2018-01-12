@@ -23,4 +23,8 @@ public class IntegerArraySerializer implements ISerializer<int[]> {
         for(int b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, int[] instance) {
+        return 4 + instance.length * 4;
+    }
 }

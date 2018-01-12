@@ -17,4 +17,8 @@ public class ByteSerializer implements ISerializer<Byte> {
     public void serialize(Serialization serialization, Buffer buffer, Byte object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Byte instance) {
+        return 1;
+    }
 }

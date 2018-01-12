@@ -23,4 +23,8 @@ public class FloatArraySerializer implements ISerializer<float[]> {
         for(float b : array)
             buffer.write(b);
     }
+
+    public int sizeof(Serialization serialization, float[] instance) {
+        return 4 + instance.length * 4;
+    }
 }

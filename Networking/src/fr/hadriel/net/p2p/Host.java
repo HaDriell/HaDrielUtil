@@ -1,14 +1,10 @@
 package fr.hadriel.net.p2p;
 
-import fr.hadriel.event.EventDispatcher;
-import fr.hadriel.net.p2p.events.PeerConnection;
-import fr.hadriel.net.p2p.events.PeerDisconnection;
-import fr.hadriel.serialization.Serialization;
-
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -17,52 +13,21 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author glathuiliere
  */
 public class Host {
-    private static final int DEFAULT_MTU = 1400;
-    private static final int DEFAULT_TIMEOUT = 5000;
 
-    //Serialization
-    private Serialization serialization;
+    //Manager
+    private final INetworkManager manager;
 
-    //Peers
-    private List<Peer> peers;
+    //Peers Configuration
+    private final List<UDPConnection> connections;
     private Lock lock;
+    private Thread watcher;
 
-    //Watchers
-    private Thread peerWatcher;
-    private Thread socketWatcher;
-
-    //Net Config
+    //Network Configuration
     private DatagramSocket socket;
-    private int mtu;
-    private int peerTimeout;
 
-    //Server Dispatcher
-    private final EventDispatcher dispatcher;
-
-    public Host() {
-        this(DEFAULT_MTU, DEFAULT_TIMEOUT);
-    }
-
-    public Host(int timeout) {
-        this(DEFAULT_MTU, timeout);
-    }
-
-    public Host(int mtu, int peerTimeout) {
-        this.serialization = new Serialization();
-        this.dispatcher = new EventDispatcher();
-        this.peers = new ArrayList<>();
-        this.lock = new ReentrantLock();
-        this.peerTimeout = peerTimeout;
-        this.socket = null;
-        this.mtu = mtu;
-    }
-
-    public Serialization getSerialization() {
-        return serialization;
-    }
-
-    public EventDispatcher getDispatcher() {
-        return dispatcher;
+    public Host(INetworkManager manager) {
+        this.manager = Objects.requireNonNull(manager);
+        this.connections = new ArrayList<>();
     }
 
     public void bind() {
@@ -79,17 +44,12 @@ public class Host {
 
         try {
             socket = new DatagramSocket(port, address);
-            socket.setSoTimeout(0); // blocking mode ON
 
-            //peer watcher setup
-            peerWatcher = new Thread(this::watchPeers, "Peer Watcher");
-            peerWatcher.setDaemon(true);
-            peerWatcher.start();
-
-            //socket watcher setup
-            socketWatcher = new Thread(this::watchSocket, "Socket Watcher");
-            socketWatcher.setDaemon(true);
-            socketWatcher.start();
+            //watcher setup
+            lock = new ReentrantLock(); //lock might be corrupted by an interrupted watcher. Prefer using a new one every binding
+            watcher = new Thread(this::watch, "Host Watcher");
+            watcher.setDaemon(true);
+            watcher.start();
         } catch (Exception e) {
             throw new NetworkException("Unable to bind Host ", e);
         }
@@ -100,12 +60,11 @@ public class Host {
             return;
 
         //stop socket watcher
-        socketWatcher.interrupt();
-        socketWatcher = null;
+        watcher.interrupt();
+        watcher = null;
 
-        //stop peer watcher
-        peerWatcher.interrupt();
-        peerWatcher = null;
+        connections.forEach(UDPConnection::close);
+        connections.clear();
 
         //gracefully close the socket
         try {
@@ -113,85 +72,77 @@ public class Host {
         } catch (Exception ignore) {}
     }
 
-    private Peer find(InetAddress address, int port) {
-        Peer peer = null;
+    public UDPConnection getConnection(InetAddress address, int port) {
+        UDPConnection connection = null;
         lock.lock();
-        for(Peer p : peers) {
+        for(UDPConnection p : connections) {
             if(p.isTargeting(address, port)) {
-                peer = p;
+                connection = p;
                 break;
             }
         }
         lock.unlock();
-        return peer;
+        return connection;
     }
 
-    public Peer connect(String hostname, int port) {
+    public UDPConnection connect(String hostname, int port) {
         try {
             return connect(InetAddress.getByName(hostname), port);
         } catch (UnknownHostException e) {
-            throw new NetworkException("Unable to find Host ", e);
+            throw new NetworkException("Unable to getPeer Host ", e);
         }
     }
 
-    public Peer connect(InetAddress address, int port) {
-        Peer peer = find(address, port);
-        if(peer == null) {
-            peer = new Peer(this, address, port, peerTimeout);
-            //Add effectively
+    public UDPConnection connect(InetAddress address, int port) {
+        UDPConnection connection = getConnection(address, port);
+        if(connection == null) {
+            connection = new UDPConnection(socket, address, port);
             lock.lock();
-            peers.add(peer);
+            connections.add(connection);
             lock.unlock();
-            //notify with a connection event
-            dispatcher.onEvent(new PeerConnection(peer));
+            manager.onConnection(this, connection);
         }
-        return peer;
-    }
-
-    public int getMTU() {
-        return mtu;
+        return connection;
     }
 
     private void watch() {
         while (isBound()) {
-            DatagramPacket packet = new DatagramPacket(new byte[mtu], mtu);
-            try {
-                socket.setSoTimeout(100); // hardcoded for now, allow for Peer updates
-                socket.receive(packet);
-                Peer peer = connect(packet.getAddress(), packet.getPort());
-
-            } catch (SocketTimeoutException ignore) {
-            } catch (IOException e) {
-                throw new NetworkException("Issue while watch Socket", e);
-            }
+            service(10); // 100 UPS minimum. 10 ms lag when connection was "idle"
+            lock.lock();
+            connections.forEach(c -> c.update(manager.getPeerTimeout()));
+            connections.removeIf(UDPConnection::isClosed);
+            lock.unlock();
         }
     }
 
-    private void watchSocket() {
-        while (isBound()) {
-            DatagramPacket packet = new DatagramPacket(new byte[mtu], mtu);
-            try {
-                socket.receive(packet); // blocks the watcher until a object is received
-                Peer peer = connect(packet.getAddress(), packet.getPort()); // if connection is created it will send a PeerConnection event
-//                dispatcher.onEvent(new FlexPacket(peer, object)); //
-            } catch (IOException e) {
-                throw new NetworkException("Issue while Listening to the Socket", e);
-            }
-        }
-    }
+    private void service(int timeout) {
+        DatagramPacket datagram = new DatagramPacket(new byte[manager.getMaximumTransferUnit()], manager.getMaximumTransferUnit());
+        try {
+            socket.setSoTimeout(timeout);
+            socket.receive(datagram);
+            InetAddress address = datagram.getAddress();
+            int port = datagram.getPort();
 
-    private void watchPeers() {
-        while(isBound()) {
-            try {
+            UDPConnection connection = getConnection(address, port);
+
+            //New remote Connection initiated from Network
+            if(connection == null && manager.accept(this, address, port)) {
+                connection = new UDPConnection(socket, address, port, manager.getPeerTimeout());
                 lock.lock();
-                peers.stream().filter(Peer::isTimeout).forEach(p -> dispatcher.onEvent(new PeerDisconnection(p))); // notify timeout with disconnection
-                peers.removeIf(Peer::isTimeout); // actually remove peers
-            } finally {
+                connections.add(connection);
                 lock.unlock();
+                manager.onConnection(this, connection);
             }
 
-            // Avoid CPU burning (15 turns/sec is really decent)
-            try { Thread.sleep(66); } catch (InterruptedException ignore) { }
+            if(connection != null) {
+                connection.refresh();
+            }
+
+
+        } catch (SocketTimeoutException ignore) {
+            //not a real exception. Just a flaw of Java's Exceptions original design
+        } catch (IOException e) {
+            throw new NetworkException("Issue while watch Socket", e);
         }
     }
 

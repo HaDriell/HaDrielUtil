@@ -17,4 +17,8 @@ public class LongSerializer implements ISerializer<Long> {
     public void serialize(Serialization serialization, Buffer buffer, Long object) {
         buffer.write(object);
     }
+
+    public int sizeof(Serialization serialization, Long instance) {
+        return 8;
+    }
 }
