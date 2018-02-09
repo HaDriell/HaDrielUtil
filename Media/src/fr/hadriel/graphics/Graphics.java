@@ -149,7 +149,7 @@ public class Graphics implements IGraphics {
         drawCurve(new CubicBezierCurve(ax, ay, c1x, c1y, c2x, c2y, bx, by));
     }
 
-    // unoptimized way : draw BEZIER_SUBFIVISION_COUNT segments to represent de cubic bezier curve
+    // unoptimized way : render BEZIER_SUBFIVISION_COUNT segments to represent de cubic bezier curve
     public void drawCurve(CubicBezierCurve curve) {
         float t = 0;
         float dt = 1f / settings.bzCubicSubdivisionCount;

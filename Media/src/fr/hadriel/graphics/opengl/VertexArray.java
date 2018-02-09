@@ -3,34 +3,25 @@ package fr.hadriel.graphics.opengl;
 
 
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL11.*;
 /**
  * Created by glathuiliere on 06/12/2016.
  */
 public abstract class VertexArray {
 
-    private int handle;
-    private int elementCount;
-    private AttribPointer[] layout;
+    private final int handle;
+    private final int maxElementCount;
+    private final AttribPointer[] layout;
 
     public VertexArray(int maxElementCount, AttribPointer... layout) {
         if(!validateConfiguration(maxElementCount, layout)) throw new IllegalArgumentException("Invalid VAO configuration.");
-        this.elementCount = maxElementCount;
+        this.maxElementCount = maxElementCount;
         this.layout = layout;
         this.handle = glGenVertexArrays();
         onBackendCreate(maxElementCount, layout);
     }
 
     public void destroy() {
-        onBackendDestroy(elementCount, layout);
-    }
-
-    public void configure(int nelementCount, AttribPointer... nlayout) {
-        if(!validateConfiguration(nelementCount, nlayout)) throw new IllegalArgumentException("Invalid VAO configuration.");
-        onBackendDestroy(elementCount, layout);
-        onBackendCreate(nelementCount, nlayout);
-        this.elementCount = nelementCount;
-        this.layout = nlayout;
+        onBackendDestroy(maxElementCount, layout);
     }
 
     private boolean validateConfiguration(int elementCount, AttribPointer[] layout) {
@@ -41,28 +32,12 @@ public abstract class VertexArray {
         glBindVertexArray(handle);
     }
 
-    public void drawElements(int mode, int count, int type) {
-        glDrawElements(mode, count, type, 0);
-    }
-
-    public void drawArrays(int mode, int offset, int elementCount) {
-        glDrawArrays(mode, offset, elementCount);
-    }
-
-    public void drawArrays(int mode, int elementCount) {
-        drawArrays(mode, 0, elementCount);
-    }
-
-    public void drawArrays(int mode) {
-        drawArrays(mode, 0, elementCount);
-    }
-
     public void unbind() {
         glBindVertexArray(0);
     }
 
-    public int getElementCount() {
-        return elementCount;
+    public int getMaxElementCount() {
+        return maxElementCount;
     }
 
 

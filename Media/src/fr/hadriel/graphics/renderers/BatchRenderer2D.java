@@ -3,14 +3,13 @@ package fr.hadriel.graphics.renderers;
 import fr.hadriel.graphics.opengl.*;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec4;
-import static org.lwjgl.opengl.GL11.*;
 
 
 /**
  *
  * Created by HaDriel on 08/12/2016.
  */
-public class BatchRenderer2D {
+public class BatchRenderer2D extends OpenGLRenderer {
 
     private static final AttribPointer[] BATCH_SHADER_LAYOUT = {
             new AttribPointer("position", GLType.FLOAT, 2),
@@ -30,10 +29,6 @@ public class BatchRenderer2D {
     private SingleBufferVertexArray vao;
     private VertexBuffer vbo;
     private int elementCount;
-
-    //IBO context
-    private int indexOffset;
-    private int indexCount;
 
     public BatchRenderer2D(float left, float right, float top, float bottom) {
         this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
@@ -57,33 +52,20 @@ public class BatchRenderer2D {
     public void begin() {
         vbo.bind().map(); // get access to the vertex buffer
         ibo.bind().map(); // get access to the index buffer
+        ibo.count(0);     // reset the index count to 0
         sampler.reset(); // clear the sampler data
-        indexOffset = elementCount = 0;
-        indexCount = 0;
     }
 
     public void indices(int... indices) {
-        for(int indice : indices) {
-            ibo.write(indexOffset + indice);
-        }
-        indexOffset = elementCount;
-        indexCount += indices.length;
+        ibo.write(indices);
     }
 
     public void indices(short... indices) {
-        for(short indice : indices) {
-            ibo.write((short) (indexOffset + indice));
-        }
-        indexOffset = elementCount;
-        indexCount += indices.length;
+        ibo.write(indices);
     }
 
     public void indices(byte... indices) {
-        for(byte indice : indices) {
-            ibo.write((byte) (indexOffset + indice));
-        }
-        indexOffset = elementCount;
-        indexCount += indices.length;
+        ibo.write(indices);
     }
 
     public void vertex(float px, float py) {
@@ -117,14 +99,6 @@ public class BatchRenderer2D {
         sampler.bindTextures();
         shader.setUniform1iv("textures", sampler.getSamplerTextureUnitsIndices());
         shader.setUniformMat4f("projection", projection);
-
-        vao.bind();
-        ibo.bind();
-        vao.drawElements(GL_TRIANGLES, indexCount, ibo.getIndexType().name);
-        vao.unbind();
-        ibo.unbind();
-        shader.unbind();
-        blendMode.disable();
-        faceCulling.disable();
+        draw(shader, vao, ibo);
     }
 }

@@ -57,10 +57,10 @@ public class BitmapFont implements IFont {
                     lineheight);
             cmap.put(c, ttfc);
 
-            offsetX += layout.getAdvance() + 4; // 4 pixels spacing for the draw safety
+            offsetX += layout.getAdvance() + 4; // 4 pixels spacing for the render safety
             if(offsetX + layout.getAdvance() > FONT_TEXTURE_SIZE) {
                 offsetX = 0;
-                offsetY += lineheight + 4; // 4 pixels spacing for the draw safety
+                offsetY += lineheight + 4; // 4 pixels spacing for the render safety
             }
         }
         g.dispose();
