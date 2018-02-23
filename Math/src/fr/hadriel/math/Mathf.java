@@ -1,5 +1,8 @@
 package fr.hadriel.math;
 
+import fr.hadriel.math.geometry.CubicBezierCurve;
+import fr.hadriel.math.geometry.QuadraticBezierCurve;
+
 /**
  * Created by glathuiliere on 13/07/2016.
  */

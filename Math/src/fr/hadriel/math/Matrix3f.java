@@ -3,7 +3,7 @@ package fr.hadriel.math;
 /**
  * Created by glathuiliere on 13/07/2016.
  */
-public class Matrix3f {
+public strictfp class Matrix3f {
 
     //First Row
     public static final byte M00 = 0;

@@ -1,6 +1,6 @@
 package fr.hadriel.math.svg;
 
-import fr.hadriel.math.QuadraticBezierCurve;
+import fr.hadriel.math.geometry.QuadraticBezierCurve;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.geometry.Polygon;
 

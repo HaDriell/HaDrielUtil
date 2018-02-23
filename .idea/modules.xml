@@ -6,7 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/Event/Event.iml" filepath="$PROJECT_DIR$/Event/Event.iml" />
       <module fileurl="file://$PROJECT_DIR$/HUtils/HUtils.iml" filepath="$PROJECT_DIR$/HUtils/HUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/HaDrielUtil.iml" filepath="$PROJECT_DIR$/.idea/HaDrielUtil.iml" />
-      <module fileurl="file://$PROJECT_DIR$/LockStep/LockStep.iml" filepath="$PROJECT_DIR$/LockStep/LockStep.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Lockstep/Lockstep.iml" filepath="$PROJECT_DIR$/Lockstep/Lockstep.iml" />
       <module fileurl="file://$PROJECT_DIR$/Math/Math.iml" filepath="$PROJECT_DIR$/Math/Math.iml" />
       <module fileurl="file://$PROJECT_DIR$/Media/Media.iml" filepath="$PROJECT_DIR$/Media/Media.iml" />
       <module fileurl="file://$PROJECT_DIR$/Networking/Networking.iml" filepath="$PROJECT_DIR$/Networking/Networking.iml" />

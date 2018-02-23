@@ -1,4 +1,7 @@
-package fr.hadriel.math;
+package fr.hadriel.math.geometry;
+
+import fr.hadriel.math.Mathf;
+import fr.hadriel.math.Vec2;
 
 import java.util.ArrayList;
 import java.util.List;

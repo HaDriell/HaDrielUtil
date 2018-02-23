@@ -4,9 +4,7 @@ import fr.hadriel.graphics.opengl.TextureRegion;
 import fr.hadriel.graphics.renderers.BatchRenderer2D;
 import fr.hadriel.graphics.opengl.Matrix3fStack;
 import fr.hadriel.math.*;
-import fr.hadriel.math.geometry.Convex;
-import fr.hadriel.math.geometry.Polygon;
-import fr.hadriel.math.geometry.Triangle;
+import fr.hadriel.math.geometry.*;
 
 /**
  * Created by HaDriel on 11/12/2016.

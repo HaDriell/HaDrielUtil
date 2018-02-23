@@ -1,7 +1,5 @@
 package fr.hadriel.ecs;
 
-import fr.hadriel.ecs.IEntityManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

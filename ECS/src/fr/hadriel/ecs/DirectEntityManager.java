@@ -1,12 +1,7 @@
 package fr.hadriel.ecs;
 
-import fr.hadriel.ecs.EntityData;
-import fr.hadriel.ecs.IEntityManager;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
