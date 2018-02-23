@@ -1,9 +1,11 @@
 package fr.hadriel.math;
 
+import fr.hadriel.math.geometry.Epsilon;
+
 /**
  * Created by glathuiliere on 13/06/2016.
  */
-public class Vec2 {
+public strictfp class Vec2 {
 
     public static final Vec2 X = new Vec2(1, 0);
     public static final Vec2 Y = new Vec2(0, 1);
@@ -151,7 +153,7 @@ public class Vec2 {
     }
 
     public String toString() {
-        return String.format("(%.2f; %.2f)", x, y);
+        return String.format("(%.20f; %.20f)", x, y);
     }
 
     public static float orientation(Vec2 a, Vec2 b, Vec2 c) {
@@ -167,6 +169,6 @@ public class Vec2 {
     }
 
     public boolean equals(Vec2 v) {
-        return v.x == x && v.y == y;
+        return Mathf.abs(x - v.x) < Epsilon.E && Mathf.abs(y - v.y) <Epsilon.E;
     }
 }
