@@ -2,11 +2,6 @@ package fr.hadriel.math.geometry;
 
 import fr.hadriel.math.Vec2;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
 public final class Geometry {
 
     public static final Vec2[] getCounterClockwiseEdgeNormals(Vec2... vertices) {

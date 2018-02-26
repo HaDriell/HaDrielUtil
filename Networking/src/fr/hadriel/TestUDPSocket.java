@@ -1,7 +1,7 @@
 package fr.hadriel;
 
-import fr.hadriel.net.p2p.Host;
-import fr.hadriel.net.p2p.UDPConnection;
+import fr.hadriel.udp.p2p.Host;
+import fr.hadriel.udp.p2p.UDPConnection;
 
 /**
  * Created by gauti on 20/12/2017.

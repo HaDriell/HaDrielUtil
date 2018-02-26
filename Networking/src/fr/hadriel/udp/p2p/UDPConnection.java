@@ -1,4 +1,4 @@
-package fr.hadriel.net.p2p;
+package fr.hadriel.udp.p2p;
 
 import fr.hadriel.util.Timer;
 

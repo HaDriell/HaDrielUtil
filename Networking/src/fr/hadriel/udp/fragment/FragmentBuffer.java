@@ -1,4 +1,4 @@
-package fr.hadriel.net.fragment;
+package fr.hadriel.udp.fragment;
 
 /**
  *
