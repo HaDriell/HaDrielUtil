@@ -1,11 +1,6 @@
 package fr.hadriel.math.geometry;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
-public final class Epsilon {
+public strictfp final class Epsilon {
     public static final float E = compute();
 
     public static float compute() {

@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author glathuiliere
- */
 public class Polygon {
 
     public final Vec2[] vertices;

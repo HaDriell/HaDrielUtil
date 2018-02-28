@@ -2,7 +2,17 @@ package fr.hadriel.math.geometry;
 
 import fr.hadriel.math.Vec2;
 
-public final class Geometry {
+public strictfp final class Geometry {
+    private Geometry() {}
+
+    public static Vec2 intersectLineLine(float a1, float b1, float a2, float b2) {
+        float d = (a1 - a2);
+        if(d < Epsilon.E)
+            return null;
+        float x = (b2 - b1) / d;
+        float y = a1 * x + b1;
+        return new Vec2(x, y);
+    }
 
     public static final Vec2[] getCounterClockwiseEdgeNormals(Vec2... vertices) {
         if (vertices == null) return null;

@@ -3,6 +3,7 @@ package fr.hadriel.core.media;
 import fr.hadriel.util.Timer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -14,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class Medias {
     private Medias() {}
 
-    private static final List<MediaTask> actions = new ArrayList<>();
+    private static final List<MediaTask> actions = new LinkedList<>();
     private static final Lock lock = new ReentrantLock();
     private static Thread thread;
 
@@ -24,6 +25,19 @@ public final class Medias {
         thread = new Thread(Medias::run, "Medias.Worker");
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public static void execute(Runnable task) {
+        execute(new MediaTask() {
+            public void onBegin() { }
+
+            public boolean onExecute(float dt) {
+                task.run();
+                return true;
+            }
+
+            public void onEnd() { }
+        });
     }
 
     public static void execute(MediaTask action) {
