@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- *
- * @author glathuiliere
- */
 public final class Medias {
     private Medias() {}
 
@@ -23,7 +19,6 @@ public final class Medias {
         if(thread != null)
             return;
         thread = new Thread(Medias::run, "Medias.Worker");
-        thread.setDaemon(true);
         thread.start();
     }
 

@@ -6,7 +6,7 @@ import fr.hadriel.udp.p2p.UDPConnection;
 /**
  * Created by gauti on 20/12/2017.
  */
-public class TestUDPSocket {
+public class TestP2P {
 
     private static final class Message {
         public String author;

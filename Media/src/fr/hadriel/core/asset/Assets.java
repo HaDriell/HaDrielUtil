@@ -3,7 +3,7 @@ package fr.hadriel.core.asset;
 public final class Assets {
     private Assets() { }
 
-    private static AssetManager assets;
+    private static AssetManager assets = new AssetManager();
 
     public static <A extends Asset> A get(String name, Class<A> type) {
         return assets.get(name, type);

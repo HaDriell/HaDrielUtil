@@ -11,7 +11,7 @@ public class WindowHint {
     public int width = 800;
     public int height = width * 9/16;
     public String title = "Window";
-    public boolean visible = false;
+    public boolean visible = true;
     public boolean fullscreen = false;
     public boolean resizable = true;
     public boolean decorated = true;

@@ -6,9 +6,9 @@ package fr.hadriel.core.media;
  */
 public abstract class MediaTask {
 
-    public static final byte STARTING = 0;
-    public static final byte EXECUTING = 1;
-    public static final byte TERMINATING = 2;
+    public static final byte STARTING       = 0b001;
+    public static final byte EXECUTING      = 0b010;
+    public static final byte TERMINATING    = 0b100;
 
     private byte state = STARTING;
 
@@ -28,6 +28,18 @@ public abstract class MediaTask {
             }
         }
         return false;
+    }
+
+    public boolean isExecuting() {
+        return state == EXECUTING;
+    }
+
+    public boolean isTerminating() {
+        return state == TERMINATING;
+    }
+
+    public boolean isStarting() {
+        return state == STARTING;
     }
 
     /**

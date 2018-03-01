@@ -1,7 +1,7 @@
 package fr.hadriel.graphics.glfw;
 
-import fr.hadriel.core.application.GUIApplication;
-import fr.hadriel.core.application.GUIHandle;
+import fr.hadriel.core.media.MediaTask;
+import fr.hadriel.core.media.Medias;
 import fr.hadriel.math.Vec2;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -12,12 +12,12 @@ import static org.lwjgl.glfw.GLFW.*;
 /**
  * Created by glathuiliere on 20/07/2017.
  */
-public class GLFWwindow extends GUIHandle {
+public class GLFWwindow extends MediaTask {
 
     //GLFWInit loading security
     private static int handleCount;
 
-    private static synchronized void glfwWindowCreated() {
+    private static synchronized void _notifyWindowCreated() {
         if(handleCount == 0) {
             glfwInit();
             glfwSwapInterval(GLFW_TRUE);
@@ -25,7 +25,7 @@ public class GLFWwindow extends GUIHandle {
         handleCount++;
     }
 
-    private static synchronized void glfwWindowDestroyed() {
+    private static synchronized void _notifyWindowDestroyed() {
         handleCount--;
         if(handleCount == 0)
             glfwTerminate();
@@ -33,8 +33,7 @@ public class GLFWwindow extends GUIHandle {
 
     // Class Definition
 
-    //TODO : make a "Property-like" access to the properties so it is synchronized with the actual GLFW context.
-    protected WindowHint properties;
+    private WindowHint properties;
 
     private long window = -1;
     private GLCapabilities capabilities = null; // not sure if required for each GLFWwindow
@@ -42,7 +41,7 @@ public class GLFWwindow extends GUIHandle {
 
     public GLFWwindow(WindowHint hint) {
         this.properties = hint == null ? new WindowHint() : hint;
-        GUIApplication.runLater(this);
+        Medias.execute(this);
     }
 
     private void checkHandle() {
@@ -50,8 +49,8 @@ public class GLFWwindow extends GUIHandle {
             throw new RuntimeException("Unable to use an unitialized GLFWwindow");
     }
 
-    protected void onInit() {
-        glfwWindowCreated(); // ensure glfw is initialized before actually creating the window
+    public void onBegin() {
+        _notifyWindowCreated(); // ensure glfw is initialized before actually creating the window
 
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         //Configure the Window properties
@@ -73,8 +72,7 @@ public class GLFWwindow extends GUIHandle {
         this.capabilities = GL.createCapabilities();
     }
 
-    protected boolean onUpdate(float dt) {
-        checkHandle();
+    public boolean onExecute(float dt) {
         glfwMakeContextCurrent(window);
         GL.setCapabilities(capabilities);
         if(renderCallback != null) renderCallback.render(window);
@@ -83,12 +81,12 @@ public class GLFWwindow extends GUIHandle {
         return isClosing();
     }
 
-    protected void onDestroy() {
+    public void onEnd() {
         checkHandle();
         glfwDestroyWindow(window);
         window = -1;
         capabilities = null;
-        glfwWindowDestroyed();
+        _notifyWindowDestroyed();
     }
 
     public boolean isClosing() {
