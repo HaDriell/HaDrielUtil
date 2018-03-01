@@ -16,14 +16,14 @@ public class TestBuffer {
         Buffer buffer = new Buffer(8);
         Random random = new Random();
 
-        boolean a = random.nextBoolean();
-        byte b = (byte) random.nextInt();
-        short c = (short) random.nextInt();
-        char d = (char) random.nextInt();
-        int e = random.nextInt();
-        long f = random.nextLong();
-        float g = random.nextFloat();
-        double h = random.nextDouble();
+        boolean a   = random.nextBoolean();
+        byte b      = (byte) random.nextInt();
+        short c     = (short) random.nextInt();
+        char d      = (char) random.nextInt();
+        int e       = random.nextInt();
+        long f      = random.nextLong();
+        float g     = random.nextFloat();
+        double h    = random.nextDouble();
 
 
         assertEqual(buffer.clear().write(a).flip().readBoolean(), a, "Failed to read/write Primitive");

@@ -1,9 +1,9 @@
 package fr.hadriel.graphics.renderers;
 
-import fr.hadriel.graphics.opengl.IndexBuffer;
-import fr.hadriel.graphics.opengl.RenderState;
-import fr.hadriel.graphics.opengl.Shader;
-import fr.hadriel.graphics.opengl.VertexArray;
+import fr.hadriel.opengl.IndexBuffer;
+import fr.hadriel.opengl.RenderState;
+import fr.hadriel.opengl.Shader;
+import fr.hadriel.opengl.VertexArray;
 
 import static org.lwjgl.opengl.GL11.*;
 

@@ -3,11 +3,6 @@ package fr.hadriel;
 import fr.hadriel.core.media.MediaTask;
 import fr.hadriel.core.media.Medias;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
 public class TestMedias {
 
     private static class DummyAction extends MediaTask {

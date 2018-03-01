@@ -1,6 +1,6 @@
 package fr.hadriel.graphics.renderers;
 
-import fr.hadriel.graphics.opengl.*;
+import fr.hadriel.opengl.*;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec4;
 

@@ -1,8 +1,8 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.graphics.opengl.TextureRegion;
+import fr.hadriel.opengl.TextureRegion;
 import fr.hadriel.graphics.renderers.BatchRenderer2D;
-import fr.hadriel.graphics.opengl.Matrix3fStack;
+import fr.hadriel.opengl.Matrix3fStack;
 import fr.hadriel.math.*;
 import fr.hadriel.math.geometry.*;
 
