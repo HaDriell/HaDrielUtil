@@ -21,7 +21,7 @@ public class TestBatchRendering {
 //            GUIApplication.runLater(() -> {
 //                try {
 //                    final Graphics g = new Graphics(size.x, size.y);
-//                    final Texture texture = new Texture("Media/Teron Fielsang.png");
+//                    final Texture2D texture2D = new Texture2D("Media/Teron Fielsang.png");
 //                    final Timer timer = new Timer();
 //
 //                    window.bindCursorPos((w, xpos, ypos) -> cursor = new Vec2(xpos, ypos));
@@ -41,8 +41,8 @@ public class TestBatchRendering {
 //                        g.drawCurve(0, 0, 0, cursor.y, cursor.x, cursor.y); // QuadraticBezierCurve test
 //                        g.drawCurve(0, 0, cursor.x, 0, 0, cursor.y, cursor.x, cursor.y); // CubicBezierCurve test
 //
-//                        //Texture drawing test
-//                        g.drawTexture(cursor.x, cursor.y, 32, 32, texture.getRegion()); // texture region test
+//                        //Texture2D drawing test
+//                        g.drawTexture(cursor.x, cursor.y, 32, 32, texture2D.getRegion()); // texture2D region test
 //
 //                        //Polygon drawing test
 //                        g.settings().color(0, 0, 1, 1);

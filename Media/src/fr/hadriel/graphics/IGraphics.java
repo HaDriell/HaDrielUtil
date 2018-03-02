@@ -1,6 +1,6 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.opengl.TextureRegion;
+import fr.hadriel.graphics.texture.TextureRegion;
 import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.math.geometry.Polygon;

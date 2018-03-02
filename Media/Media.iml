@@ -17,9 +17,7 @@
         <SOURCES>
           <root url="file://$MODULE_DIR$/libs" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/../Graphics/libs" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../Graphics/libs" recursive="false" type="SOURCES" />
         <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>

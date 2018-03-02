@@ -1,7 +1,7 @@
 package fr.hadriel;
 
-import fr.hadriel.core.media.MediaTask;
-import fr.hadriel.core.media.Medias;
+import fr.hadriel.application.MediaTask;
+import fr.hadriel.application.Medias;
 
 public class TestMedias {
 

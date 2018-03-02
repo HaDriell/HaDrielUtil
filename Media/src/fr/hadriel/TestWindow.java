@@ -1,6 +1,6 @@
 package fr.hadriel;
 
-import fr.hadriel.glfw.WindowHint;
+import fr.hadriel.application.WindowHint;
 import fr.hadriel.glfw.Window;
 
 public class TestWindow {

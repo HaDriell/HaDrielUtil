@@ -1,7 +1,7 @@
 package fr.hadriel.graphics.font;
 
-import fr.hadriel.core.asset.Asset;
-import fr.hadriel.core.asset.AssetManager;
+import fr.hadriel.asset.Asset;
+import fr.hadriel.asset.AssetManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -48,7 +48,7 @@ public class Font extends Asset {
     }
 
     protected void onUnload(AssetManager manager) {
-        //TODO : unload textures
+        //TODO : unload texture2D
     }
 
 

@@ -1,7 +1,7 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.opengl.TextureRegion;
-import fr.hadriel.graphics.renderers.BatchRenderer2D;
+import fr.hadriel.graphics.texture.TextureRegion;
+import fr.hadriel.renderers.BatchRenderer2D;
 import fr.hadriel.opengl.Matrix3fStack;
 import fr.hadriel.math.*;
 import fr.hadriel.math.geometry.*;
@@ -186,13 +186,13 @@ public class Graphics implements IGraphics {
         Vec2 position;
         Matrix3f matrix = stack.top();
         position = matrix.multiply(x, y);
-        batch.vertex(position.x, position.y, mask, region.uvs[0].x, region.uvs[0].y, region.texture);
+        batch.vertex(position.x, position.y, mask, region.uvs[0].x, region.uvs[0].y, region.texture2D);
         position = matrix.multiply(x + width, y);
-        batch.vertex(position.x, position.y, mask, region.uvs[1].x, region.uvs[1].y, region.texture);
+        batch.vertex(position.x, position.y, mask, region.uvs[1].x, region.uvs[1].y, region.texture2D);
         position = matrix.multiply(x + width, y + height);
-        batch.vertex(position.x, position.y, mask, region.uvs[2].x, region.uvs[2].y, region.texture);
+        batch.vertex(position.x, position.y, mask, region.uvs[2].x, region.uvs[2].y, region.texture2D);
         position = matrix.multiply(x, y + height);
-        batch.vertex(position.x, position.y, mask, region.uvs[3].x, region.uvs[3].y, region.texture);
+        batch.vertex(position.x, position.y, mask, region.uvs[3].x, region.uvs[3].y, region.texture2D);
         batch.indices(0, 3, 2, 2, 1, 0);
     }
 

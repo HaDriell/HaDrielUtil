@@ -3,8 +3,8 @@ package fr.hadriel.graphics.font;
 public class FontCommon {
     public int lineHeight;  // distance in pixels between two lines
     public int base;        // distance from the absolute top of the baseline
-    public int scaleW;      // render texture width
-    public int scaleH;      // render texture height
+    public int scaleW;      // render texture2D width
+    public int scaleH;      // render texture2D height
     public int pages;       // number of pages
     // packing is not supported in this implementation
 
