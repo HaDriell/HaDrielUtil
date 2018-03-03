@@ -1,6 +1,7 @@
 package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
+import fr.hadriel.event.EventDispatcher;
 import fr.hadriel.util.Timer;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -19,13 +20,15 @@ public abstract class Application {
 
     private long applicationState;
 
-    protected final AssetManager manager;
+    protected final AssetManager assets;
+    protected final EventDispatcher events;
 
     protected Application() {
-        this.applicationState = LAUNCHING;
-        this.manager = new AssetManager();
+        this.events = new EventDispatcher();
+        this.assets = new AssetManager();
         this.window = -1;
         this.capabilities = null;
+        this.applicationState = LAUNCHING;
     }
 
     public void close() {
@@ -63,12 +66,14 @@ public abstract class Application {
         glfwSetWindowPos(window, x , y);
         glfwMakeContextCurrent(window);
         capabilities = GL.createCapabilities();
+        applicationState = UPDATING;
         start(args);
     }
 
     private void _update(float delta) {
         glfwPollEvents();
         if(glfwWindowShouldClose(window)) {
+            close();
             return;
         }
         glfwMakeContextCurrent(window);
@@ -79,6 +84,7 @@ public abstract class Application {
 
     private void _terminate() {
         terminate();
+        glfwDestroyWindow(window);
         glfwTerminate();
     }
 

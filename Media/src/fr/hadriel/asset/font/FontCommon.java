@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.font;
+package fr.hadriel.asset.font;
 
 public class FontCommon {
     public int lineHeight;  // distance in pixels between two lines

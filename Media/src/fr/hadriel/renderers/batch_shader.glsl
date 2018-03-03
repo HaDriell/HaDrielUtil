@@ -39,4 +39,3 @@ void main()
         color = texture(textures[int(o_tid)], o_uv) * o_color;
     }
 }
-

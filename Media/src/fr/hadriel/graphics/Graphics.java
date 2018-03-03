@@ -1,6 +1,6 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.graphics.texture.TextureRegion;
+import fr.hadriel.asset.texture.Sprite;
 import fr.hadriel.renderers.BatchRenderer2D;
 import fr.hadriel.opengl.Matrix3fStack;
 import fr.hadriel.math.*;
@@ -178,29 +178,29 @@ public class Graphics implements IGraphics {
         drawCurve(r);
     }
 
-    public void drawTexture(float x, float y, float width, float height, TextureRegion region) {
+    public void drawTexture(float x, float y, float width, float height, Sprite region) {
         drawTexture(x, y, width, height, region, null);
     }
 
-    public void drawTexture(float x, float y, float width, float height, TextureRegion region, Vec4 mask) {
+    public void drawTexture(float x, float y, float width, float height, Sprite region, Vec4 mask) {
         Vec2 position;
         Matrix3f matrix = stack.top();
         position = matrix.multiply(x, y);
-        batch.vertex(position.x, position.y, mask, region.uvs[0].x, region.uvs[0].y, region.texture2D);
+        batch.vertex(position.x, position.y, mask, region.uvs[0].x, region.uvs[0].y, region.texture);
         position = matrix.multiply(x + width, y);
-        batch.vertex(position.x, position.y, mask, region.uvs[1].x, region.uvs[1].y, region.texture2D);
+        batch.vertex(position.x, position.y, mask, region.uvs[1].x, region.uvs[1].y, region.texture);
         position = matrix.multiply(x + width, y + height);
-        batch.vertex(position.x, position.y, mask, region.uvs[2].x, region.uvs[2].y, region.texture2D);
+        batch.vertex(position.x, position.y, mask, region.uvs[2].x, region.uvs[2].y, region.texture);
         position = matrix.multiply(x, y + height);
-        batch.vertex(position.x, position.y, mask, region.uvs[3].x, region.uvs[3].y, region.texture2D);
+        batch.vertex(position.x, position.y, mask, region.uvs[3].x, region.uvs[3].y, region.texture);
         batch.indices(0, 3, 2, 2, 1, 0);
     }
 
-    public void drawTexture(float x, float y, TextureRegion region, Vec4 mask) {
+    public void drawTexture(float x, float y, Sprite region, Vec4 mask) {
         drawTexture(x, y, region.width, region.height, region, mask);
     }
 
-    public void drawTexture(float x, float y, TextureRegion region) {
+    public void drawTexture(float x, float y, Sprite region) {
         drawTexture(x, y, region.width, region.height, region);
     }
 }

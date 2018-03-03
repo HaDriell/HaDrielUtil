@@ -1,5 +1,7 @@
 package fr.hadriel.asset;
 
+import java.util.UUID;
+
 public abstract class Asset {
     public static final int CREATED     = 0b00001;
     public static final int LOADED      = 0b00100;

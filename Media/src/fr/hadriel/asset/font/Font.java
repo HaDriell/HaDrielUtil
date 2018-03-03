@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.font;
+package fr.hadriel.asset.font;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
@@ -44,11 +44,11 @@ public class Font extends Asset {
             throw new RuntimeException("Failed to read the Font file", e);
         }
 
-        //Load the Pages
+        //TODO : load textures
     }
 
     protected void onUnload(AssetManager manager) {
-        //TODO : unload texture2D
+        //TODO : unload textures
     }
 
 

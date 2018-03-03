@@ -1,8 +1,9 @@
-package fr.hadriel.graphics.font;
+package fr.hadriel.asset.font;
 
 public class FontPage {
     public int id;
     public String file;
+
 
     public String toString() {
         return String.format("page=%d file=%s", id, file);

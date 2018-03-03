@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.texture;
+package fr.hadriel.asset.texture;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
@@ -27,6 +27,17 @@ public class Texture extends Asset {
         this.textureHint = textureHint;
     }
 
+    public int id() {
+        return texture;
+    }
+
+    public int width() {
+        return width;
+    }
+
+    public int height() {
+        return height;
+    }
 
     protected void onLoad(AssetManager manager) {
         try {

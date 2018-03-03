@@ -2,7 +2,7 @@ package fr.hadriel;
 
 import fr.hadriel.application.Application;
 import fr.hadriel.asset.AssetManager;
-import fr.hadriel.graphics.font.Font;
+import fr.hadriel.asset.font.Font;
 
 /**
  * Created by gauti on 28/02/2018.

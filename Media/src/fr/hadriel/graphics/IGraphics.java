@@ -1,6 +1,6 @@
 package fr.hadriel.graphics;
 
-import fr.hadriel.graphics.texture.TextureRegion;
+import fr.hadriel.asset.texture.Sprite;
 import fr.hadriel.math.Matrix3f;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.math.geometry.Polygon;
@@ -66,8 +66,8 @@ public interface IGraphics {
     public void drawRect(float x, float y, float width, float height);
     public void fillRect(float x, float y, float width, float height);
 
-    public void drawTexture(float x, float y, TextureRegion region);
-    public void drawTexture(float x, float y, TextureRegion region, Vec4 mask);
-    public void drawTexture(float x, float y, float width, float height, TextureRegion region);
-    public void drawTexture(float x, float y, float width, float height, TextureRegion region, Vec4 mask);
+    public void drawTexture(float x, float y, Sprite region);
+    public void drawTexture(float x, float y, Sprite region, Vec4 mask);
+    public void drawTexture(float x, float y, float width, float height, Sprite region);
+    public void drawTexture(float x, float y, float width, float height, Sprite region, Vec4 mask);
 }

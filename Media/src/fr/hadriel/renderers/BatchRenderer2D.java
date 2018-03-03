@@ -1,7 +1,8 @@
 package fr.hadriel.renderers;
 
-import fr.hadriel.graphics.texture.Texture2D;
-import fr.hadriel.graphics.texture.TextureSampler;
+import fr.hadriel.asset.shader.Shader;
+import fr.hadriel.asset.texture.Texture;
+import fr.hadriel.asset.texture.TextureSampler;
 import fr.hadriel.opengl.*;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec4;
@@ -11,7 +12,7 @@ import fr.hadriel.math.Vec4;
  *
  * Created by HaDriel on 08/12/2016.
  */
-public class BatchRenderer2D extends OpenGLRenderer {
+public class BatchRenderer2D {
 
     private static final AttribPointer[] BATCH_SHADER_LAYOUT = {
             new AttribPointer("position", GLType.FLOAT, 2),
@@ -32,18 +33,18 @@ public class BatchRenderer2D extends OpenGLRenderer {
 
     public BatchRenderer2D(float left, float right, float top, float bottom) {
         this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
-        this.shader = Shader.GLSL(getClass().getResourceAsStream("batch_shader.glsl"));
+//        this.shader = Shader.GLSL(getClass().getResourceAsStream("shader.glsl"));
         this.vao = new SingleBufferVertexArray(MAX_ELEMENT_COUNT, BATCH_SHADER_LAYOUT);
         this.vbo = vao.getBuffer(0);
         this.ibo = new IndexBuffer(MAX_ELEMENT_COUNT, GLType.UINT);
         this.sampler = new TextureSampler();
 
-        //Face Culling
-        renderState.setFaceCulling(false);
-        //Blending Configuration
-        renderState.setBlending(true);
-        renderState.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
-        renderState.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+//        //Face Culling
+//        renderState.setFaceCulling(false);
+//        //Blending Configuration
+//        renderState.setBlending(true);
+//        renderState.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
+//        renderState.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void begin() {
@@ -73,7 +74,7 @@ public class BatchRenderer2D extends OpenGLRenderer {
         vertex(px, py, color, 0, 0, null);
     }
 
-    public void vertex(float px, float py, Vec4 color, float u, float v, Texture2D texture2D) {
+    public void vertex(float px, float py, Vec4 color, float u, float v, Texture texture) {
         if(elementCount >= MAX_ELEMENT_COUNT || sampler.getTextureCount() > 31) {
             end(); // end the draw call to reset the texture2D binding
             begin();
@@ -81,7 +82,7 @@ public class BatchRenderer2D extends OpenGLRenderer {
         vbo.write(px).write(py); // position
         vbo.write(color != null ? color : new Vec4(1, 1, 1, 1)); // color
         vbo.write(u).write(v); // uv
-        vbo.write(texture2D != null ? sampler.load(texture2D) : -1f); // tid
+        vbo.write(texture != null ? sampler.load(texture) : -1f); // tid
         elementCount++;
     }
 
@@ -92,8 +93,8 @@ public class BatchRenderer2D extends OpenGLRenderer {
         //Render
         shader.bind();
         sampler.bindTextures();
-        shader.setUniform1iv("texture2D", sampler.getSamplerTextureUnitsIndices());
-        shader.setUniformMat4f("projection", projection);
-        draw(shader, vao, ibo);
+//        shader.setUniform1iv("texture2D", sampler.generateTextureIDs());
+//        shader.setUniformMat4f("projection", projection);
+//        draw(shader, vao, ibo);
     }
 }
