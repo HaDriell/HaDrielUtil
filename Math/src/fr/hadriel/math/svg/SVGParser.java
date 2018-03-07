@@ -2,11 +2,6 @@ package fr.hadriel.math.svg;
 
 import fr.hadriel.math.Vec2;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
 public final class SVGParser {
     public final String svgpath;
     public final int len;

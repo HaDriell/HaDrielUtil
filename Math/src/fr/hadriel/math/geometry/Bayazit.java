@@ -89,9 +89,9 @@ public class Bayazit {
         // initialize
         Vec2 upperIntersection = new Vec2();
         Vec2 lowerIntersection = new Vec2();
-        double upperDistance = Double.MAX_VALUE;
-        double lowerDistance = Double.MAX_VALUE;
-        double closestDistance = Double.MAX_VALUE;
+        float upperDistance = Float.MAX_VALUE;
+        float lowerDistance = Float.MAX_VALUE;
+        float closestDistance = Float.MAX_VALUE;
         int upperIndex = 0;
         int lowerIndex = 0;
         int closestIndex = 0;
@@ -133,7 +133,7 @@ public class Bayazit {
                             // the edge p1->p (this makes sure its inside the polygon)
                             if (right(p1, p, s)) {
                                 // get the distance from p to the intersection point s
-                                double dist = p.distance2(s);
+                                float dist = p.distance2(s);
                                 // only save the smallest
                                 if (dist < lowerDistance) {
                                     lowerDistance = dist;
@@ -153,7 +153,7 @@ public class Bayazit {
                             // the edge p0->p (this makes sure its inside the polygon)
                             if (left(p0, p, s)) {
                                 // get the distance from p to the intersection point s
-                                double dist = p.distance2(s);
+                                float dist = p.distance2(s);
                                 // only save the smallest
                                 if (dist < upperDistance) {
                                     upperDistance = dist;
@@ -204,7 +204,7 @@ public class Bayazit {
 
                         // check the distance first, since this is generally
                         // a much faster operation than checking if its visible
-                        double dist = p.distance2(q);
+                        float dist = p.distance2(q);
                         if (dist < closestDistance) {
                             if (isVisible(polygon, i, jmod)) {
                                 closestDistance = dist;
@@ -437,7 +437,7 @@ public class Bayazit {
         return true;
     }
 
-    public static double getLocation(Vec2 point, Vec2 a, Vec2 b) {
+    public static float getLocation(Vec2 point, Vec2 a, Vec2 b) {
         return (b.x - a.x) * (point.y - a.y) -
                 (point.x - a.x) * (b.y - a.y);
     }

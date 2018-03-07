@@ -1,7 +1,7 @@
 package fr.hadriel.renderers;
 
-import fr.hadriel.graphics.texture.Texture2D;
-import fr.hadriel.graphics.texture.TextureSampler;
+import fr.hadriel.opengl.Texture2D;
+import fr.hadriel.opengl.TextureSampler;
 import fr.hadriel.opengl.*;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec4;
@@ -11,7 +11,7 @@ import fr.hadriel.math.Vec4;
  *
  * Created by HaDriel on 08/12/2016.
  */
-public class BatchRenderer2D extends OpenGLRenderer {
+public class BatchRenderer2D {
 
     private static final AttribPointer[] BATCH_SHADER_LAYOUT = {
             new AttribPointer("position", GLType.FLOAT, 2),

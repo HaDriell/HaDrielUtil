@@ -87,7 +87,6 @@ public class Shader {
         } catch (IOException ignore) {}
         int program = CreateProgram(vs.toString(), fs.toString());
         return program != -1 ? new Shader(program) : null;
-
     }
 
     private final int program;

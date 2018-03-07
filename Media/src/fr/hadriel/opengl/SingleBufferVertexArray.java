@@ -27,12 +27,7 @@ public class SingleBufferVertexArray extends VertexArray {
         for(int i = 0; i < layout.length; i++) {
             AttribPointer pointer = layout[i];
             glEnableVertexAttribArray(i);
-            glVertexAttribPointer(i,
-                    pointer.components(),
-                    pointer.type(),
-                    pointer.normalized(),
-                    stride,
-                    offset);
+            glVertexAttribPointer(i, pointer.components(), pointer.type(), pointer.normalized(), stride, offset);
             offset += pointer.getAttribSize();
         }
         vbo.unbind();

@@ -45,6 +45,12 @@ public abstract class Asset {
         state = UNLOADED;
     }
 
+    public void requireLoaded() {
+        if(!isLoaded()) {
+            throw new RuntimeException("Trying to use an non loaded Asset");
+        }
+    }
+
     protected abstract void onLoad(AssetManager manager);
     protected abstract void onUnload(AssetManager manager);
 }

@@ -96,6 +96,4 @@ public class Window {
     public boolean shouldClose() {
         return glfwWindowShouldClose(window);
     }
-
-    //TODO : add more direct control on the window
 }

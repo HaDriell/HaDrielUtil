@@ -1,8 +1,11 @@
 package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
+import fr.hadriel.audio.Audio2D;
 import fr.hadriel.util.Timer;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
@@ -14,6 +17,10 @@ public abstract class Application {
     private static final int UPDATING = 0x2;
     private static final int TERMINATING = 0x3;
 
+    //OpenAL Context
+
+
+    //OpenGL/GLFW Context
     private long window;
     private GLCapabilities capabilities;
 
@@ -46,6 +53,8 @@ public abstract class Application {
     }
 
     private void _init(WindowHint hint, String[] args) {
+
+        // OpenGL INIT
         glfwInit();
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         //Configure the Window hint
@@ -63,6 +72,11 @@ public abstract class Application {
         glfwSetWindowPos(window, x , y);
         glfwMakeContextCurrent(window);
         capabilities = GL.createCapabilities();
+
+        // OpenAL INIT
+        Audio2D.initialize();
+
+        // End-User INIT
         start(args);
     }
 
@@ -79,6 +93,7 @@ public abstract class Application {
 
     private void _terminate() {
         terminate();
+        Audio2D.terminate();
         glfwTerminate();
     }
 
