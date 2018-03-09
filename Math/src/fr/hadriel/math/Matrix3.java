@@ -4,14 +4,14 @@ package fr.hadriel.math;
  * Created by glathuiliere on 13/07/2016.
  * Inert version of the Matrix3f matrix
  */
-public strictfp class Matrix {
+public strictfp class Matrix3 {
     private static final float[] IDENTITY = new float[] {
             1, 0, 0,
             0, 1, 0,
             0, 0, 1
     };
 
-    public static final Matrix Identity = new Matrix();
+    public static final Matrix3 Identity = new Matrix3();
 
     //First Row
     public static final byte M00 = 0;
@@ -33,61 +33,61 @@ public strictfp class Matrix {
     public final float m10, m11, m12;
     public final float m20, m21, m22;
 
-    public Matrix(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
+    public Matrix3(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22) {
         this.m00 = m00; this.m01 = m01; this.m02 = m02;
         this.m10 = m10; this.m11 = m11; this.m12 = m12;
         this.m20 = m20; this.m21 = m21; this.m22 = m22;
     }
 
-    public Matrix(float[] matrix) {
+    public Matrix3(float[] matrix) {
         this(
                 matrix[M00], matrix[M01], matrix[M02],
                 matrix[M10], matrix[M11], matrix[M12],
                 matrix[M20], matrix[M21], matrix[M22]);
     }
 
-    public Matrix(Matrix m) {
+    public Matrix3(Matrix3 m) {
         this(
                 m.m00, m.m01, m.m02,
                 m.m10, m.m11, m.m12,
                 m.m20, m.m21, m.m22);
     }
 
-    public Matrix() {
+    public Matrix3() {
         this(IDENTITY);
     }
 
-    public static Matrix Transform(float sx, float sy, float r, float px, float py) {
+    public static Matrix3 Transform(float sx, float sy, float r, float px, float py) {
         float cos = Mathf.cos(Mathf.toRadians(r));
         float sin = Mathf.sin(Mathf.toRadians(r));
         //manual
-        return new Matrix(
+        return new Matrix3(
                 cos * sx,   sin,        px,
                 -sin,       cos * sy,   py,
                 0,          0,          1
         );
     }
 
-    public static Matrix Scale(float sx, float sy) {
-        return new Matrix(
+    public static Matrix3 Scale(float sx, float sy) {
+        return new Matrix3(
                 sx, 0,  0,
                 0,  sy, 0,
                 0,  0,  1
         );
     }
 
-    public static Matrix Rotation(float angle) {
+    public static Matrix3 Rotation(float angle) {
         float cos = Mathf.cos(Mathf.toRadians(angle));
         float sin = Mathf.sin(Mathf.toRadians(angle));
-        return new Matrix(
+        return new Matrix3(
                 cos,    sin,    0,
                 -sin,   cos,    0,
                 0,      0,      1
         );
     }
 
-    public static Matrix Translation(float x, float y) {
-        return new Matrix(
+    public static Matrix3 Translation(float x, float y) {
+        return new Matrix3(
                 1,  0,  x,
                 0,  1,  y,
                 0,  0,  1
@@ -102,12 +102,12 @@ public strictfp class Matrix {
         };
     }
 
-    public Matrix multiply(Matrix m) {
+    public Matrix3 multiply(Matrix3 m) {
         float[] result = new float[9];
         result[M00] = m00 * m.m00 + m01 * m.m10 + m02 * m.m20;  result[M01] = m00 * m.m01 + m01 * m.m11 + m02 * m.m21;  result[M02] = m00 * m.m02 + m01 * m.m12 + m02 * m.m22;
         result[M10] = m10 * m.m00 + m11 * m.m10 + m12 * m.m20;  result[M11] = m10 * m.m01 + m11 * m.m11 + m12 * m.m21;  result[M12] = m10 * m.m02 + m11 * m.m12 + m12 * m.m22;
         result[M20] = m20 * m.m00 + m21 * m.m10 + m22 * m.m20;  result[M21] = m20 * m.m01 + m21 * m.m11 + m22 * m.m21;  result[M22] = m20 * m.m02 + m21 * m.m12 + m22 * m.m22;
-        return new Matrix(result);
+        return new Matrix3(result);
     }
 
 
@@ -168,7 +168,7 @@ public strictfp class Matrix {
                 m02 * m11 * m20;
     }
 
-    public Matrix invert() {
+    public Matrix3 invert() {
         float det = det();
         if(det == 0)
             throw new RuntimeException("Can't Invert Matrix");
@@ -192,7 +192,7 @@ public strictfp class Matrix {
         for(int i = 0; i < matrix.length; i++)
             matrix[i] *= invDet;
 
-        return new Matrix(matrix);
+        return new Matrix3(matrix);
     }
 
     public String toString() {

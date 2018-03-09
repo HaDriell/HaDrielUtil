@@ -1,16 +1,14 @@
-package fr.hadriel.opengl;
+package fr.hadriel.opengl.shader;
 
-import fr.hadriel.math.*;
+import fr.hadriel.opengl.VertexAttribute;
 import fr.hadriel.util.IOUtils;
-import org.lwjgl.BufferUtils;
+import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.*;
-import java.nio.FloatBuffer;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.IntBuffer;
 
 /**
  * Created by glathuiliere on 29/11/2016.
@@ -22,6 +20,7 @@ public class Shader {
         glShaderSource(shader, source);
         glCompileShader(shader);
         if(glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
+            System.err.println("Error in Shader compilation: " + glGetShaderInfoLog(shader));
             glDeleteShader(shader);
             shader = -1;
         }
@@ -90,11 +89,46 @@ public class Shader {
     }
 
     private final int program;
-    private Map<String, Integer> locationCache;
+    private final Uniform[] uniforms;
+    private final GLSLAttribute[] attributes;
 
     public Shader(int program) {
         this.program = program;
-        this.locationCache = new HashMap<>();
+
+        glUseProgram(program);
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer size = stack.mallocInt(1);
+            IntBuffer type = stack.mallocInt(1);
+            IntBuffer uniformCount = stack.mallocInt(1);
+            IntBuffer attributeCount = stack.mallocInt(1);
+
+            glGetProgramiv(program, GL_ACTIVE_UNIFORMS, uniformCount);
+            glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, attributeCount);
+
+
+            //Uniform initialization
+            this.uniforms = new Uniform[uniformCount.get(0)];
+            for (int i = 0; i < uniforms.length; i++) {
+                size.clear();
+                type.clear();
+                String name = glGetActiveUniform(program, i, size, type);
+                int location = glGetUniformLocation(program, name);
+                GLSLType glslType = GLSLType.findByType(type.get(0));
+                uniforms[i] = new Uniform(name, location, glslType);
+            }
+
+            //Attributes initialization
+            this.attributes = new GLSLAttribute[attributeCount.get(0)];
+            for (int i = 0; i < attributes.length; i++) {
+                size.clear();
+                type.clear();
+                String name = glGetActiveAttrib(program, i, size, type);
+                GLSLType glslType = GLSLType.findByType(type.get(0));
+                attributes[i] = new GLSLAttribute(name, glslType);
+            }
+        }
+
+        glUseProgram(0);
     }
 
     public Shader(String vertexSource, String fragmentSource) {
@@ -105,70 +139,34 @@ public class Shader {
         this(IOUtils.readStreamAsString(vertexStream), IOUtils.readStreamAsString(fragmentStream));
     }
 
+    public void destroy() {
+        glDeleteProgram(program);
+    }
+
     public void bind() {
         glUseProgram(program);
+        for(Uniform uniform : uniforms)
+            uniform.setup();
+        glUniform4f(glGetUniformLocation(program, "u_color"), 0, 0, 0, 0);
     }
 
     public void unbind() {
         glUseProgram(0);
     }
 
-    public int getUniform(String name) {
-        Integer location = locationCache.get(name);
-        if(location != null) return location;
-        int result = glGetUniformLocation(program, name);
-        if(result == -1) System.err.println("Could not find uniform '" + name + "'");
-        else locationCache.put(name, result);
-        return result;
+    public void uniform(String name, Object value) {
+        for(Uniform uniform : uniforms) {
+            if(uniform.name.equals(name))
+                uniform.value = value;
+        }
     }
 
-    public void setUniform1iv(String name, int[] values) {
-        glUniform1iv(getUniform(name), values);
-    }
-
-    public void setUniform1i(String name, int value) {
-        glUniform1i(getUniform(name), value);
-    }
-
-    public void setUniform1f(String name, float value) {
-        glUniform1f(getUniform(name), value);
-    }
-
-    public void setUniform2f(String name, Vec2 v) {
-        setUniform2f(name, v.x, v.y);
-    }
-
-    public void setUniform3f(String name, Vec3 v) {
-        setUniform3f(name, v.x, v.y, v.z);
-    }
-
-    public void setUniform4f(String name, Vec4 v) {
-        setUniform4f(name, v.x, v.y, v.z, v.w);
-    }
-
-    public void setUniform2f(String name, float x, float y) {
-        glUniform2f(getUniform(name), x, y);
-    }
-
-    public void setUniform3f(String name, float x, float y, float z) {
-        glUniform3f(getUniform(name), x, y, z);
-    }
-
-    public void setUniform4f(String name, float x, float y, float z, float w) {
-        glUniform4f(getUniform(name), x, y, z, w);
-    }
-
-    public void setUniformMat3f(String name, Matrix3f matrix) {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(matrix.elements.length);
-        buffer.put(matrix.elements);
-        buffer.flip();
-        glUniformMatrix3fv(getUniform(name), false, buffer);
-    }
-
-    public void setUniformMat4f(String name, Matrix4f matrix) {
-        FloatBuffer buffer = BufferUtils.createFloatBuffer(matrix.elements.length);
-        buffer.put(matrix.elements);
-        buffer.flip();
-        glUniformMatrix4fv(getUniform(name), false, buffer);
+    public boolean validate(VertexAttribute[] vertexAttributes) {
+        if(vertexAttributes.length != attributes.length)
+            return false;
+        for(int i = 0; i < attributes.length; i++)
+            if(attributes[i].validate(vertexAttributes[i]))
+                return false;
+        return true;
     }
 }

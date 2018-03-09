@@ -75,6 +75,7 @@ public abstract class Application {
 
         // OpenAL INIT
         Audio2D.initialize();
+        applicationState = UPDATING;
 
         // End-User INIT
         start(args);
@@ -83,6 +84,7 @@ public abstract class Application {
     private void _update(float delta) {
         glfwPollEvents();
         if(glfwWindowShouldClose(window)) {
+            close();
             return;
         }
         glfwMakeContextCurrent(window);

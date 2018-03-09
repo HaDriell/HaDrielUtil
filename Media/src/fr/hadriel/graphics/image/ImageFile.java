@@ -1,6 +1,9 @@
 package fr.hadriel.graphics.image;
 
+import org.lwjgl.system.MemoryStack;
+
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.stb.STBImage.*;
 
@@ -39,17 +42,20 @@ public class ImageFile {
     }
 
     public ImageFile(String filename) {
-        int[] w = new int[1]; //width
-        int[] h = new int[1]; //height
-        int[] c = new int[1]; //color components
-        ByteBuffer buffer = stbi_load(filename, w, h, c, STBI_rgb_alpha);
-        width = w[0];
-        height = h[0];
-        components = c[0];
-        pixels = new int[width * height];
-        for(int i = 0; i < pixels.length; i++) {
-            pixels[i] = buffer.getInt();
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer c = stack.mallocInt(1);
+            ByteBuffer buffer = stbi_load(filename, w, h, c, STBI_rgb_alpha);
+            width = w.get(0);
+            height = h.get(0);
+            components = c.get(0);
+            pixels = new int[width * height];
+            for (int i = 0; i < pixels.length; i++) {
+                pixels[i] = buffer.getInt();
+            }
+            buffer.clear();
+            stbi_image_free(buffer);
         }
-        stbi_image_free(buffer);
     }
 }
