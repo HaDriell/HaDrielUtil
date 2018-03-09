@@ -26,6 +26,10 @@ final class Uniform {
         this.value = value;
     }
 
+    public String toString() {
+        return String.format("Uniform(%s, %s) = %s", name, type, value);
+    }
+
     void setup() {
         if(value == null)
             return;

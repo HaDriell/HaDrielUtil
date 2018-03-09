@@ -22,7 +22,6 @@ public class Shader {
         if(glGetShaderi(shader, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Error in Shader compilation: " + glGetShaderInfoLog(shader));
             glDeleteShader(shader);
-            shader = -1;
         }
         return shader;
     }
@@ -32,23 +31,28 @@ public class Shader {
         int vertex = CompileShader(GL_VERTEX_SHADER, vertexSource);
         int fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
 
-        //Safely delete both shaders in case of compilation failure of one of them
-        if(vertex == -1 && fragment != -1) glDeleteShader(fragment);
-        if(vertex != -1 && fragment == -1) glDeleteShader(vertex);
-
-        if(vertex == -1 && fragment == -1) { // compilation failure
-            glDeleteProgram(program);
-            program = -1;
-        } else { // compilation success
-            glAttachShader(program, vertex);
-            glAttachShader(program, fragment);
-            glLinkProgram(program);
-            glValidateProgram(program); // well. fuck it if linking / validation fails, i'll handle that later
-            glDetachShader(program, vertex);
-            glDetachShader(program, fragment);
-            glDeleteShader(vertex);
+        //Ensure that both Shaders are deleted
+        if(!glIsShader(vertex)) {
             glDeleteShader(fragment);
+            glDeleteProgram(program);
+            return -1;
         }
+
+        //Ensure that both Shaders are deleted
+        if(!glIsShader(fragment)) {
+            glDeleteShader(vertex);
+            glDeleteProgram(program);
+            return -1;
+        }
+
+        glAttachShader(program, vertex);
+        glAttachShader(program, fragment);
+        glLinkProgram(program);
+        glValidateProgram(program); // well. fuck it if linking / validation fails, i'll handle that later
+        glDetachShader(program, vertex);
+        glDetachShader(program, fragment);
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
         return program;
     }
 
@@ -95,7 +99,6 @@ public class Shader {
     public Shader(int program) {
         this.program = program;
 
-        glUseProgram(program);
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer size = stack.mallocInt(1);
             IntBuffer type = stack.mallocInt(1);
@@ -115,6 +118,7 @@ public class Shader {
                 int location = glGetUniformLocation(program, name);
                 GLSLType glslType = GLSLType.findByType(type.get(0));
                 uniforms[i] = new Uniform(name, location, glslType);
+                System.out.println(uniforms[i]);
             }
 
             //Attributes initialization
@@ -127,8 +131,6 @@ public class Shader {
                 attributes[i] = new GLSLAttribute(name, glslType);
             }
         }
-
-        glUseProgram(0);
     }
 
     public Shader(String vertexSource, String fragmentSource) {
@@ -165,7 +167,7 @@ public class Shader {
         if(vertexAttributes.length != attributes.length)
             return false;
         for(int i = 0; i < attributes.length; i++)
-            if(attributes[i].validate(vertexAttributes[i]))
+            if(!attributes[i].validate(vertexAttributes[i]))
                 return false;
         return true;
     }
