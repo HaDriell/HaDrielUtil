@@ -1,16 +1,28 @@
 package fr.hadriel.asset.font;
 
 public class FontChar {
-    public int id;
-    public int page;
-    public int x;
-    public int y;
-    public int width;
-    public int height;
-    public int xoffset;
-    public int yoffset;
-    public int xadvance;
-    //channels aren't supporetd
+    public final int id;
+    public final int page;
+    public final int x;
+    public final int y;
+    public final int width;
+    public final int height;
+    public final int xoffset;
+    public final int yoffset;
+    public final int xadvance;
+    //channfinal els aren't supporetd
+
+    public FontChar(int id, int page, int x, int y, int width, int height, int xoffset, int yoffset, int xadvance) {
+        this.id = id;
+        this.page = page;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.xoffset = xoffset;
+        this.yoffset = yoffset;
+        this.xadvance = xadvance;
+    }
 
 
     public String toString() {

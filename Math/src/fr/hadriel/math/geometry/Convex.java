@@ -6,11 +6,6 @@ import fr.hadriel.math.Vec2;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
 public class Convex extends Polygon {
 
     public Convex(Vec2... vertices) {

@@ -1,7 +1,8 @@
-package fr.hadriel.asset.font;
+package fr.hadriel.graphics.font;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
+import fr.hadriel.math.Vec2;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,7 +32,6 @@ public class Font extends Asset {
         this.pages = new ArrayList<>();
     }
 
-    //Basically a FNT parser
     protected void onLoad(AssetManager manager) {
         characters.clear();
         kernings.clear();
@@ -43,14 +43,35 @@ public class Font extends Asset {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the Font file", e);
         }
-
-        //TODO : load textures
     }
 
     protected void onUnload(AssetManager manager) {
-        //TODO : unload textures
+        pages.forEach(FontPage::unload);
     }
 
+    // PUBLIC API
+
+    public int kerning(int first, int second) {
+        for(FontKerning kerning : kernings)
+            if(kerning.first == first && kerning.second == second)
+                return kerning.amount;
+        return 0;
+    }
+
+    public FontPage page(int id) {
+        for(FontPage page : pages)
+            if(page.id == id)
+                return page;
+        return null;
+    }
+
+    public FontChar character(int id) {
+        for(FontChar c : characters) {
+            if(c.id == id)
+                return c;
+        }
+        return null;
+    }
 
     // PARSING FUNCTIONS BELOW
 
@@ -123,47 +144,48 @@ public class Font extends Asset {
     }
 
     private void parsePage(String[] args) {
-        FontPage page = new FontPage();
+        int id = 0;
+        String file = null;
         for(String kvpair : args) {
             int i = kvpair.indexOf("=");
             String key = kvpair.substring(0, i);
             String value = kvpair.substring(i + 1, kvpair.length());
-            if("id".equals(key))    page.id = Integer.parseInt(value);
-            if("file".equals(key))  page.file = value;
+            if("id".equals(key))    id = Integer.parseInt(value);
+            if("file".equals(key))  file = filename.substring(0, filename.lastIndexOf('/')) + '/' + value.substring(1, value.length() - 1);
         }
-        pages.add(page);
+        System.out.println("Page File: " + file);
+        pages.add(new FontPage(id, file));
     }
 
     private void parseChar(String[] args) {
-        FontChar character = new FontChar();
+        int id = 0, page = 0, x = 0, y = 0, xoffset = 0, yoffset = 0, width = 0, height = 0, xadvance = 0;
         for(String kvpair : args) {
             int i = kvpair.indexOf("=");
             String key = kvpair.substring(0, i);
             String value = kvpair.substring(i + 1, kvpair.length());
-            if("id".equals(key))        character.id = Integer.parseInt(value);
-            if("page".equals(key))      character.page = Integer.parseInt(value);
-            if("x".equals(key))         character.x = Integer.parseInt(value);
-            if("y".equals(key))         character.y = Integer.parseInt(value);
-            if("xoffset".equals(key))   character.xoffset = Integer.parseInt(value);
-            if("yoffset".equals(key))   character.yoffset = Integer.parseInt(value);
-            if("width".equals(key))     character.width = Integer.parseInt(value);
-            if("height".equals(key))    character.height = Integer.parseInt(value);
-            if("xadvance".equals(key))  character.xadvance = Integer.parseInt(value);
+            if("id".equals(key))        id = Integer.parseInt(value);
+            if("page".equals(key))      page = Integer.parseInt(value);
+            if("x".equals(key))         x = Integer.parseInt(value);
+            if("y".equals(key))         y = Integer.parseInt(value);
+            if("xoffset".equals(key))   xoffset = Integer.parseInt(value);
+            if("yoffset".equals(key))   yoffset = Integer.parseInt(value);
+            if("width".equals(key))     width = Integer.parseInt(value);
+            if("height".equals(key))    height = Integer.parseInt(value);
+            if("xadvance".equals(key))  xadvance = Integer.parseInt(value);
         }
-        characters.add(character);
-        System.out.println("Parsed " + character);
+        characters.add(new FontChar(id, page, x, y, width, height, xoffset, yoffset, xadvance));
     }
 
     private void parseKerning(String[] args) {
-        FontKerning kerning = new FontKerning();
+        int first = 0, second = 0, amount = 0;
         for(String kvpair : args) {
             int i = kvpair.indexOf("=");
             String key = kvpair.substring(0, i);
             String value = kvpair.substring(i + 1, kvpair.length());
-            if("first".equals(key))     kerning.first = Integer.parseInt(value);
-            if("second".equals(key))    kerning.second = Integer.parseInt(value);
-            if("amount".equals(key))    kerning.amount = Integer.parseInt(value);
+            if("first".equals(key))     first = Integer.parseInt(value);
+            if("second".equals(key))    second = Integer.parseInt(value);
+            if("amount".equals(key))    amount = Integer.parseInt(value);
         }
-        kernings.add(kerning);
+        kernings.add(new FontKerning(first, second, amount));
     }
 }

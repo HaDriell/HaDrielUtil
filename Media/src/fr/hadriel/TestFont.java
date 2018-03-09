@@ -11,7 +11,7 @@ public class TestFont extends Application {
 
     protected void start(String[] args) {
         AssetManager manager = new AssetManager();
-        Font font = new Font("Media/Arial.fnt");
+        Font font = new Font("Media/res/Arial.fnt");
         manager.load("Font", font);
     }
 

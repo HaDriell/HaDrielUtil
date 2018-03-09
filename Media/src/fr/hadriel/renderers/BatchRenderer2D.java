@@ -1,11 +1,12 @@
 package fr.hadriel.renderers;
 
-import fr.hadriel.asset.shader.Shader;
-import fr.hadriel.asset.texture.Texture;
-import fr.hadriel.asset.texture.TextureSampler;
+import fr.hadriel.opengl.Texture2D;
+import fr.hadriel.opengl.TextureSampler;
 import fr.hadriel.opengl.*;
 import fr.hadriel.math.Matrix4f;
 import fr.hadriel.math.Vec4;
+import fr.hadriel.opengl.shader.Shader;
+import org.lwjgl.opengl.GL11;
 
 
 /**
@@ -14,37 +15,39 @@ import fr.hadriel.math.Vec4;
  */
 public class BatchRenderer2D {
 
-    private static final AttribPointer[] BATCH_SHADER_LAYOUT = {
-            new AttribPointer("position", GLType.FLOAT, 2),
-            new AttribPointer("color", GLType.FLOAT, 4),
-            new AttribPointer("uv", GLType.FLOAT, 2),
-            new AttribPointer("tid", GLType.FLOAT, 1),
+    private static final VertexAttribute[] BATCH_SHADER_LAYOUT = {
+            new VertexAttribute("position", GLType.FLOAT, 2),
+            new VertexAttribute("color", GLType.FLOAT, 4),
+            new VertexAttribute("uv", GLType.FLOAT, 2),
+            new VertexAttribute("tid", GLType.FLOAT, 1),
     };
     private static final int MAX_ELEMENT_COUNT = 100_000;
 
     private Matrix4f projection; // projection uniform
 
+    private RenderState renderState;
     private Shader shader;
     private TextureSampler sampler;
     private IndexBuffer ibo;
-    private SingleBufferVertexArray vao;
+    private VertexArray vao;
     private VertexBuffer vbo;
     private int elementCount;
 
     public BatchRenderer2D(float left, float right, float top, float bottom) {
         this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
-//        this.shader = Shader.GLSL(getClass().getResourceAsStream("shader.glsl"));
-        this.vao = new SingleBufferVertexArray(MAX_ELEMENT_COUNT, BATCH_SHADER_LAYOUT);
-        this.vbo = vao.getBuffer(0);
+        this.shader = Shader.GLSL(getClass().getResourceAsStream("batch_shader.glsl"));
+        this.vao = new VertexArray(MAX_ELEMENT_COUNT, BATCH_SHADER_LAYOUT);
+        this.vbo = vao.getBuffer();
         this.ibo = new IndexBuffer(MAX_ELEMENT_COUNT, GLType.UINT);
         this.sampler = new TextureSampler();
+        this.renderState = new RenderState();
 
-//        //Face Culling
-//        renderState.setFaceCulling(false);
-//        //Blending Configuration
-//        renderState.setBlending(true);
-//        renderState.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
-//        renderState.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+        //Face Culling
+        renderState.setFaceCulling(false);
+        //Blending Configuration
+        renderState.setBlending(true);
+        renderState.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
+        renderState.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void begin() {
@@ -74,7 +77,7 @@ public class BatchRenderer2D {
         vertex(px, py, color, 0, 0, null);
     }
 
-    public void vertex(float px, float py, Vec4 color, float u, float v, Texture texture) {
+    public void vertex(float px, float py, Vec4 color, float u, float v, Texture2D texture2D) {
         if(elementCount >= MAX_ELEMENT_COUNT || sampler.getTextureCount() > 31) {
             end(); // end the draw call to reset the texture2D binding
             begin();
@@ -82,7 +85,7 @@ public class BatchRenderer2D {
         vbo.write(px).write(py); // position
         vbo.write(color != null ? color : new Vec4(1, 1, 1, 1)); // color
         vbo.write(u).write(v); // uv
-        vbo.write(texture != null ? sampler.load(texture) : -1f); // tid
+        vbo.write(texture2D != null ? sampler.load(texture2D) : -1f); // tid
         elementCount++;
     }
 
@@ -91,10 +94,13 @@ public class BatchRenderer2D {
         vbo.bind().unmap(); // apply the vertex buffer data
 
         //Render
+        renderState.apply();
         shader.bind();
         sampler.bindTextures();
-//        shader.setUniform1iv("texture2D", sampler.generateTextureIDs());
-//        shader.setUniformMat4f("projection", projection);
-//        draw(shader, vao, ibo);
+        shader.uniform("texture2D", sampler.getSamplerTextureUnitsIndices());
+        shader.uniform("projection", projection);
+        vao.bind();
+        ibo.bind();
+        GL11.glDrawElements(GL11.GL_TRIANGLES, elementCount, ibo.getType().name, 0);
     }
 }

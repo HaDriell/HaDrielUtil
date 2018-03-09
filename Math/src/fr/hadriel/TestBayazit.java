@@ -14,11 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
 public class TestBayazit {
 
     public static final int RENDER_DEFINITION = 256;

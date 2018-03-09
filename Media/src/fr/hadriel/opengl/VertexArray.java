@@ -2,30 +2,68 @@ package fr.hadriel.opengl;
 
 
 
+import java.util.Objects;
+
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 /**
  * Created by glathuiliere on 06/12/2016.
  */
-public abstract class VertexArray {
+public final class VertexArray {
 
     private final int handle;
-    private final int maxElementCount;
-    private final AttribPointer[] layout;
 
-    public VertexArray(int maxElementCount, AttribPointer... layout) {
-        if(!validateConfiguration(maxElementCount, layout)) throw new IllegalArgumentException("Invalid VAO configuration.");
-        this.maxElementCount = maxElementCount;
-        this.layout = layout;
+    //Properties
+    private VertexAttribute[] vertexAttributes;
+    private int maxElementCount;
+    private VertexBuffer vertexBuffer;
+
+    public VertexArray(int maxElementCount, VertexAttribute[] vertexAttributes) {
         this.handle = glGenVertexArrays();
-        onBackendCreate(maxElementCount, layout);
+        this.vertexAttributes = vertexAttributes;
+        this.maxElementCount = maxElementCount;
+        this.vertexBuffer = new VertexBuffer(maxElementCount * sizeof(vertexAttributes));
+        setupAttributes();
+    }
+
+    public void setMaxElementCount(int maxElementCount) {
+        if(vertexBuffer != null) vertexBuffer.destroy();
+        this.maxElementCount = maxElementCount;
+        vertexBuffer = new VertexBuffer(maxElementCount * sizeof(vertexAttributes));
+        setupAttributes();
+    }
+
+    public void setVertexAttributes(VertexAttribute[] vertexAttributes) {
+        this.vertexAttributes = Objects.requireNonNull(vertexAttributes);
+        setupAttributes();
+    }
+
+    private void setupAttributes() {
+        int stride = sizeof(vertexAttributes);
+
+        if(vertexBuffer.getSize() != maxElementCount * stride)
+            throw new RuntimeException("VertexLayout is not aligned with the VertexBuffer size");
+
+        bind();
+        vertexBuffer.bind();
+        int offset = 0;
+        for(int i = 0; i < vertexAttributes.length; i++) {
+            VertexAttribute attribute = vertexAttributes[i];
+            glEnableVertexAttribArray(i);
+            glVertexAttribPointer(i, attribute.components, attribute.type.name, attribute.normalized, stride, offset);
+            offset += attribute.type.size * attribute.components;
+        }
+        vertexBuffer.unbind();
+        unbind();
     }
 
     public void destroy() {
-        onBackendDestroy(maxElementCount, layout);
+        vertexBuffer.destroy();
+        glDeleteVertexArrays(handle);
     }
 
-    private boolean validateConfiguration(int elementCount, AttribPointer[] layout) {
-        return elementCount > 0 && layout != null && layout.length > 0;
+    public VertexBuffer getBuffer() {
+        return vertexBuffer;
     }
 
     public void bind() {
@@ -40,24 +78,10 @@ public abstract class VertexArray {
         return maxElementCount;
     }
 
-
-    /**
-     *
-     * @param layoutIndex the index of the tree VBO in this VAO
-     * @return the VertexBuffer associated with the AttribPointer at layoutIndex
-     */
-    public abstract VertexBuffer getBuffer(int layoutIndex);
-
-    /**
-     * Called at VertexArrayObject instanciation & modification when size and/or layout is changed<br/>
-     * Only creates & setup the new backend of this VAO
-     */
-    protected abstract void onBackendCreate(int elementCount, AttribPointer[] layout);
-
-
-    /**
-     * Called at VertexArrayObject instanciation & modification when size and/or layout is changed<br/>
-     * Only clean-up & destroy the old backend of this VAO
-     */
-    protected abstract void onBackendDestroy(int elementCount, AttribPointer[] layout);
+    private static int sizeof(VertexAttribute[] vertexAttributes) {
+        int size = 0;
+        for(VertexAttribute attribute : vertexAttributes)
+            size += attribute.type.size * attribute.components;
+        return size;
+    }
 }

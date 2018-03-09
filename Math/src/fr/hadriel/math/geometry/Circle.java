@@ -2,11 +2,6 @@ package fr.hadriel.math.geometry;
 
 import fr.hadriel.math.Vec2;
 
-/**
- * TODO comment
- *
- * @author glathuiliere
- */
 public class Circle extends Polygon {
 
     private static final int DEFAULT_VERTEX_COUNT = 24;
