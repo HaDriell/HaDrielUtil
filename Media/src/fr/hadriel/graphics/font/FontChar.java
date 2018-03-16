@@ -24,7 +24,6 @@ public class FontChar {
         this.xadvance = xadvance;
     }
 
-
     public String toString() {
         return String.format("Char(%d) page=%d x=%d y=%d width=%d height=%d xoffset=%d yoffset=%d xadvance=%d", id, page, x, y, width, height, xoffset, yoffset, xadvance);
     }

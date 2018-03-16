@@ -1,9 +1,19 @@
 package fr.hadriel.graphics.font;
 
 public class FontKerning {
-    public final int first;   // left character
-    public final int second;  // right character
-    public final int amount;  // x-axis in pixels adjustment
+
+    /**
+     * first character
+     */
+    public final int first;
+    /**
+     * second character
+     */
+    public final int second;
+    /**
+     * x-axis in pixels adjustment
+     */
+    public final int amount;
 
     public FontKerning(int first, int second, int amount) {
         this.first = first;

@@ -118,7 +118,6 @@ public class Shader {
                 int location = glGetUniformLocation(program, name);
                 GLSLType glslType = GLSLType.findByType(type.get(0));
                 uniforms[i] = new Uniform(name, location, glslType);
-                System.out.println(uniforms[i]);
             }
 
             //Attributes initialization
@@ -147,9 +146,9 @@ public class Shader {
 
     public void bind() {
         glUseProgram(program);
-        for(Uniform uniform : uniforms)
+        for(Uniform uniform : uniforms) {
             uniform.setup();
-        glUniform4f(glGetUniformLocation(program, "u_color"), 0, 0, 0, 0);
+        }
     }
 
     public void unbind() {

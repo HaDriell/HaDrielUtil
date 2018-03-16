@@ -31,8 +31,7 @@ final class Uniform {
     }
 
     void setup() {
-        if(value == null)
-            return;
+        if(value == null) return;
 
         else if(value instanceof Integer) setup((int) value);
         else if(value instanceof Float) setup((float) value);
@@ -47,7 +46,6 @@ final class Uniform {
         else if(value instanceof Matrix3) setup((Matrix3) value);
         else if(value instanceof Matrix4f) setup((Matrix4f) value);
     }
-
 
     private void setup(int value) {
         glUniform1i(location, value);

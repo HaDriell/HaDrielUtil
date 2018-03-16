@@ -128,7 +128,8 @@ public class Bayazit {
                     // does the line p0->p go between the vertices q and q0
                     if (left(p0, p, q) && rightOn(p0, p, q0)) {
                         // get the intersection point
-                        if (getIntersection(p0, p, q, q0, s)) {
+                        s = Geometry.intersectLineLine(p0, p, q, q0);
+                        if (s != null) {
                             // make sure the intersection point is to the right of
                             // the edge p1->p (this makes sure its inside the polygon)
                             if (right(p1, p, s)) {
@@ -148,7 +149,9 @@ public class Bayazit {
                     // does the line p1->p go between q and q1
                     if (left(p1, p, q1) && rightOn(p1, p, q)) {
                         // get the intersection point
-                        if (getIntersection(p1, p, q, q1, s)) {
+
+                        s = Geometry.intersectLineLine(p1, p, q, q1);
+                        if (s != null) {
                             // make sure the intersection point is to the left of
                             // the edge p0->p (this makes sure its inside the polygon)
                             if (left(p0, p, s)) {
@@ -314,83 +317,6 @@ public class Bayazit {
     }
 
     /**
-     * Returns true if the given lines intersect and returns the intersection point in
-     * the p parameter.
-     * @param a1 the first point of the first line
-     * @param a2 the second point of the first line
-     * @param b1 the first point of the second line
-     * @param b2 the second point of the second line
-     * @param p the destination object for the intersection point
-     * @return boolean
-     */
-    public static boolean getIntersection(Vec2 a1, Vec2 a2, Vec2 b1, Vec2 b2, Vec2 p) {
-        // any point on a line can be found by the parametric equation:
-        // P = (1 - t)A + tB
-        // or
-        // P.x = (1 - t)A.x + tB.x
-        // P.y = (1 - t)A.y + tB.y
-
-        // so we get:
-
-        // P.x = (1 - t1)A1.x + t1A2.x
-        // P.y = (1 - t1)A1.y + t1A2.y
-
-        // P.x = (1 - t2)B1.x + t2B2.x
-        // P.y = (1 - t2)B1.y + t2B2.y
-
-
-        // since P is the same we can set the equations equal
-
-        // (1 - t1)A1.x + t1A2.x = (1 - t2)B1.x + t2B2.x
-        // (1 - t1)A1.y + t1A2.y = (1 - t2)B1.y + t2B2.y
-
-        // A1.x - t1A1.x + t1A2.x = B1.x - t2B1.x + t2B2.x
-        // A1.y - t1A1.y + t1A2.y = B1.y - t2B1.y + t2B2.y
-
-        // t2(B1.x - B2.x) - t1(A1.x - A2.x) = B1.x - A1.x
-        // t2(B1.y - B2.y) - t1(A1.y - A2.y) = B1.y - A1.y
-
-        // solve the system of equations
-
-        // t1 = -(B1.x - A1.x - t2(B1.x - B2.x)) / (A1.x - A2.x)
-        // t2(B2.y - B2.y) + (B1.x - A1.x - t2(B1.x - B2.x)) / (A1.x - A2.x) * (A1.y - A2.y) = B1.y - A1.y
-        // t2(B2.y - B2.y)(A1.x - A2.x) + (B1.x - A1.x - t2(B1.x - B2.x))(A1.y - A2.y) = (B1.y - A1.y)(A1.x - A2.x)
-        // t2S2.yS1.x + B1.xS1.y - A1.xS1.y - t2S2.xS1.y = B1.yS1.x - A1.yS1.x
-        // t2(S2.yS1.x - S2.xS1.y) = B1.yS1.x - A1.yS1.x - B1.xS1.y + A1.xS1.y
-        // t2(S1.cross(S2)) = B1.yS1.x - B1.xS1.y + A1.xS1.y - A1.yS1.x
-        // t2(S1.cross(S2)) = A1.cross(S1) - B1.cross(S1)
-        // t2 = (A1.cross(S1) - B1.cross(S1)) / S1.cross(S2)
-
-        // if S1.cross(S2) is near zero then there is no solution
-
-        // compute S1 and S2
-        Vec2 s1 = a1.sub(a2);
-        Vec2 s2 = b1.sub(b2);
-
-        // compute the cross product (the determinant if we used matrix solving techniques)
-        float det = s1.cross(s2);
-
-        // make sure the matrix isn't singular (the lines could be parallel)
-        if (Math.abs(det) <= Epsilon.E) {
-            // return false since there is no way that the segments could be intersecting
-            return false;
-        } else {
-            // pre-divide the determinant
-            det = 1f / det;
-
-            // compute t2
-            float t2 = det * (a1.cross(s1) - b1.cross(s1));
-
-            // compute the intersection point
-            // P = B1(1.0 - t2) + B2(t2)
-            p = new Vec2(b1.x * (1f - t2) + b2.x * t2, b1.y * (1f - t2) + b2.y * t2);
-
-            // return that they intersect
-            return true;
-        }
-    }
-
-    /**
      * Returns true if the vertex at index i can see the vertex at index j.
      * @param polygon the current polygon
      * @param i the ith vertex
@@ -430,7 +356,7 @@ public class Bayazit {
             Vec2 k1 = polygon.get(k);
             Vec2 k2 = polygon.get(ki1);
 
-            Vec2 in = getSegmentIntersection(iv, jv, k1, k2);
+            Vec2 in = Geometry.intersectSegmentSegment(iv, jv, k1, k2);
             if (in != null) return false;
         }
 
@@ -440,51 +366,5 @@ public class Bayazit {
     public static float getLocation(Vec2 point, Vec2 a, Vec2 b) {
         return (b.x - a.x) * (point.y - a.y) -
                 (point.x - a.x) * (b.y - a.y);
-    }
-
-    public static Vec2 getSegmentIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d) {
-        return null;
-    }
-
-    public static Vec2 getLineIntersection(Vec2 ap1, Vec2 ap2, Vec2 bp1, Vec2 bp2) {
-        Vec2 A = ap1.to(ap2);
-        Vec2 B = bp1.to(bp2);
-
-        // compute the bottom
-        float BxA = B.cross(A);
-        if (Math.abs(BxA) <= Epsilon.E) {
-            // the lines are parallel and don't intersect
-            return null;
-        }
-
-        // compute the top
-        float ambxA = ap1.sub(bp1).cross(A);
-        if (Math.abs(ambxA) <= Epsilon.E) {
-            // the lines are coincident
-            return null;
-        }
-
-
-
-        // compute tb
-        float tb = ambxA / BxA;
-        if (tb < 0.0 || tb > 1.0) {
-            // no intersection
-            return null;
-        }
-
-        // compute the intersection point
-        Vec2 ip = B.scale(tb).add(bp1);
-
-        // since both are segments we need to verify that
-        // ta is also valid.
-        // compute ta
-        float ta = ip.sub(ap1).dot(A) / A.dot(A);
-        if (ta < 0.0 || ta > 1.0) {
-            // no intersection
-            return null;
-        }
-
-        return ip;
     }
 }

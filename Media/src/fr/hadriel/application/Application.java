@@ -2,6 +2,7 @@ package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
 import fr.hadriel.audio.Audio2D;
+import fr.hadriel.graphics.Graphic2D;
 import fr.hadriel.util.Timer;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.openal.ALCCapabilities;
@@ -64,12 +65,12 @@ public abstract class Application {
         glfwWindowHint(GLFW_VISIBLE, hint.visible ? GLFW_TRUE : GLFW_FALSE);
 
         //Configure the Window Pos & Size
-        int x = hint.x == GLFW_DONT_CARE ? (vidmode.width() - hint.width) / 2 : hint.x;
-        int y = hint.y == GLFW_DONT_CARE ? (vidmode.height() - hint.height) / 2 : hint.y;
         int width = hint.fullscreen ? vidmode.width() : hint.width;
         int height = hint.fullscreen ? vidmode.height() : hint.height;
+        int x = hint.x == GLFW_DONT_CARE ? (vidmode.width() - width) / 2 : hint.x;
+        int y = hint.y == GLFW_DONT_CARE ? (vidmode.height() - height) / 2 : hint.y;
         window = glfwCreateWindow(width, height, hint.title, 0, 0);
-        glfwSetWindowPos(window, x , y);
+        glfwSetWindowPos(window, x, y);
         glfwMakeContextCurrent(window);
         capabilities = GL.createCapabilities();
 
@@ -79,6 +80,7 @@ public abstract class Application {
 
         // End-User INIT
         start(args);
+        glfwShowWindow(window);
     }
 
     private void _update(float delta) {

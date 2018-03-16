@@ -23,7 +23,7 @@ public class BatchRenderer2D {
     };
     private static final int MAX_ELEMENT_COUNT = 100_000;
 
-    private Matrix4f projection; // projection uniform
+    private Matrix4f projection; // getProjection uniform
 
     private RenderState renderState;
     private Shader shader;
@@ -98,7 +98,7 @@ public class BatchRenderer2D {
         shader.bind();
         sampler.bindTextures();
         shader.uniform("texture2D", sampler.getSamplerTextureUnitsIndices());
-        shader.uniform("projection", projection);
+        shader.uniform("getProjection", projection);
         vao.bind();
         ibo.bind();
         GL11.glDrawElements(GL11.GL_TRIANGLES, elementCount, ibo.getType().name, 0);
