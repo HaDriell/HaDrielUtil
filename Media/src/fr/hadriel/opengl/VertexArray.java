@@ -6,9 +6,7 @@ import java.util.Objects;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-/**
- * Created by glathuiliere on 06/12/2016.
- */
+
 public final class VertexArray {
 
     private final int handle;

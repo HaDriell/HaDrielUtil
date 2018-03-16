@@ -1,84 +1,101 @@
 package fr.hadriel.renderers;
 
 import fr.hadriel.graphics.font.Font;
+import fr.hadriel.graphics.font.FontChar;
+import fr.hadriel.graphics.image.Sprite;
+import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4f;
+import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.opengl.*;
+import fr.hadriel.opengl.shader.Shader;
+
+import static fr.hadriel.renderers.RenderUtil.*;
 
 public class FontRenderer {
     private static final int MAX_CHARACTERS = 10_000;
     private static final int MAX_ELEMENTS = MAX_CHARACTERS * 4;
 
+    private static final VertexAttribute[] FONT_SHADER_LAYOUT = {
+            new VertexAttribute("i_position", GLType.FLOAT, 2),
+            new VertexAttribute("i_color", GLType.FLOAT, 4),
+            new VertexAttribute("i_uv", GLType.FLOAT, 2),
+            new VertexAttribute("i_texture", GLType.UINT, 1)
+    };
+
+    private Shader shader;
+    private RenderState state;
     private VertexArray vao;
-    private VertexBuffer vbo;
-    private IndexBuffer ibo;
 
-    //UNIFORMS
-
-    private Matrix4f projection;
-
-    private Font font;
-    private float size;
-
-    private Vec4 fillColor;
-    private Vec4 outlineColor;
-    private Vec4 backgroundColor;
-
-    public FontRenderer(float left, float right, float top, float bottom) {
-        this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
-        this.font = null;
-        this.size = 0f;
-        this.fillColor = new Vec4(1, 1, 1, 1);
-        this.outlineColor = new Vec4(1, 1, 1, 1);
-        this.backgroundColor = new Vec4();
-        this.vao = new VertexArray(MAX_ELEMENTS, null);
+    public FontRenderer() {
+        this.shader = Shader.GLSL(FontRenderer.class.getResourceAsStream("font_shader.glsl"));
+        this.vao = new VertexArray(MAX_ELEMENTS, FONT_SHADER_LAYOUT);
+        this.state = new RenderState();
+        state.setBlending(true);
+        state.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
+        state.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+        state.setWindingClockwise();
     }
 
-    public void setBackgroundColor(Vec4 backgroundColor) {
-        this.backgroundColor = backgroundColor;
+    public void setProjection(float left, float right, float top, float bottom) {
+        shader.uniform("u_projection", Matrix4f.Orthographic(left, right, top, bottom, -1, 1));
     }
 
-    public void setFillColor(Vec4 fillColor) {
-        this.fillColor = fillColor;
+    public void setSmoothing(float smoothing) {
+        shader.uniform("u_smoothing", smoothing);
     }
 
-    public void setOutlineColor(Vec4 outlineColor) {
-        this.outlineColor = outlineColor;
-    }
-
-    public Vec4 getBackgroundColor() {
-        return backgroundColor;
-    }
-
-    public Vec4 getFillColor() {
-        return fillColor;
-    }
-
-    public Vec4 getOutlineColor() {
-        return outlineColor;
-    }
-
-    public void setFont(Font font) {
-        this.font = font;
-    }
-
-    public Font getFont() {
-        return font;
-    }
-
-    public void setSize(float size) {
-        this.size = size;
-    }
-
-    public float getSize() {
-        return size;
-    }
-
-    public void draw(String text) {
+    public void draw(Matrix3 transform, String text, Font font, float size, Vec4 color) {
         if(text == null || text.isEmpty()) return; // no text to render
-        if(font == null) return; // no configured font
+        TextureSampler2D sampler2D = new TextureSampler2D(32); // same size of the u_page[n] sampler2D array
 
-        //TODO : build up a VAO to fill with all those quads
-        //TODO : render the text using the configured font
+        float scale = size / font.info().size; // ratio between render size and desired size
+        float advance = 0;
+
+        VertexBuffer vertexBuffer = vao.getBuffer();
+        vertexBuffer.bind().map();
+
+        char previousCharacter = 0;
+        for(char character : text.toCharArray()) {
+            FontChar fc = font.character(character);
+            //Char dimensions
+            Vec2 fcPosition = new Vec2(fc.xoffset + advance, fc.yoffset).scale(scale);
+            Vec2 fcSize = new Vec2(fc.width, fc.height).scale(scale);
+
+            //TODO : support kerning
+            advance += fc.xadvance + font.kerning(character, previousCharacter);
+            previousCharacter = character;
+
+            //Texture info
+            Sprite sprite = font.sprite(fc);
+            if(sprite == null)
+                continue;
+
+            int texture = sampler2D.activateTexture(sprite.texture);
+
+            //No texture mean no render in FontRenderer
+            if(texture == -1)
+                continue;
+
+            //Vertex registration
+            //Triangle 1
+            Vec2 position = transform.multiply(fcPosition.x, fcPosition.y);
+            vertexBuffer.write(position).write(color).write(sprite.uv0).write(texture);
+            position = transform.multiply(fcPosition.x + fcSize.x, fcPosition.y);
+            vertexBuffer.write(position).write(color).write(sprite.uv1).write(texture);
+            position = transform.multiply(fcPosition.x + fcSize.x, fcPosition.y + fcSize.y);
+            vertexBuffer.write(position).write(color).write(sprite.uv2).write(texture);
+            //Triangle 2
+            vertexBuffer.write(position).write(color).write(sprite.uv2).write(texture);
+            position = transform.multiply(fcPosition.x, fcPosition.y + fcSize.y);
+            vertexBuffer.write(position).write(color).write(sprite.uv3).write(texture);
+            position = transform.multiply(fcPosition.x, fcPosition.y);
+            vertexBuffer.write(position).write(color).write(sprite.uv0).write(texture);
+        }
+        vertexBuffer.unmap().unbind();
+
+        sampler2D.bindTextures();
+        shader.uniform("u_page[0]", sampler2D.getUniformValue());
+        DrawTriangles(shader, vao, state, text.length() * 6); // 2 triangles per character => 6 vertices
     }
 }

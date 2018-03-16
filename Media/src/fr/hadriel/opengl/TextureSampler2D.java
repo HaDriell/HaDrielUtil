@@ -20,13 +20,15 @@ public class TextureSampler2D {
     }
 
     public int getActiveTextureID(Texture2D texture) {
-        for(int i = 0; i < textures.length; i++)
+        for(int i = 0; i < slot; i++)
             if(texture.handle == textures[i].handle)
                 return i;
         return -1;
     }
 
     public int activateTexture(Texture2D texture) {
+        if(texture == null)
+            return -1;
         int id = getActiveTextureID(texture);
         if(id == -1) {
             id = slot;
@@ -37,7 +39,7 @@ public class TextureSampler2D {
     }
 
     public void bindTextures() {
-        for (int i = 0; i < textures.length; i++) {
+        for (int i = 0; i < slot; i++) {
             glActiveTexture(GL_TEXTURE0 + i);
             textures[i].bind();
         }

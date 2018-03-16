@@ -21,10 +21,15 @@ public class Sprite {
 
     public Sprite(Texture2D texture, int x, int y, int width, int height) {
         this(texture,
-                new Vec2(x / texture.width,             y / texture.height),
-                new Vec2((x + width) / texture.width,   y / texture.height),
-                new Vec2((x + width) / texture.width,   (y + height) / texture.height),
-                new Vec2(x / texture.width,             (y + height) / texture.height)
+                new Vec2(x / (float) texture.width,             y / (float) texture.height),
+                new Vec2((x + width) / (float) texture.width,   y / (float) texture.height),
+                new Vec2((x + width) / (float) texture.width,   (y + height) / (float) texture.height),
+                new Vec2(x / (float) texture.width,             (y + height) / (float) texture.height)
         );
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Sprite(%d) [%s, %s, %s, %s]", texture.handle, uv0, uv1, uv2, uv3);
     }
 }

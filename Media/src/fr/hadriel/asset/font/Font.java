@@ -2,14 +2,14 @@ package fr.hadriel.graphics.font;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
+import fr.hadriel.graphics.image.Sprite;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.opengl.Texture2D;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Font extends Asset {
 
@@ -17,25 +17,22 @@ public class Font extends Asset {
     private final String filename;
 
     //Font data
-    private final FontInfo info;
-    private final FontCommon common;
-    private final List<FontPage> pages;
-    private final List<FontChar> characters;
-    private final List<FontKerning> kernings;
+    private FontInfo info;
+    private FontCommon common;
+    private Map<Integer, FontPage> pages;
+    private Map<Integer, FontChar> characters;
+    private Map<Long, FontKerning> kernings;
+
+    private FontChar unknownCharacter;
 
     public Font(String filename) {
         this.filename = filename;
-        this.info = new FontInfo();
-        this.common = new FontCommon();
-        this.characters = new ArrayList<>();
-        this.kernings = new ArrayList<>();
-        this.pages = new ArrayList<>();
     }
 
     protected void onLoad(AssetManager manager) {
-        characters.clear();
-        kernings.clear();
-        pages.clear();
+        characters = new HashMap<>();
+        pages = new HashMap<>();
+        kernings = new HashMap<>();
 
         //Parse the Font File Descriptor
         try (BufferedReader in = new BufferedReader(new FileReader(filename))) {
@@ -46,31 +43,43 @@ public class Font extends Asset {
     }
 
     protected void onUnload(AssetManager manager) {
-        pages.forEach(FontPage::unload);
+        pages.forEach((k, v) -> v.unload());
     }
 
     // PUBLIC API
 
-    public int kerning(int first, int second) {
-        for(FontKerning kerning : kernings)
-            if(kerning.first == first && kerning.second == second)
-                return kerning.amount;
-        return 0;
+    public FontInfo info() {
+        return info;
     }
 
-    public FontPage page(int id) {
-        for(FontPage page : pages)
-            if(page.id == id)
-                return page;
-        return null;
+    public FontCommon common() {
+        return common;
+    }
+
+    public Texture2D page(int id) {
+        FontPage page = pages.get(id);
+        return page != null ? page.texture : null;
+    }
+
+    public int kerning(int first, int second) {
+        FontKerning kerning = kernings.get(PAIR(first, second));
+        return kerning != null ? kerning.amount : 0;
+    }
+
+    public Sprite sprite(FontChar fc) {
+        FontPage page = pages.get(fc.page);
+        return page == null ? null : new Sprite(page.texture, fc.x, fc.y, fc.width, fc.height);
     }
 
     public FontChar character(int id) {
-        for(FontChar c : characters) {
-            if(c.id == id)
-                return c;
+        return characters.getOrDefault(id, getUnknownCharacter());
+    }
+
+    public FontChar getUnknownCharacter() {
+        if(unknownCharacter == null) {
+            unknownCharacter = characters.get(0); // looks like always present in the BMFont format
         }
-        return null;
+        return unknownCharacter;
     }
 
     // PARSING FUNCTIONS BELOW
@@ -103,43 +112,52 @@ public class Font extends Asset {
     }
 
     private void parseInfo(String[] args) {
+        String face = null;
+        int a = 0, aa = 0, size = 0, stretchH = 0;
+        boolean bold = false, italic = false, unicode = false, smooth = false;
+        int[] padding = new int[4];
+        int[] spacing = new int[2];
+
         for(String kvpair : args) {
             int i = kvpair.indexOf("=");
             String key = kvpair.substring(0, i);
             String value = kvpair.substring(i + 1, kvpair.length());
-            if("face".equals(key))      info.face = value;
-            if("size".equals(key))      info.size = Integer.parseInt(value);
-            if("bold".equals(key))      info.bold = "1".equals(value);
-            if("italic".equals(key))    info.italic = "1".equals(value);
-            if("unicode".equals(key))   info.unicode = "1".equals(value);
-            if("smooth".equals(key))    info.smooth = "1".equals(value);
-            if("stretchH".equals(key))  info.stretchH = Integer.parseInt(value);
-            if("aa".equals(key))        info.aa = Integer.parseInt(value);
-            if("padding".equals(key))   info.padding = new int[] {
+            if("face".equals(key))      face = value;
+            if("size".equals(key))      size = Integer.parseInt(value);
+            if("bold".equals(key))      bold = "1".equals(value);
+            if("italic".equals(key))    italic = "1".equals(value);
+            if("unicode".equals(key))   unicode = "1".equals(value);
+            if("smooth".equals(key))    smooth = "1".equals(value);
+            if("stretchH".equals(key))  stretchH = Integer.parseInt(value);
+            if("aa".equals(key))        aa = Integer.parseInt(value);
+            if("padding".equals(key))   padding = new int[] {
                     Integer.parseInt(value.split(",")[0]),
                     Integer.parseInt(value.split(",")[1]),
                     Integer.parseInt(value.split(",")[2]),
                     Integer.parseInt(value.split(",")[3])
             };
-            if("spacing".equals(key))   info.spacing = new int[] {
+            if("spacing".equals(key))   spacing = new int[] {
                     Integer.parseInt(value.split(",")[0]),
                     Integer.parseInt(value.split(",")[1])
             };
         }
+        info = new FontInfo(face, size, bold, italic, null, unicode, stretchH, smooth, aa, padding, spacing, 1);
         System.out.println("Parsed " + info);
     }
 
     private void parseCommon(String[] args) {
+        int lineHeight = 0, base = 0, scaleW = 0, scaleH = 0, pages = 0;
         for(String kvpair : args) {
             int i = kvpair.indexOf("=");
             String key = kvpair.substring(0, i);
             String value = kvpair.substring(i + 1, kvpair.length());
-            if("lineHeight".equals(key))    common.lineHeight = Integer.parseInt(value);
-            if("base".equals(key))          common.base = Integer.parseInt(value);
-            if("scaleW".equals(key))        common.scaleW = Integer.parseInt(value);
-            if("scaleH".equals(key))        common.scaleH = Integer.parseInt(value);
-            if("pages".equals(key))         common.pages = Integer.parseInt(value);
+            if("lineHeight".equals(key))    lineHeight = Integer.parseInt(value);
+            if("base".equals(key))          base = Integer.parseInt(value);
+            if("scaleW".equals(key))        scaleW = Integer.parseInt(value);
+            if("scaleH".equals(key))        scaleH = Integer.parseInt(value);
+            if("pages".equals(key))         pages = Integer.parseInt(value);
         }
+        common = new FontCommon(lineHeight, base, scaleW, scaleH, pages);
         System.out.println("Parsed " + common);
     }
 
@@ -154,7 +172,7 @@ public class Font extends Asset {
             if("file".equals(key))  file = filename.substring(0, filename.lastIndexOf('/')) + '/' + value.substring(1, value.length() - 1);
         }
         System.out.println("Page File: " + file);
-        pages.add(new FontPage(id, file));
+        pages.put(id, new FontPage(id, file));
     }
 
     private void parseChar(String[] args) {
@@ -173,7 +191,7 @@ public class Font extends Asset {
             if("height".equals(key))    height = Integer.parseInt(value);
             if("xadvance".equals(key))  xadvance = Integer.parseInt(value);
         }
-        characters.add(new FontChar(id, page, x, y, width, height, xoffset, yoffset, xadvance));
+        characters.put(id, new FontChar(id, page, x, y, width, height, xoffset, yoffset, xadvance));
     }
 
     private void parseKerning(String[] args) {
@@ -186,6 +204,25 @@ public class Font extends Asset {
             if("second".equals(key))    second = Integer.parseInt(value);
             if("amount".equals(key))    amount = Integer.parseInt(value);
         }
-        kernings.add(new FontKerning(first, second, amount));
+        kernings.put(PAIR(first, second), new FontKerning(first, second, amount));
+    }
+
+    // UTILITY FUNCTIONS
+
+    public static Vec2 getTextSize(String text, Font font, float size) {
+        int height = font.common.lineHeight;
+        int width = 0;
+        char previous = 0;
+        for(char c : text.toCharArray()) {
+            width += font.character(c).xadvance;
+            width += font.kerning(previous, c);
+            previous = c;
+        }
+        float scale = size / font.info.size;
+        return new Vec2(width * scale, height * scale);
+    }
+
+    public static long PAIR(int first, int second) {
+        return ((first & 0xFFFFL) << 32) | (second & 0xFFFFL);
     }
 }

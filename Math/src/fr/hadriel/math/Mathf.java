@@ -170,7 +170,7 @@ public strictfp final class Mathf {
         if (dotprod <= 0f) {
             // px,py is on the side of x1,y1 away from x2,y2
             // distance to segment is length of px,py vector
-            // "length of its (clipped) projection" is now 0.0
+            // "length of its (clipped) getProjection" is now 0.0
             projlenSq = 0f;
         } else {
             // switch to backwards vectors relative to x2,y2
@@ -184,7 +184,7 @@ public strictfp final class Mathf {
             if (dotprod <= 0f) {
                 // px,py is on the side of x2,y2 away from x1,y1
                 // distance to segment is length of (backwards) px,py vector
-                // "length of its (clipped) projection" is now 0.0
+                // "length of its (clipped) getProjection" is now 0.0
                 projlenSq = 0f;
             } else {
                 // px,py is between x1,y1 and x2,y2
@@ -195,8 +195,8 @@ public strictfp final class Mathf {
             }
         }
         // Distance to line is now the length of the relative point
-        // vector minus the length of its projection onto the line
-        // (which is zero if the projection falls outside the range
+        // vector minus the length of its getProjection onto the line
+        // (which is zero if the getProjection falls outside the range
         //  of the line segment).
         float lenSq = px * px + py * py - projlenSq;
         if (lenSq < 0f) {

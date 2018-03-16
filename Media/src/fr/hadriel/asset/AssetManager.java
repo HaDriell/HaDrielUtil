@@ -2,6 +2,7 @@ package fr.hadriel.asset;
 
 import fr.hadriel.asset.font.Font;
 import fr.hadriel.asset.shader.Shader;
+import fr.hadriel.graphics.image.Image;
 import fr.hadriel.asset.texture.Texture;
 import fr.hadriel.asset.texture.TextureHint;
 
@@ -31,6 +32,18 @@ public class AssetManager {
         Asset asset = assets.remove(name);
         if(asset != null)
             asset.unload(this);
+    }
+
+    public Font loadFont(String name, String filename) {
+        Font font = new Font(filename);
+        load(name, font);
+        return font;
+    }
+
+    public Image loadImage(String name, String filename) {
+        Image image = new Image(filename);
+        load(name, image);
+        return image;
     }
 
     public Texture loadTexture(String name, String filename) {
