@@ -1,34 +1,34 @@
 package fr.hadriel.opengl;
 
-import fr.hadriel.math.Matrix3f;
+import fr.hadriel.math.Matrix3;
 
 import java.util.Stack;
 
 /**
  * Created by HaDriel on 09/12/2016.
  */
-public class Matrix3fStack {
+public class MatrixStack {
 
-    private Stack<Matrix3f> stack;
+    private Stack<Matrix3> stack;
 
-    public Matrix3fStack() {
+    public MatrixStack() {
         this.stack = new Stack<>();
-        this.stack.push(new Matrix3f());
+        this.stack.push(new Matrix3());
     }
 
     public void clear() {
         stack.setSize(1);
     }
 
-    public Matrix3f top() {
+    public Matrix3 top() {
         return stack.peek();
     }
 
-    public void push(Matrix3f matrix) {
-        stack.push(stack.peek().copy().multiply(matrix));
+    public void push(Matrix3 matrix) {
+        stack.push(stack.peek().multiply(matrix));
     }
 
-    public void pushOverride(Matrix3f matrix) {
+    public void pushOverride(Matrix3 matrix) {
         stack.push(matrix);
     }
 

@@ -32,10 +32,6 @@ public class Vec3 {
         this(v.x, v.y, v.z);
     }
 
-    public Vec3 copy() {
-        return new Vec3(this);
-    }
-
     public Vec3 add(Vec3 v) { return add(v.x, v.y, v.z); }
     public Vec3 sub(Vec3 v) { return sub(v.x, v.y, v.z); }
     public Vec3 mul(Vec3 v) { return mul(v.x, v.y, v.z); }

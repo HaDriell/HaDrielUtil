@@ -4,11 +4,17 @@ import static org.lwjgl.opengl.GL13.*;
 
 public class TextureSampler2D {
 
+    private final int[] uniformValue;
     private final Texture2D[] textures;
     private int slot;
 
     public TextureSampler2D(int size) {
         textures = new Texture2D[size];
+        //init the uniform array
+        uniformValue = new int[size];
+        for (int i = 0; i < uniformValue.length; i++) {
+            uniformValue[i] = i;
+        }
     }
 
     public void clear() {
@@ -49,6 +55,6 @@ public class TextureSampler2D {
         int[] ids = new int[textures.length];
         for(int i = 0; i < ids.length; i++)
             ids[i] = i;
-        return ids;
+        return uniformValue;
     }
 }

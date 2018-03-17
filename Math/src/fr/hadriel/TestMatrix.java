@@ -1,54 +1,57 @@
 package fr.hadriel;
 
 import fr.hadriel.math.Matrix3;
-import fr.hadriel.math.Matrix3f;
+import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.math.Vec3;
+import fr.hadriel.math.geometry.Epsilon;
 
 public class TestMatrix {
     public static void main(String[] args) {
-        test_matrix3f();
-        test_matrix();
+        test_matrix3();
+        test_matrix4();
     }
 
-    private static void test_matrix3f() {
+    private static void test_matrix3() {
         Vec2 v = new Vec2(5, 3);
-        Vec2 dv = null;
-        Matrix3f m;
-        System.out.println("Starting test");
+        Vec2 dv;
+        Matrix3 m;
+        System.out.println("Starting Matrix3 test");
         for(float angle = 0; angle < 360; angle += 30) {
-            m = new Matrix3f();
-            m = m.multiply(Matrix3f.Translation(100, 30));
-            m = m.multiply(Matrix3f.Rotation(angle));
-            m = m.multiply(Matrix3f.Scale(1, 10));
+            m = Matrix3.Translation(100, 30);
+            m = m.multiply(Matrix3.Rotation(angle));
+            m = m.multiply(Matrix3.Scale(1, 10));
             dv = m.multiply(v);
             dv = m.multiplyInverse(dv);
 
-            if(v.equals(dv))
+            if(v.len2() - dv.len2() < Epsilon.E)
                 continue;
+
 
             System.out.println(String.format("angle: %3.1f    origin:%s    (m-1 * (m * origin)): %s", angle, v,dv));
         }
         System.out.println("Ending test");
     }
 
-    private static void test_matrix() {
+    private static void test_matrix4() {
         Vec2 v = new Vec2(5, 3);
-        Vec2 dv =null;
-        Matrix3 matrix;
-        System.out.println("Starting test");
-        for (float angle = 0; angle < 360; angle +=30) {
-            matrix = Matrix3.Identity;
-            matrix = matrix.multiply(Matrix3.Translation(100, 30));
-            matrix = matrix.multiply(Matrix3.Rotation(angle));
-            matrix = matrix.multiply(Matrix3.Scale(1, 10));
-            dv = matrix.multiply(v);
-            dv = matrix.multiplyInverse(dv);
+        Vec2 dv;
+        Matrix4 m, im, im2;
+        System.out.println("Starting Matrix4 test");
+        for(float angle = 0; angle < 360; angle += 30) {
+            m = Matrix4.Translation(100, 30, 0);
+            m = m.multiply(Matrix4.Rotation(angle, Vec3.Z));
+            m = m.multiply(Matrix4.Scale(1, 10, 1));
+            im = m.invert();
 
-            if(v.equals(dv))
+
+            dv = m.multiply(v);
+            dv = im.multiply(dv);
+
+            if(v.len2() - dv.len2() < Epsilon.E)
                 continue;
 
             System.out.println(String.format("angle: %3.1f    origin:%s    (m-1 * (m * origin)): %s", angle, v,dv));
         }
-        System.out.println("Ending test");
     }
 }

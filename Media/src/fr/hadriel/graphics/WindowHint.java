@@ -1,4 +1,4 @@
-package fr.hadriel.application;
+package fr.hadriel.graphics;
 
 import org.lwjgl.glfw.GLFW;
 

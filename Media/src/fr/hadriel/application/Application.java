@@ -2,13 +2,12 @@ package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
 import fr.hadriel.audio.Audio2D;
-import fr.hadriel.graphics.Graphic2D;
+import fr.hadriel.graphics.WindowHint;
 import fr.hadriel.util.Timer;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.openal.ALCCapabilities;
-import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.opengl.GLUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -17,9 +16,6 @@ public abstract class Application {
     private static final int LAUNCHING = 0x1;
     private static final int UPDATING = 0x2;
     private static final int TERMINATING = 0x3;
-
-    //OpenAL Context
-
 
     //OpenGL/GLFW Context
     private long window;
@@ -54,7 +50,6 @@ public abstract class Application {
     }
 
     private void _init(WindowHint hint, String[] args) {
-
         // OpenGL INIT
         glfwInit();
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -65,12 +60,12 @@ public abstract class Application {
         glfwWindowHint(GLFW_VISIBLE, hint.visible ? GLFW_TRUE : GLFW_FALSE);
 
         //Configure the Window Pos & Size
+        int x = hint.x == GLFW_DONT_CARE ? (vidmode.width() - hint.width) / 2 : hint.x;
+        int y = hint.y == GLFW_DONT_CARE ? (vidmode.height() - hint.height) / 2 : hint.y;
         int width = hint.fullscreen ? vidmode.width() : hint.width;
         int height = hint.fullscreen ? vidmode.height() : hint.height;
-        int x = hint.x == GLFW_DONT_CARE ? (vidmode.width() - width) / 2 : hint.x;
-        int y = hint.y == GLFW_DONT_CARE ? (vidmode.height() - height) / 2 : hint.y;
         window = glfwCreateWindow(width, height, hint.title, 0, 0);
-        glfwSetWindowPos(window, x, y);
+        glfwSetWindowPos(window, x , y);
         glfwMakeContextCurrent(window);
         capabilities = GL.createCapabilities();
 

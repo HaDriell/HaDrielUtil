@@ -1,4 +1,4 @@
-package fr.hadriel.graphics.font;
+package fr.hadriel.asset.font;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;

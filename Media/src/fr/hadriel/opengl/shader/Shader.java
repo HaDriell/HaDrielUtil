@@ -33,6 +33,7 @@ public class Shader {
 
         //Ensure that both Shaders are deleted
         if(!glIsShader(vertex)) {
+            System.err.println("Vertex Shader Failed to compile");
             glDeleteShader(fragment);
             glDeleteProgram(program);
             return -1;
@@ -40,6 +41,7 @@ public class Shader {
 
         //Ensure that both Shaders are deleted
         if(!glIsShader(fragment)) {
+            System.err.println("Fragment Shader Failed to compile");
             glDeleteShader(vertex);
             glDeleteProgram(program);
             return -1;
@@ -47,8 +49,24 @@ public class Shader {
 
         glAttachShader(program, vertex);
         glAttachShader(program, fragment);
+
+        //Link
         glLinkProgram(program);
+        if(glGetProgrami(program, GL_LINK_STATUS) != GL_TRUE) {
+            System.err.println("Program Linking failed: " + glGetProgramInfoLog(program));
+            glDeleteProgram(program);
+            return -1;
+        }
+
+        //Validate
         glValidateProgram(program); // well. fuck it if linking / validation fails, i'll handle that later
+        if(glGetProgrami(program, GL_VALIDATE_STATUS) != GL_TRUE) {
+            System.err.println("Program Validation failed: " + glGetProgramInfoLog(program));
+            glDeleteProgram(program);
+            return -1;
+        }
+
+        //Clean-up
         glDetachShader(program, vertex);
         glDetachShader(program, fragment);
         glDeleteShader(vertex);
@@ -157,8 +175,9 @@ public class Shader {
 
     public void uniform(String name, Object value) {
         for(Uniform uniform : uniforms) {
-            if(uniform.name.equals(name))
+            if(uniform.name.equals(name)) {
                 uniform.value = value;
+            }
         }
     }
 

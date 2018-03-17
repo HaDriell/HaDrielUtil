@@ -3,7 +3,7 @@ package fr.hadriel.renderers;
 import fr.hadriel.opengl.Texture2D;
 import fr.hadriel.opengl.TextureSampler;
 import fr.hadriel.opengl.*;
-import fr.hadriel.math.Matrix4f;
+import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.opengl.shader.Shader;
 import org.lwjgl.opengl.GL11;
@@ -23,7 +23,7 @@ public class BatchRenderer2D {
     };
     private static final int MAX_ELEMENT_COUNT = 100_000;
 
-    private Matrix4f projection; // getProjection uniform
+    private Matrix4 projection; // getProjection uniform
 
     private RenderState renderState;
     private Shader shader;
@@ -34,7 +34,7 @@ public class BatchRenderer2D {
     private int elementCount;
 
     public BatchRenderer2D(float left, float right, float top, float bottom) {
-        this.projection = Matrix4f.Orthographic(left, right, top, bottom, -1, 1);
+        this.projection = Matrix4.Orthographic(left, right, top, bottom, -1, 1);
         this.shader = Shader.GLSL(getClass().getResourceAsStream("batch_shader.glsl"));
         this.vao = new VertexArray(MAX_ELEMENT_COUNT, BATCH_SHADER_LAYOUT);
         this.vbo = vao.getBuffer();

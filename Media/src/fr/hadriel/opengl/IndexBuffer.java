@@ -19,7 +19,7 @@ public class IndexBuffer {
         if(type != GLType.UBYTE && type != GLType.USHORT && type != GLType.UINT)
             throw new IllegalArgumentException("Invalid GLType Enum. Must be UBYTE, USHORT or UINT");
 
-        this.ibo = new GLBuffer(GL_ELEMENT_ARRAY_BUFFER, usage, size);
+        this.ibo = new GLBuffer(GL_ELEMENT_ARRAY_BUFFER, usage, size * type.size);
         this.type = type;
     }
 
@@ -73,5 +73,4 @@ public class IndexBuffer {
         ibo.write(indices);
         count += indices.length;
     }
-
 }

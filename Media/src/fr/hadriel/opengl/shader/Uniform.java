@@ -31,7 +31,9 @@ final class Uniform {
     }
 
     void setup() {
-        if(value == null) return;
+        if(value == null) {
+            return;
+        }
 
         else if(value instanceof Integer) setup((int) value);
         else if(value instanceof Float) setup((float) value);
@@ -44,7 +46,7 @@ final class Uniform {
         else if(value instanceof Vec4) setup((Vec4) value);
 
         else if(value instanceof Matrix3) setup((Matrix3) value);
-        else if(value instanceof Matrix4f) setup((Matrix4f) value);
+        else if(value instanceof Matrix4) setup((Matrix4) value);
     }
 
     private void setup(int value) {
@@ -84,10 +86,10 @@ final class Uniform {
         }
     }
 
-    private void setup(Matrix4f matrix) {
+    private void setup(Matrix4 matrix) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buffer = stack.mallocFloat(16);
-            buffer.put(matrix.elements);
+            buffer.put(matrix.elements());
             buffer.flip();
             glUniformMatrix4fv(location, false, buffer);
         }

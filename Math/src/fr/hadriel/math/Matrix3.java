@@ -76,22 +76,28 @@ public strictfp class Matrix3 {
         );
     }
 
+    //assumed RotationZ
     public static Matrix3 Rotation(float angle) {
-        float cos = Mathf.cos(Mathf.toRadians(angle));
-        float sin = Mathf.sin(Mathf.toRadians(angle));
-        return new Matrix3(
-                cos,    sin,    0,
-                -sin,   cos,    0,
-                0,      0,      1
-        );
+        float c = Mathf.cos(Mathf.toRadians(angle));
+        float s = Mathf.sin(Mathf.toRadians(angle));
+        float[] elements = new float[9];
+        elements[M00] = c;
+        elements[M01] = s;
+        elements[M10] = -s;
+        elements[M11] = c;
+        elements[M22] = 1;
+        return new Matrix3(elements);
     }
 
     public static Matrix3 Translation(float x, float y) {
-        return new Matrix3(
-                1,  0,  x,
-                0,  1,  y,
-                0,  0,  1
-        );
+        float[] elements = new float[16];
+        elements[M00] = 1f;
+        elements[M11] = 1f;
+        elements[M22] = 1f;
+
+        elements[M20] = x;
+        elements[M21] = y;
+        return new Matrix3(elements);
     }
 
     public float[] elements() {
@@ -103,11 +109,23 @@ public strictfp class Matrix3 {
     }
 
     public Matrix3 multiply(Matrix3 m) {
-        float[] result = new float[9];
-        result[M00] = m00 * m.m00 + m01 * m.m10 + m02 * m.m20;  result[M01] = m00 * m.m01 + m01 * m.m11 + m02 * m.m21;  result[M02] = m00 * m.m02 + m01 * m.m12 + m02 * m.m22;
-        result[M10] = m10 * m.m00 + m11 * m.m10 + m12 * m.m20;  result[M11] = m10 * m.m01 + m11 * m.m11 + m12 * m.m21;  result[M12] = m10 * m.m02 + m11 * m.m12 + m12 * m.m22;
-        result[M20] = m20 * m.m00 + m21 * m.m10 + m22 * m.m20;  result[M21] = m20 * m.m01 + m21 * m.m11 + m22 * m.m21;  result[M22] = m20 * m.m02 + m21 * m.m12 + m22 * m.m22;
-        return new Matrix3(result);
+        float[] elements = new float[9];
+        //ROW 0
+        elements[M00] = m.m00 * m00 + m.m01 * m10 + m.m02 * m20;
+        elements[M01] = m.m00 * m01 + m.m01 * m11 + m.m02 * m21;
+        elements[M02] = m.m00 * m02 + m.m01 * m12 + m.m02 * m22;
+
+        //ROW 1
+        elements[M10] = m.m10 * m00 + m.m11 * m10 + m.m12 * m20;
+        elements[M11] = m.m10 * m01 + m.m11 * m11 + m.m12 * m21;
+        elements[M12] = m.m10 * m02 + m.m11 * m12 + m.m12 * m22;
+
+        //ROW 2
+        elements[M20] = m.m20 * m00 + m.m21 * m10 + m.m22 * m20;
+        elements[M21] = m.m20 * m01 + m.m21 * m11 + m.m22 * m21;
+        elements[M22] = m.m20 * m02 + m.m21 * m12 + m.m22 * m22;
+
+        return new Matrix3(elements);
     }
 
 
@@ -115,16 +133,17 @@ public strictfp class Matrix3 {
     public Vec3 multiply(Vec3 v) { return multiply(v.x, v.y, v.z); }
     public Vec2 multiplyInverse(Vec2 v) { return multiplyInverse(v.x, v.y); }
 
+    // assumed Vec3(x, y, 0)
     public Vec2 multiply(float x, float y) {
-        float dx = x * m00 + y * m01 + m02;
-        float dy = x * m10 + y * m11 + m12;
+        float dx = m00 * x + m10 * y + m20;
+        float dy = m01 * x + m11 * y + m21;
         return new Vec2(dx, dy);
     }
 
     public Vec3 multiply(float x, float y, float z) {
-        float dx = m00 * x + m01 * y + m02 * z;
-        float dy = m10 * x + m11 * y + m12 * z;
-        float dz = m20 * x + m21 * y + m22 * z;
+        float dx = m00 * x + m10 * y + m20 * z;
+        float dy = m01 * x + m11 * y + m21 * z;
+        float dz = m02 * x + m12 * y + m22 * z;
         return new Vec3(dx, dy, dz);
     }
 
@@ -159,40 +178,35 @@ public strictfp class Matrix3 {
         return new Vec2(sx, sy);
     }
 
-    public float det() {
-        return  m00 * m11 * m22 +
-                m01 * m12 * m20 +
-                m02 * m10 * m21 -
-                m00 * m12 * m21 -
-                m01 * m10 * m22 -
-                m02 * m11 * m20;
+    public float determinant() {
+        float b01 = m22 * m11 - m12 * m21;
+        float b11 = -m22 * m10 + m12 * m20;
+        float b21 = m21 * m10 - m11 * m20;
+        return  m00 * b01 + m01 * b11 + m02 * b21;
     }
 
     public Matrix3 invert() {
-        float det = det();
-        if(det == 0)
-            throw new RuntimeException("Can't Invert Matrix");
+        float[] elements = new float[9];
+        float b01 = m22 * m11 - m12 * m21;
+        float b11 = -m22 * m10 + m12 * m20;
+        float b21 = m21 * m10 - m11 * m20;
 
-        float invDet = 1f / det;
-        float[] matrix = new float[9];
+        // Calculate the determinant
+        float det = m00 * b01 + m01 * b11 + m02 * b21;
 
-        // --- //
-        matrix[M00] = m11 * m22 - m12 * m21;
-        matrix[M01] = m02 * m21 - m01 * m22;
-        matrix[M02] = m01 * m12 - m02 * m11;
-        // --- //
-        matrix[M10] = m12 * m20 - m10 * m22;
-        matrix[M11] = m00 * m22 - m02 * m20;
-        matrix[M12] = m02 * m10 - m00 * m12;
-        // --- //
-        matrix[M20] = m10 * m21 - m11 * m20;
-        matrix[M21] = m01 * m20 - m00 * m21;
-        matrix[M22] = m00 * m11 - m01 * m10;
+        if (det == 0) return null; // singular Matrix
+        det = 1f / det;
 
-        for(int i = 0; i < matrix.length; i++)
-            matrix[i] *= invDet;
-
-        return new Matrix3(matrix);
+        elements[0] = b01 * det;
+        elements[1] = (-m22 * m01 + m02 * m21) * det;
+        elements[2] = (m12 * m01 - m02 * m11) * det;
+        elements[3] = b11 * det;
+        elements[4] = (m22 * m00 - m02 * m20) * det;
+        elements[5] = (-m12 * m00 + m02 * m10) * det;
+        elements[6] = b21 * det;
+        elements[7] = (-m21 * m00 + m01 * m20) * det;
+        elements[8] = (m11 * m00 - m01 * m10) * det;
+        return new Matrix3(elements);
     }
 
     public String toString() {

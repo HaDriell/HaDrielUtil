@@ -7,15 +7,11 @@ import fr.hadriel.math.Vec2;
  */
 public class MouseMovedEvent extends MouseEvent {
 
-    public final boolean dragged;
-
-    public MouseMovedEvent(float x, float y, boolean dragged) {
+    public MouseMovedEvent(float x, float y) {
         super(x, y);
-        this.dragged = dragged;
     }
 
-    public MouseMovedEvent(Vec2 mouse, boolean dragged) {
+    public MouseMovedEvent(Vec2 mouse) {
         super(mouse);
-        this.dragged = dragged;
     }
 }

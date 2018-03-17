@@ -144,16 +144,16 @@ public strictfp class Vec2 {
         return new Vec2(-y, x);
     }
 
-    public Vec2 transform(Matrix3f matrix) {
+    public Vec2 transform(Matrix3 matrix) {
         return matrix.multiply(this);
     }
 
-    public Vec2 transform(Matrix4f matrix) {
+    public Vec2 transform(Matrix4 matrix) {
         return matrix.multiply(this);
     }
 
     public String toString() {
-        return String.format("(%.20f; %.20f)", x, y);
+        return String.format("(%.4f; %.4f)", x, y);
     }
 
     public static float orientation(Vec2 a, Vec2 b, Vec2 c) {

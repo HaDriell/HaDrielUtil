@@ -1,7 +1,7 @@
 package fr.hadriel;
 
 import fr.hadriel.math.Mathf;
-import fr.hadriel.math.Matrix3f;
+import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.geometry.Bayazit;
 import fr.hadriel.math.geometry.Convex;
@@ -69,9 +69,8 @@ public class TestBayazit {
         float scale = RENDER_DEFINITION / Mathf.max(rectWidth, rectHeight);
         scale /= 2.2;
 
-        Matrix3f transform = new Matrix3f();
-        transform.multiply(Matrix3f.Translation(RENDER_DEFINITION / 2, RENDER_DEFINITION / 2));
-        transform.multiply(Matrix3f.Scale(scale, scale));
+        Matrix3 transform = Matrix3.Translation(RENDER_DEFINITION / 2, RENDER_DEFINITION / 2);
+        transform = transform.multiply(Matrix3.Scale(scale, scale));
 
         BufferedImage render = new BufferedImage(RENDER_DEFINITION, RENDER_DEFINITION, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = render.createGraphics();
