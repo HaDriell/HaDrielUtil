@@ -2,12 +2,10 @@ package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
 import fr.hadriel.audio.Audio2D;
+import fr.hadriel.graphics.Graphic2D;
 import fr.hadriel.graphics.WindowHint;
 import fr.hadriel.util.Timer;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GLCapabilities;
-import org.lwjgl.opengl.GLUtil;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -17,19 +15,12 @@ public abstract class Application {
     private static final int UPDATING = 0x2;
     private static final int TERMINATING = 0x3;
 
-    //OpenGL/GLFW Context
-    private long window;
-    private GLCapabilities capabilities;
-
     private long applicationState;
-
     protected final AssetManager manager;
 
     protected Application() {
         this.applicationState = LAUNCHING;
         this.manager = new AssetManager();
-        this.window = -1;
-        this.capabilities = null;
     }
 
     public void close() {
@@ -50,50 +41,33 @@ public abstract class Application {
     }
 
     private void _init(WindowHint hint, String[] args) {
-        // OpenGL INIT
-        glfwInit();
-        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        //Configure the Window hint
-        glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_RESIZABLE, hint.fullscreen ? GLFW_FALSE : hint.resizable ? GLFW_TRUE : GLFW_FALSE);
-        glfwWindowHint(GLFW_DECORATED, hint.fullscreen ? GLFW_FALSE : hint.decorated ? GLFW_TRUE : GLFW_FALSE);
-        glfwWindowHint(GLFW_VISIBLE, hint.visible ? GLFW_TRUE : GLFW_FALSE);
 
-        //Configure the Window Pos & Size
-        int x = hint.x == GLFW_DONT_CARE ? (vidmode.width() - hint.width) / 2 : hint.x;
-        int y = hint.y == GLFW_DONT_CARE ? (vidmode.height() - hint.height) / 2 : hint.y;
-        int width = hint.fullscreen ? vidmode.width() : hint.width;
-        int height = hint.fullscreen ? vidmode.height() : hint.height;
-        window = glfwCreateWindow(width, height, hint.title, 0, 0);
-        glfwSetWindowPos(window, x , y);
-        glfwMakeContextCurrent(window);
-        capabilities = GL.createCapabilities();
+        //Graphics INIT
+        Graphic2D.create(hint);
 
-        // OpenAL INIT
+        //Audio INIT
         Audio2D.initialize();
         applicationState = UPDATING;
 
         // End-User INIT
         start(args);
-        glfwShowWindow(window);
+        Graphic2D.show();
     }
 
     private void _update(float delta) {
-        glfwPollEvents();
-        if(glfwWindowShouldClose(window)) {
+        if(Graphic2D.shouldClose()) {
             close();
             return;
         }
-        glfwMakeContextCurrent(window);
-        GL.setCapabilities(capabilities);
+        Graphic2D.makeContextCurrent();
         update(delta);
-        glfwSwapBuffers(window);
+        Graphic2D.update();
     }
 
     private void _terminate() {
         terminate();
         Audio2D.terminate();
-        glfwTerminate();
+        Graphic2D.terminate();
     }
 
     protected abstract void start(String[] args);

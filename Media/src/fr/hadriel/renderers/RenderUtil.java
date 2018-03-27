@@ -11,23 +11,47 @@ public class RenderUtil {
     private RenderUtil() {}
 
     public static void Clear() {
-        glClearColor(0, 0, 0, 1);
+        Clear(0, 0, 0, 1);
+    }
+
+    public static void Clear(float r, float g, float b, float a) {
+        glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     public static void DrawTriangles(Shader shader, VertexArray vertexArray, int elementCount) {
-        DrawTriangles(shader, vertexArray, null, null, elementCount);
+        Draw(GL_TRIANGLES, shader, vertexArray, null, null, elementCount);
     }
 
     public static void DrawTriangles(Shader shader, VertexArray vertexArray, RenderState state, int elementCount) {
-        DrawTriangles(shader, vertexArray, null, state, elementCount);
+        Draw(GL_TRIANGLES, shader, vertexArray, null, state, elementCount);
     }
 
     public static void DrawTriangles(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, int elementCount) {
-        DrawTriangles(shader, vertexArray, indexBuffer, null, elementCount);
+        Draw(GL_TRIANGLES, shader, vertexArray, indexBuffer, null, elementCount);
     }
 
     public static void DrawTriangles(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, RenderState state, int elementCount) {
+        Draw(GL_TRIANGLES, shader, vertexArray, indexBuffer, state, elementCount);
+    }
+
+    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, int elementCount) {
+        Draw(GL_TRIANGLE_STRIP, shader, vertexArray, null, null, elementCount);
+    }
+
+    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, RenderState state, int elementCount) {
+        Draw(GL_TRIANGLE_STRIP, shader, vertexArray, null, state, elementCount);
+    }
+
+    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, int elementCount) {
+        Draw(GL_TRIANGLE_STRIP, shader, vertexArray, indexBuffer, null, elementCount);
+    }
+
+    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, RenderState state, int elementCount) {
+        Draw(GL_TRIANGLE_STRIP, shader, vertexArray, indexBuffer, state, elementCount);
+    }
+
+    public static void Draw(int glPrimitive, Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, RenderState state, int elementCount) {
         if(vertexArray == null) return; // no data to render
 
         //Prepare Shader
@@ -44,9 +68,9 @@ public class RenderUtil {
         //Choose between indexed and non indexed modes
         if(indexBuffer != null) {
             indexBuffer.bind();
-            glDrawElements(GL_TRIANGLES, elementCount, indexBuffer.getType().name, 0);
+            glDrawElements(glPrimitive, elementCount, indexBuffer.getType().name, 0);
         } else {
-            glDrawArrays(GL_TRIANGLES, 0, elementCount);
+            glDrawArrays(glPrimitive, 0, elementCount);
         }
     }
 }

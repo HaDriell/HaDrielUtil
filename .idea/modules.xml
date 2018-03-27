@@ -9,9 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/Lockstep/Lockstep.iml" filepath="$PROJECT_DIR$/Lockstep/Lockstep.iml" />
       <module fileurl="file://$PROJECT_DIR$/Math/Math.iml" filepath="$PROJECT_DIR$/Math/Math.iml" />
       <module fileurl="file://$PROJECT_DIR$/Media/Media.iml" filepath="$PROJECT_DIR$/Media/Media.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Networking/Networking.iml" filepath="$PROJECT_DIR$/Networking/Networking.iml" />
       <module fileurl="file://$PROJECT_DIR$/Serialization/Serialization.iml" filepath="$PROJECT_DIR$/Serialization/Serialization.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Vulkan/Vulkan.iml" filepath="$PROJECT_DIR$/Vulkan/Vulkan.iml" />
     </modules>
   </component>
 </project>

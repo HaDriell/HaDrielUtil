@@ -2,6 +2,7 @@ package fr.hadriel;
 
 import fr.hadriel.application.Application;
 import fr.hadriel.asset.font.Font;
+import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.renderers.FontRenderer;
@@ -14,6 +15,7 @@ public class TestFont extends Application {
 
     FontRenderer renderer;
     Font font;
+    float age;
 
     protected void start(String[] args) {
         System.out.println("Loading Resources");
@@ -24,10 +26,11 @@ public class TestFont extends Application {
     }
 
     protected void update(float delta) {
+        age += delta;
         RenderUtil.Clear();
-        renderer.setWeight(0.62f);
-        renderer.setEdge(0.05f);
-        renderer.draw(Matrix3.Translation(100, 100), "<3", font, 50, new Vec4(1, 1, 1, 1));
+        renderer.setWeight(0.5f);
+        renderer.setEdge(0.1f);
+        renderer.draw(Matrix3.Translation(100, 100), "Hello, world!", font, 20 + 10 * Mathf.cos(age), new Vec4(1, 1, 1, 1));
     }
 
     protected void terminate() {
