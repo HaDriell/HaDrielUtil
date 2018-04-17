@@ -8,11 +8,11 @@ public strictfp class LockstepEngine {
     private Map<Long, Entity> entities; // fast lookup map of entities
     private long sequence;
 
-    private List<ILockstepExtension> extensions;
+    private List<ILockstepSystem> systems;
 
     public LockstepEngine() {
         this.entities = new HashMap<>();
-        this.extensions = new ArrayList<>();
+        this.systems = new ArrayList<>();
     }
 
     public Entity newEntity(IComponent... components) {
@@ -27,17 +27,19 @@ public strictfp class LockstepEngine {
 
     public void step(float deltaTime) {
         notifyEntityModifications();
-        extensions.forEach(e -> e.step(deltaTime));
+        systems.forEach(e -> e.step(deltaTime));
     }
 
     private void notifyEntityModifications() {
         //Notify Mappers
-        entities.values().stream().filter(Entity::isUnstable).forEach(entity -> extensions.forEach(extension -> {
-            if(entity.isDestroyed()) extension.entityDestroyed(entity);
-            else if(entity.isCreated()) extension.entityCreated(entity);
-            else if(entity.isModified()) extension.entityModified(entity);
+        entities.values().stream()
+                .filter(Entity::isUnstable)
+                .forEach(entity -> systems.forEach(system -> {
+            if(entity.isDestroyed()) system.entityDestroyed(entity);
+            else if(entity.isCreated()) system.entityCreated(entity);
+            else if(entity.isModified()) system.entityModified(entity);
         }));
-        //Clear Flags
+        //Clear Flags & Clean-up Entities
         Iterator<Entity> it = entities.values().iterator();
         while(it.hasNext()) {
             Entity e = it.next();
@@ -46,15 +48,15 @@ public strictfp class LockstepEngine {
         }
     }
 
-    public void addExtension(ILockstepExtension extension) {
-        if(extensions.contains(extension)) return;
-        extensions.add(extension);
-        extension.load();
+    public void addSystem(ILockstepSystem system) {
+        if(systems.contains(system)) return;
+        systems.add(system);
+        system.load();
     }
 
-    public void removeExtension(ILockstepExtension extension) {
-        if(!extensions.remove(extension)) return;
-        extension.unload();
+    public void removeSystem(ILockstepSystem system) {
+        if(!systems.remove(system)) return;
+        system.unload();
     }
 
     public Stream<Entity> entities() {
@@ -70,6 +72,6 @@ public strictfp class LockstepEngine {
     }
 
     public void finalize() {
-        extensions.forEach(ILockstepExtension::unload);
+        systems.forEach(ILockstepSystem::unload);
     }
 }

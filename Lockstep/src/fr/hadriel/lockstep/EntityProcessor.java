@@ -3,7 +3,7 @@ package fr.hadriel.lockstep;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public abstract class EntityProcessor implements ILockstepExtension {
+public abstract class EntityProcessor implements ILockstepSystem {
     public static final boolean DEFAULT_USE_PARALLELISM = true;
     public static final boolean DEFAULT_IGNORE_DESTROYED_ENTITIES = true;
 

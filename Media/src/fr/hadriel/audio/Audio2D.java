@@ -12,8 +12,10 @@ import static org.lwjgl.openal.ALC10.*;
 
 public final class Audio2D {
     private Audio2D() {}
+
     private static long device;
     private static long context;
+
     private static ALCCapabilities alcCapabilities;
     private static ALCapabilities alCapabilities;
 
@@ -21,11 +23,7 @@ public final class Audio2D {
     private static Vec3 position = Vec3.ZERO;
 
     public static void initialize() {
-        initialize(alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER));
-    }
-
-    public static void initialize(String deviceName) {
-        device = alcOpenDevice(deviceName);
+        device = alcOpenDevice(alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER));
         context = alcCreateContext(device, new int[] {0});
         alcMakeContextCurrent(context);
         alcCapabilities = ALC.createCapabilities(device);

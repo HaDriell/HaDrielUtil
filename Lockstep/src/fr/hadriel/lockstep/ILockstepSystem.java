@@ -1,6 +1,6 @@
 package fr.hadriel.lockstep;
 
-public abstract strictfp interface ILockstepExtension {
+public abstract strictfp interface ILockstepSystem {
 
     /**
      * Called when the LockstepSystem is added to the LockstepEngine

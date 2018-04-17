@@ -7,11 +7,10 @@ import java.util.Objects;
 
 public class Entity {
 
-    public static int STABLE    = 0b000; // entity is the same (signature-wise)
-
-    public static int CREATED   = 0b001; // entity was created
-    public static int MODIFIED  = 0b010; // component signature changed
-    public static int DESTROYED = 0b100; // entity removed
+    public static final int STABLE    = 0b000; // entity is the same (signature-wise)
+    public static final int CREATED   = 0b001; // entity was created
+    public static final int MODIFIED  = 0b010; // component signature changed
+    public static final int DESTROYED = 0b100; // entity removed
 
     public final long id;
     private int flag;

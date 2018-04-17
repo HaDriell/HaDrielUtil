@@ -64,7 +64,7 @@ public class TestExampleEngine {
 
     public static void main(String[] args) {
         LockstepEngine engine = new LockstepEngine();
-        engine.addExtension(new Entity2DMovement());
+        engine.addSystem(new Entity2DMovement());
 
         Position p = new Position(0, 0);
         Random r = new Random(0);
@@ -82,6 +82,7 @@ public class TestExampleEngine {
                 case 70_000:
                 case 80_000:
                 case 90_000:
+                case 99_999:
                     System.out.println(String.format("Please wait, loading (%d%%)", i / 1_000));
             }
         }
@@ -93,9 +94,12 @@ public class TestExampleEngine {
             engine.step(10f);
             System.out.println("Step processed in " + timer.elapsed() * 1000f + " ms");
         }
+        System.out.println("Ending Simulation");
 
 
-        Optional<Entity> e = engine.entities(EntityProfile.include(Position.class)).sorted((a, b) -> Float.compare(a.getComponent(Position.class).len2(), b.getComponent(Position.class).len2())).findFirst();
+        Entity e = engine.entities(EntityProfile.include(Position.class))
+                .sorted((a, b) -> Float.compare(a.getComponent(Position.class).len2(), b.getComponent(Position.class).len2()))
+                .findFirst().get();
         System.out.println(e);
     }
 }

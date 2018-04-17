@@ -7,6 +7,7 @@ import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.ALC11.*;
 
 public class Microphone {
+
     public final long device;
 
     public Microphone() {
