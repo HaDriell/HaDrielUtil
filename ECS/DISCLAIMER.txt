@@ -1,2 +1,0 @@
-This model is now deprecated and you should use the Lockstep Framework
-This is essentially the exact same framework except that it's designed to NOT support multithreading while running steps
