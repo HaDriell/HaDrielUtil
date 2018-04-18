@@ -31,14 +31,22 @@ public class ImageFile {
         this(pixels, width, height, 4);
     }
 
-    public ImageFile(ByteBuffer pixels, int width, int height, int components) {
-        this.pixels = new int[width * height];
-        for(int i = 0; i < this.pixels.length; i++) {
-            this.pixels[i] = pixels.getInt();
+    public ImageFile(ByteBuffer fileContent) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer w = stack.mallocInt(1);
+            IntBuffer h = stack.mallocInt(1);
+            IntBuffer c = stack.mallocInt(1);
+            ByteBuffer buffer = stbi_load_from_memory(fileContent, w, h, c, STBI_rgb_alpha);
+            width = w.get(0);
+            height = h.get(0);
+            components = c.get(0);
+            pixels = new int[width * height];
+            for (int i = 0; i < pixels.length; i++) {
+                pixels[i] = buffer.getInt();
+            }
+            fileContent.clear();
+            stbi_image_free(fileContent);
         }
-        this.width = width;
-        this.height = height;
-        this.components = components;
     }
 
     public ImageFile(String filename) {

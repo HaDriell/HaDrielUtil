@@ -1,4 +1,4 @@
-package fr.hadriel.gui;
+package fr.hadriel.graphics.gui;
 
 import com.sun.istack.internal.NotNull;
 import fr.hadriel.event.EventDispatcher;

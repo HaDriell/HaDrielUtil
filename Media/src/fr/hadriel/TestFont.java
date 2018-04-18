@@ -1,7 +1,7 @@
 package fr.hadriel;
 
 import fr.hadriel.application.Application;
-import fr.hadriel.asset.font.Font;
+import fr.hadriel.graphics.font.Font;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec4;
@@ -19,7 +19,7 @@ public class TestFont extends Application {
 
     protected void start(String[] args) {
         System.out.println("Loading Resources");
-        font = manager.loadFont("Font", "Media/res/Arial.fnt");
+        font = manager.load("Media/res/Arial.fnt", "Font", Font.class);
         renderer = new FontRenderer();
         renderer.setProjection(0, 800, 0, 450); // that's the shit bugging
         System.out.println("Loading Done !");

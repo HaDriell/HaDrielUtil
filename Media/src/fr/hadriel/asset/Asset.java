@@ -1,11 +1,16 @@
 package fr.hadriel.asset;
 
-import java.util.UUID;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.*;
 
 public abstract class Asset {
-    public static final int CREATED     = 0b00001;
-    public static final int LOADED      = 0b00100;
-    public static final int UNLOADED    = 0b10000;
+    public static final int CREATED     = 0b001;
+    public static final int LOADED      = 0b010;
+    public static final int UNLOADED    = 0b100;
 
     private int state;
 
@@ -26,33 +31,25 @@ public abstract class Asset {
     }
 
     //package private
-    void load(AssetManager manager) {
+    void load(AssetManager manager, Path path) {
         if(state != CREATED) return; // ignore bad call
-        _load(manager);
+        try {
+            FileChannel channel = new RandomAccessFile(path.toFile(), "r").getChannel();
+            MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, channel.position(), channel.size());
+            onLoad(manager, path, buffer);
+            state = LOADED;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to load Asset:" + e.getMessage());
+        }
     }
 
     //package private
     void unload(AssetManager manager) {
         if(state != LOADED) return; // ignore bad call
-        _unload(manager);
-    }
-
-    private void _load(AssetManager manager) {
-        onLoad(manager);
-        state = LOADED;
-    }
-
-    private void _unload(AssetManager manager) {
         onUnload(manager);
         state = UNLOADED;
     }
 
-    public void requireLoaded() {
-        if(!isLoaded()) {
-            throw new RuntimeException("Trying to use an non loaded Asset");
-        }
-    }
-
-    protected abstract void onLoad(AssetManager manager);
+    protected abstract void onLoad(AssetManager manager, Path path, ByteBuffer fileContent);
     protected abstract void onUnload(AssetManager manager);
 }

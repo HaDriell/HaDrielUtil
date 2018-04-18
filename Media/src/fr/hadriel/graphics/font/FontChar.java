@@ -1,4 +1,4 @@
-package fr.hadriel.asset.font;
+package fr.hadriel.graphics.font;
 
 public class FontChar {
     public final int id;

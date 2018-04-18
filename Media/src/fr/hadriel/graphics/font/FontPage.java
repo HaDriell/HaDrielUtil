@@ -1,4 +1,4 @@
-package fr.hadriel.asset.font;
+package fr.hadriel.graphics.font;
 
 import fr.hadriel.graphics.image.ImageFile;
 import fr.hadriel.opengl.Texture2D;

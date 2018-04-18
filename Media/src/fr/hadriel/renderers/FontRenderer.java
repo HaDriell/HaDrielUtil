@@ -1,16 +1,14 @@
 package fr.hadriel.renderers;
 
-import fr.hadriel.asset.font.Font;
-import fr.hadriel.asset.font.FontChar;
-import fr.hadriel.graphics.image.Sprite;
+import fr.hadriel.graphics.font.Font;
+import fr.hadriel.graphics.font.FontChar;
+import fr.hadriel.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
-
-import java.util.Arrays;
 
 import static fr.hadriel.renderers.RenderUtil.*;
 
@@ -97,12 +95,12 @@ public class FontRenderer {
             previousCharacter = character;
 
             //Texture info
-            Sprite sprite = font.sprite(fc);
-            if(sprite == null)
+            ImageRegion imageRegion = font.sprite(fc);
+            if(imageRegion == null)
                 continue;
 
 
-            int texture = sampler2D.activateTexture(sprite.texture);
+            int texture = sampler2D.activateTexture(imageRegion.texture);
 
             //No texture mean no render in FontRenderer
             if(texture == -1)
@@ -111,19 +109,19 @@ public class FontRenderer {
             //Draw a Quad
             vertexBuffer.write(transform.multiply(fcPosition.x, fcPosition.y))
                     .write(color)
-                    .write(sprite.uv0)
+                    .write(imageRegion.uv0)
                     .write(texture);
             vertexBuffer.write(transform.multiply(fcPosition.x + fcSize.x, fcPosition.y))
                     .write(color)
-                    .write(sprite.uv1)
+                    .write(imageRegion.uv1)
                     .write(texture);
             vertexBuffer.write(transform.multiply(fcPosition.x + fcSize.x, fcPosition.y + fcSize.y))
                     .write(color)
-                    .write(sprite.uv2)
+                    .write(imageRegion.uv2)
                     .write(texture);
             vertexBuffer.write(transform.multiply(fcPosition.x, fcPosition.y + fcSize.y))
                     .write(color)
-                    .write(sprite.uv3)
+                    .write(imageRegion.uv3)
                     .write(texture);
         }
         vertexBuffer.bind().unmap();

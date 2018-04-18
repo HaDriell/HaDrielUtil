@@ -1,0 +1,6 @@
+info texture="animation"
+frames count=4
+frame id=0 x=0 y=0 width=16 height=16
+frame id=1 x=16 y=0 width=16 height=16
+frame id=2 x=32 y=0 width=16 height=16
+frame id=3 x=48 y=0 width=16 height=16

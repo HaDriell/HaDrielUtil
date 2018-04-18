@@ -2,6 +2,9 @@ package fr.hadriel.audio.ogg;
 
 import org.lwjgl.system.MemoryStack;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
@@ -16,7 +19,6 @@ public class VorbisFile implements AutoCloseable {
     public final ShortBuffer samples;
 
     public VorbisFile(String filename) {
-
         try (MemoryStack stack = stackPush()) {
             IntBuffer channelsBuffer = stack.mallocInt(1);
             IntBuffer frequencyBuffer = stack.mallocInt(1);
@@ -26,7 +28,19 @@ public class VorbisFile implements AutoCloseable {
         }
     }
 
+    public VorbisFile(ByteBuffer fileContent) {
+        try (MemoryStack stack = stackPush()) {
+            //Decode the Memory Buffer
+            IntBuffer channelsBuffer = stack.mallocInt(1);
+            IntBuffer frequencyBuffer = stack.mallocInt(1);
+            this.samples = stb_vorbis_decode_memory(fileContent, channelsBuffer, frequencyBuffer);
+            this.channels = channelsBuffer.get(0);
+            this.frequency = frequencyBuffer.get(0);
+        }
+    }
+
     public void close() {
-        free(samples);
+        if(samples != null)
+            free(samples);
     }
 }

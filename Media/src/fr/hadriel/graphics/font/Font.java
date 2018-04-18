@@ -1,20 +1,17 @@
-package fr.hadriel.asset.font;
+package fr.hadriel.graphics.font;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
-import fr.hadriel.graphics.image.Sprite;
+import fr.hadriel.graphics.image.ImageRegion;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.opengl.Texture2D;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.util.*;
 
 public class Font extends Asset {
-
-    //Used to load the Asset
-    private final String filename;
 
     //Font data
     private FontInfo info;
@@ -25,18 +22,43 @@ public class Font extends Asset {
 
     private FontChar unknownCharacter;
 
-    public Font(String filename) {
-        this.filename = filename;
-    }
 
-    protected void onLoad(AssetManager manager) {
+    protected void onLoad(AssetManager manager, Path path, ByteBuffer fileContent) {
         characters = new HashMap<>();
         pages = new HashMap<>();
         kernings = new HashMap<>();
 
+        byte[] data = new byte[fileContent.remaining()];
+        fileContent.get(data, 0, data.length);
+
         //Parse the Font File Descriptor
-        try (BufferedReader in = new BufferedReader(new FileReader(filename))) {
-            in.lines().forEach(this::parseLine);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data)))) {
+            in.lines().forEach(line -> {
+                String[] words = line.trim().split("\\s+");
+                String[] args = Arrays.copyOfRange(words, 1, words.length);
+                switch (words[0]) {
+                    case "info":
+                        parseInfo(args);
+                        break;
+                    case "common":
+                        parseCommon(args);
+                        break;
+                    case "char":
+                        parseChar(args);
+                        break;
+                    case "kerning":
+                        parseKerning(args);
+                        break;
+                    case "page":
+                        parsePage(args, path);
+                        break;
+                    case "chars":
+                    case "kernings":
+                        break; //ignore these lines
+                    default:
+                        System.err.println("WARNING : invalid line while parsing Font");
+                }
+            });
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the Font file", e);
         }
@@ -66,9 +88,9 @@ public class Font extends Asset {
         return kerning != null ? kerning.amount : 0;
     }
 
-    public Sprite sprite(FontChar fc) {
+    public ImageRegion sprite(FontChar fc) {
         FontPage page = pages.get(fc.page);
-        return page == null ? null : new Sprite(page.texture, fc.x, fc.y, fc.width, fc.height);
+        return page == null ? null : new ImageRegion(page.texture, fc.x, fc.y, fc.width, fc.height);
     }
 
     public FontChar character(int id) {
@@ -83,37 +105,9 @@ public class Font extends Asset {
     }
 
     // PARSING FUNCTIONS BELOW
-
-    private void parseLine(String line) {
-        String[] words = line.trim().split("\\s+");
-        String[] args = Arrays.copyOfRange(words, 1, words.length);
-        switch (words[0]) {
-            case "info":
-                parseInfo(args);
-                break;
-            case "common":
-                parseCommon(args);
-                break;
-            case "char":
-                parseChar(args);
-                break;
-            case "kerning":
-                parseKerning(args);
-                break;
-            case "page":
-                parsePage(args);
-                break;
-            case "chars":
-            case "kernings":
-                break; //ignore these lines
-            default:
-                System.err.println("WARNING : ignored line while parsing");
-        }
-    }
-
     private void parseInfo(String[] args) {
         String face = null;
-        int a = 0, aa = 0, size = 0, stretchH = 0;
+        int aa = 0, size = 0, stretchH = 0;
         boolean bold = false, italic = false, unicode = false, smooth = false;
         int[] padding = new int[4];
         int[] spacing = new int[2];
@@ -161,7 +155,7 @@ public class Font extends Asset {
         System.out.println("Parsed " + common);
     }
 
-    private void parsePage(String[] args) {
+    private void parsePage(String[] args, Path path) {
         int id = 0;
         String file = null;
         for(String kvpair : args) {
@@ -169,10 +163,11 @@ public class Font extends Asset {
             String key = kvpair.substring(0, i);
             String value = kvpair.substring(i + 1, kvpair.length());
             if("id".equals(key))    id = Integer.parseInt(value);
-            if("file".equals(key))  file = filename.substring(0, filename.lastIndexOf('/')) + '/' + value.substring(1, value.length() - 1);
+            if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
+
         System.out.println("Page File: " + file);
-        pages.put(id, new FontPage(id, file));
+        pages.put(id, new FontPage(id, path.resolveSibling(file).toString()));
     }
 
     private void parseChar(String[] args) {
