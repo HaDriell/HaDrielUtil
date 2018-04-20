@@ -71,10 +71,6 @@ public class FontRenderer {
         shader.uniform("u_edge", edge);
     }
 
-    public void draw(String text, Font font, float size, Vec4 color) {
-        draw(Matrix3.Identity, text, font, size, color);
-    }
-
     public void draw(Matrix3 transform, String text, Font font, float size, Vec4 color) {
         if(text == null || text.isEmpty()) return; // no text to render
         TextureSampler2D sampler2D = new TextureSampler2D(32); // same size of the u_page[n] sampler2D array

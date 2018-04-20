@@ -34,7 +34,7 @@ public class AssetManager {
             asset = getByPath(path, type);
             if (asset == null)
                 throw new RuntimeException(String.format("Invalid Asset type %s for Asset %s", type.getSimpleName(), path.toString()));
-            System.out.println(String.format("Asset Manager: Asset %s of type %s already loaded. Skipping Load", path.toString(), type.getSimpleName()));
+            System.out.println(String.format("Asset Manager: Asset %s of type %s already loaded: Skipping Load", path.toString(), type.getSimpleName()));
         } else {
             try {
                 asset = type.newInstance(); // instanciate asset
@@ -45,10 +45,11 @@ public class AssetManager {
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading Asset", e);
             }
+            System.out.println(String.format("Asset Manager: Asset %s of type %s loaded", path.toString(), type.getSimpleName()));
         }
 
         //Add a reference (if not already defined) to the asset map
-        // TODO : log naming colisions
+        // TODO : log naming collisions
         if (name != null) {
             namedAssets.putIfAbsent(name, asset);
         }

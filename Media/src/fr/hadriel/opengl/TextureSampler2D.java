@@ -1,5 +1,7 @@
 package fr.hadriel.opengl;
 
+import com.sun.istack.internal.NotNull;
+
 import static org.lwjgl.opengl.GL13.*;
 
 public class TextureSampler2D {
@@ -25,21 +27,22 @@ public class TextureSampler2D {
         return slot == textures.length;
     }
 
-    public int getActiveTextureID(Texture2D texture) {
-        for(int i = 0; i < slot; i++)
-            if(texture.handle == textures[i].handle)
+    public int getActiveTextureIndex(Texture2D texture) {
+        int i = 0;
+        while (textures[i] != null) {
+            if (texture.handle == textures[i].handle)
                 return i;
+            ++i;
+        }
         return -1;
     }
 
-    public int activateTexture(Texture2D texture) {
-        if(texture == null)
-            return -1;
-        int id = getActiveTextureID(texture);
+    public int activateTexture(@NotNull Texture2D texture) {
+        int id = getActiveTextureIndex(texture);
         if(id == -1) {
             id = slot;
-            slot++;
             textures[id] = texture;
+            slot++;
         }
         return id;
     }
@@ -52,9 +55,6 @@ public class TextureSampler2D {
     }
 
     public int[] getUniformValue() {
-        int[] ids = new int[textures.length];
-        for(int i = 0; i < ids.length; i++)
-            ids[i] = i;
         return uniformValue;
     }
 }

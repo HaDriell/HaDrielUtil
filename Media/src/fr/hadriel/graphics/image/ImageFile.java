@@ -44,8 +44,8 @@ public class ImageFile {
             for (int i = 0; i < pixels.length; i++) {
                 pixels[i] = buffer.getInt();
             }
-            fileContent.clear();
-            stbi_image_free(fileContent);
+            buffer.clear();
+            stbi_image_free(buffer);
         }
     }
 

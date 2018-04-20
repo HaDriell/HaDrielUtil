@@ -3,7 +3,6 @@ package fr.hadriel;
 import fr.hadriel.lockstep.*;
 import fr.hadriel.util.Timer;
 
-import java.util.Optional;
 import java.util.Random;
 
 public class TestExampleEngine {

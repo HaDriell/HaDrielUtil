@@ -114,7 +114,7 @@ public class Shader {
     private final Uniform[] uniforms;
     private final GLSLAttribute[] attributes;
 
-    public Shader(int program) {
+    private Shader(int program) {
         this.program = program;
 
         try (MemoryStack stack = MemoryStack.stackPush()) {

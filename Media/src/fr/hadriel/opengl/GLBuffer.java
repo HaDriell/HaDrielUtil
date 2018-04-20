@@ -17,7 +17,7 @@ public class GLBuffer {
     private int usage;
     private int target;
     private int size;
-    private ByteBuffer map;
+    private ByteBuffer buffer;
 
     public GLBuffer(int target, int usage, int size) {
         if(size < 0) throw new IllegalArgumentException("Invalid Buffer componentSize : " + size);
@@ -99,7 +99,7 @@ public class GLBuffer {
     }
 
     public GLBuffer map() {
-        map = glMapBuffer(target, GL_WRITE_ONLY, map);
+        buffer = glMapBuffer(target, GL_READ_WRITE, buffer);
         return this;
     }
 
@@ -109,17 +109,17 @@ public class GLBuffer {
     }
 
     public GLBuffer seek(int position) {
-        map.position(position);
+        buffer.position(position);
         return this;
     }
 
     public GLBuffer write(ByteBuffer value) {
-        map.put(value);
+        buffer.put(value);
         return this;
     }
 
     public GLBuffer write(byte[] value) {
-        map.put(value);
+        buffer.put(value);
         return this;
     }
 
@@ -149,32 +149,32 @@ public class GLBuffer {
     }
 
     public GLBuffer write(byte value) {
-        map.put(value);
+        buffer.put(value);
         return this;
     }
 
     public GLBuffer write(short value) {
-        map.putShort(value);
+        buffer.putShort(value);
         return this;
     }
 
     public GLBuffer write(int value) {
-        map.putInt(value);
+        buffer.putInt(value);
         return this;
     }
 
     public GLBuffer write(long value) {
-        map.putLong(value);
+        buffer.putLong(value);
         return this;
     }
 
     public GLBuffer write(float value) {
-        map.putFloat(value);
+        buffer.putFloat(value);
         return this;
     }
 
     public GLBuffer write(double value) {
-        map.putDouble(value);
+        buffer.putDouble(value);
         return this;
     }
 

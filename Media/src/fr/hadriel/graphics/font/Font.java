@@ -2,9 +2,9 @@ package fr.hadriel.graphics.font;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
+import fr.hadriel.graphics.image.Image;
 import fr.hadriel.graphics.image.ImageRegion;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.opengl.Texture2D;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -16,7 +16,7 @@ public class Font extends Asset {
     //Font data
     private FontInfo info;
     private FontCommon common;
-    private Map<Integer, FontPage> pages;
+    private Map<Integer, Image> pages;
     private Map<Integer, FontChar> characters;
     private Map<Long, FontKerning> kernings;
 
@@ -50,7 +50,7 @@ public class Font extends Asset {
                         parseKerning(args);
                         break;
                     case "page":
-                        parsePage(args, path);
+                        parsePage(args, path, manager);
                         break;
                     case "chars":
                     case "kernings":
@@ -65,7 +65,7 @@ public class Font extends Asset {
     }
 
     protected void onUnload(AssetManager manager) {
-        pages.forEach((k, v) -> v.unload());
+        pages.forEach((k, v) -> manager.unload(v)); // unload all pages loaded by that Font
     }
 
     // PUBLIC API
@@ -78,19 +78,14 @@ public class Font extends Asset {
         return common;
     }
 
-    public Texture2D page(int id) {
-        FontPage page = pages.get(id);
-        return page != null ? page.texture : null;
-    }
-
     public int kerning(int first, int second) {
         FontKerning kerning = kernings.get(PAIR(first, second));
         return kerning != null ? kerning.amount : 0;
     }
 
     public ImageRegion sprite(FontChar fc) {
-        FontPage page = pages.get(fc.page);
-        return page == null ? null : new ImageRegion(page.texture, fc.x, fc.y, fc.width, fc.height);
+        Image page = pages.get(fc.page);
+        return page == null ? null : page.getRegion(fc.x, fc.y, fc.width, fc.height);
     }
 
     public FontChar character(int id) {
@@ -155,7 +150,7 @@ public class Font extends Asset {
         System.out.println("Parsed " + common);
     }
 
-    private void parsePage(String[] args, Path path) {
+    private void parsePage(String[] args, Path path, AssetManager manager) {
         int id = 0;
         String file = null;
         for(String kvpair : args) {
@@ -165,9 +160,9 @@ public class Font extends Asset {
             if("id".equals(key))    id = Integer.parseInt(value);
             if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
-
         System.out.println("Page File: " + file);
-        pages.put(id, new FontPage(id, path.resolveSibling(file).toString()));
+        Image image = manager.load(path.resolveSibling(file), Image.class);
+        pages.put(id, image);
     }
 
     private void parseChar(String[] args) {
