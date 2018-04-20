@@ -4,6 +4,7 @@ import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec3;
 import fr.hadriel.math.Vec4;
 
+import javax.xml.bind.DatatypeConverter;
 import java.nio.*;
 
 import static org.lwjgl.opengl.GL15.*;
@@ -100,7 +101,42 @@ public class GLBuffer {
 
     public GLBuffer map() {
         buffer = glMapBuffer(target, GL_READ_WRITE, buffer);
+        buffer.clear();
         return this;
+    }
+
+    public void debug() {
+        int position = buffer.position();
+        buffer.position(0);
+
+        byte[] data = new byte[4 * 8 * 9 * 4];
+        buffer.get(data, 0, data.length);
+
+
+        int id = 0;
+        int o = 0;
+        byte[] vpos = new byte[4 * 2];
+        byte[] vcolor = new byte[4 * 4];
+        byte[] vuv = new byte[4 * 2];
+        byte[] vtid = new byte[4];
+        while (o < data.length) {
+            System.arraycopy(data, o, vpos, 0, vpos.length); o += vpos.length;
+            System.arraycopy(data, o, vcolor, 0, vcolor.length); o += vcolor.length;
+            System.arraycopy(data, o, vuv, 0, vuv.length); o += vuv.length;
+            System.arraycopy(data, o, vtid, 0, vtid.length); o += vtid.length;
+            System.out.println(String.format("Vertex %d %s %s %s %s",
+                    id,
+                    DatatypeConverter.printHexBinary(vpos),
+                    DatatypeConverter.printHexBinary(vcolor),
+                    DatatypeConverter.printHexBinary(vuv),
+                    DatatypeConverter.printHexBinary(vtid)
+            ));
+            id++;
+        }
+
+
+
+        buffer.position(position);
     }
 
     public GLBuffer unmap() {

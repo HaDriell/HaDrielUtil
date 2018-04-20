@@ -27,7 +27,7 @@ void main()
     v.color     = i_color;
     v.uv        = i_uv;
     //texture index setup
-    tid = i_texture;
+    tid         = i_texture;
 }
 
 #shader fragment
@@ -51,11 +51,8 @@ flat in int tid;
 void main()
 {
     color = v.color;
-    if (tid < 0) color = vec4(0.0, 0.0, 0.5, 1.0);
-    if (tid > 0xFFFFFFFF) color = vec4(0.5, 0.0, 0.0, 1.0);
 
-
-    if (tid >= 0 && tid < MAX_TEXTURES) { // 32 is the maximum amount of Textures OpenGL accepts by default
+    if (tid != -1) {
         color *= texture(u_texture[tid], v.uv);
     }
 }

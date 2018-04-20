@@ -28,20 +28,18 @@ public class TextureSampler2D {
     }
 
     public int getActiveTextureIndex(Texture2D texture) {
-        int i = 0;
-        while (textures[i] != null) {
-            if (texture.handle == textures[i].handle)
+        for (int i = 0; i < slot; i++) {
+            if (textures[i].handle == texture.handle)
                 return i;
-            ++i;
         }
         return -1;
     }
 
     public int activateTexture(@NotNull Texture2D texture) {
         int id = getActiveTextureIndex(texture);
-        if(id == -1) {
+        if(slot < textures.length && id == -1) {
             id = slot;
-            textures[id] = texture;
+            textures[slot] = texture;
             slot++;
         }
         return id;

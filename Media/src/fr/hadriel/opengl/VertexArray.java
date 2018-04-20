@@ -36,6 +36,7 @@ public final class VertexArray {
         setupAttributes();
     }
 
+    //FIXME : either use glVertexAttribIPointers for Integer values OR disable the ability to send int directly to the GLSL Shader. Like wtf.
     private void setupAttributes() {
         int stride = sizeof(vertexAttributes);
 

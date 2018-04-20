@@ -16,7 +16,6 @@ import static fr.hadriel.renderers.RenderUtil.*;
  * Created by HaDriel on 08/12/2016.
  */
 public class SpriteBatchRenderer {
-    private static final int NO_TEXTURE = 0xFFFFFFFF;
     private static final int MAX_SPRITES  = 100_000;
     private static final int MAX_VERTICES = MAX_SPRITES * 4;
     private static final int MAX_INDICES  = MAX_SPRITES * 6;
@@ -25,7 +24,7 @@ public class SpriteBatchRenderer {
             new VertexAttribute("i_position", GLType.FLOAT, 2),
             new VertexAttribute("i_color", GLType.FLOAT, 4),
             new VertexAttribute("i_uv", GLType.FLOAT, 2),
-            new VertexAttribute("i_texture", GLType.UINT, 1),
+            new VertexAttribute("i_texture", GLType.INT, 1),
     };
 
     private Shader shader;
@@ -84,7 +83,7 @@ public class SpriteBatchRenderer {
         }
 
         //Load texture in batch
-        int texture = NO_TEXTURE;
+        int texture = -1;
         if (region != null) {
             if (sampler2D.isFull()) {
                 end();
@@ -95,25 +94,27 @@ public class SpriteBatchRenderer {
 
         vertexBuffer.write(transform.multiply(0, 0))
                 .write(color)
-                .write(region != null ? region.uv0 : Vec2.ZERO)
+                .write(region == null ? Vec2.ZERO : region.uv0)
                 .write(texture);
         vertexBuffer.write(transform.multiply(width, 0))
                 .write(color)
-                .write(region != null ? region.uv1 : Vec2.ZERO)
+                .write(region == null ? Vec2.ZERO : region.uv1)
                 .write(texture);
         vertexBuffer.write(transform.multiply(width, height))
                 .write(color)
-                .write(region != null ? region.uv2 : Vec2.ZERO)
+                .write(region == null ? Vec2.ZERO : region.uv2)
                 .write(texture);
         vertexBuffer.write(transform.multiply(0, height))
                 .write(color)
-                .write(region != null ? region.uv3 : Vec2.ZERO)
+                .write(region == null ? Vec2.ZERO : region.uv3)
                 .write(texture);
+
+        vertexBuffer.debug(); // FIXME : something is clearly wrong with the putInt method. Find out what the fuck is going on.
         elementCount += 6; // 6 indices consumed for 4 vertices
     }
 
     public void end() {
-        vertexBuffer.bind().unmap();
+        vertexBuffer.unmap();
         sampler2D.bindTextures();
         DrawTriangles(shader, vao, indexBuffer, state, elementCount);
     }
