@@ -2,17 +2,19 @@ package fr.hadriel.graphics.gui;
 
 import com.sun.istack.internal.NotNull;
 import fr.hadriel.event.EventDispatcher;
+import fr.hadriel.event.IEvent;
+import fr.hadriel.event.IEventListener;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
 
-public abstract class Widget {
+public abstract class Widget implements IEventListener {
 
-    protected final EventDispatcher dispatcher;
+    private EventDispatcher dispatcher;
     private Matrix3 transform;
     private Vec2 size;
 
     protected Widget() {
-        this.dispatcher = new EventDispatcher();
+        this.dispatcher = new EventDispatcher(true);
         this.transform = Matrix3.Identity;
         this.size = new Vec2();
     }
@@ -24,6 +26,14 @@ public abstract class Widget {
     public boolean hit(float x, float y) {
         Vec2 local = transform.multiplyInverse(x, y);
         return local.x >= 0 && local.y >= 0 && local.x <= size.x && local.y <= size.y;
+    }
+
+    public IEvent onEvent(IEvent event) {
+        return dispatcher.onEvent(event);
+    }
+
+    public void onRender() {
+
     }
 
     public void setTransform(@NotNull Matrix3 transform) {

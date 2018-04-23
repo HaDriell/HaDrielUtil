@@ -39,7 +39,7 @@ public class SpriteBatchRenderer {
 
     public SpriteBatchRenderer() {
         //init Shader
-        this.shader = Shader.GLSL(FontRenderer.class.getResourceAsStream("spritebatch_shader.glsl"));
+        this.shader = Shader.GLSL(SpriteBatchRenderer.class.getResourceAsStream("spritebatch_shader.glsl"));
         this.sampler2D = new TextureSampler2D(32); // same value of u_texture
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
 
@@ -74,7 +74,7 @@ public class SpriteBatchRenderer {
         elementCount = 0;
         vertexBuffer.bind().map();
     }
-    public void draw(@NotNull Matrix3 transform, float width, float height, ImageRegion region) { draw(transform, width, height, region, new Vec4(1,1,1,1)); }
+
     public void draw(@NotNull Matrix3 transform, float width, float height, ImageRegion region, @NotNull Vec4 color) {
         //Check the vertexBufferCapacity
         if (elementCount + 6 > MAX_VERTICES) {
@@ -85,11 +85,14 @@ public class SpriteBatchRenderer {
         //Load texture in batch
         int texture = -1;
         if (region != null) {
-            if (sampler2D.isFull()) {
-                end();
-                begin();
+            texture = sampler2D.getActiveTextureIndex(region.texture);
+            if (texture == -1) {
+                if (sampler2D.isFull()) {
+                    end();
+                    begin();
+                }
+                texture = sampler2D.activateTexture(region.texture);
             }
-            texture = sampler2D.activateTexture(region.texture);
         }
 
         vertexBuffer.write(transform.multiply(0, 0))
@@ -109,12 +112,11 @@ public class SpriteBatchRenderer {
                 .write(region == null ? Vec2.ZERO : region.uv3)
                 .write(texture);
 
-        vertexBuffer.debug(); // FIXME : something is clearly wrong with the putInt method. Find out what the fuck is going on.
         elementCount += 6; // 6 indices consumed for 4 vertices
     }
 
     public void end() {
-        vertexBuffer.unmap();
+        vertexBuffer.bind().unmap();
         sampler2D.bindTextures();
         DrawTriangles(shader, vao, indexBuffer, state, elementCount);
     }

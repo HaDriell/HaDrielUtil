@@ -131,7 +131,6 @@ public class Font extends Asset {
             };
         }
         info = new FontInfo(face, size, bold, italic, null, unicode, stretchH, smooth, aa, padding, spacing, 1);
-        System.out.println("Parsed " + info);
     }
 
     private void parseCommon(String[] args) {
@@ -147,7 +146,6 @@ public class Font extends Asset {
             if("pages".equals(key))         pages = Integer.parseInt(value);
         }
         common = new FontCommon(lineHeight, base, scaleW, scaleH, pages);
-        System.out.println("Parsed " + common);
     }
 
     private void parsePage(String[] args, Path path, AssetManager manager) {
@@ -160,7 +158,6 @@ public class Font extends Asset {
             if("id".equals(key))    id = Integer.parseInt(value);
             if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
-        System.out.println("Page File: " + file);
         Image image = manager.load(path.resolveSibling(file), Image.class);
         pages.put(id, image);
     }

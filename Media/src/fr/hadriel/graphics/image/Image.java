@@ -30,10 +30,10 @@ public class Image extends Asset {
     }
 
     public ImageRegion getRegion(int x, int y, int width, int height) {
-        float left = x / texture.width;
-        float bottom = (y + height) / texture.height;
-        float right = (x + width) / texture.width;
-        float top = y / texture.height;
+        float left = x / (float) texture.width;
+        float bottom = (y + height) / (float) texture.height;
+        float right = (x + width) / (float) texture.width;
+        float top = y / (float) texture.height;
         return getRegion(new Vec2(left, top), new Vec2(right, top), new Vec2(right, bottom), new Vec2(left, bottom));
     }
 

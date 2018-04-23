@@ -54,16 +54,16 @@ public class TestBatchRendering extends Application {
     protected void update(float delta) {
         RenderUtil.Clear();
         renderer.begin();
-//        for (int i = 0; i < teronMatrices.length; i++) {
-//            renderer.draw(teronMatrices[i], 32, 32, teron.getRegion());
-//        }
-//
-//        for (int i = 0; i < illuminatiMatrices.length; i++) {
-//            renderer.draw(illuminatiMatrices[i], 32, 32, illuminati.getRegion());
-//        }
-        renderer.draw(Matrix3.Identity, 32, 32, teron.getRegion());
-        renderer.draw(Matrix3.Translation(32, 0), 32, 32, arial.getRegion());
-        renderer.draw(Matrix3.Translation(64, 0), 32, 32, illuminati.getRegion());
+        for (int i = 0; i < teronMatrices.length; i++) {
+            renderer.draw(teronMatrices[i], 32, 32, teron.getRegion(), new Vec4(1,1,1,1));
+        }
+
+        for (int i = 0; i < illuminatiMatrices.length; i++) {
+            renderer.draw(illuminatiMatrices[i], 32, 32, illuminati.getRegion(), new Vec4(1,1,1,1));
+        }
+        renderer.draw(Matrix3.Identity, 32, 32, teron.getRegion(), new Vec4(1,1,1,1));
+        renderer.draw(Matrix3.Translation(32, 0), 32, 32, arial.getRegion(), new Vec4(1,1,1,1));
+        renderer.draw(Matrix3.Translation(64, 0), 32, 32, illuminati.getRegion(), new Vec4(1,1,1,1));
         renderer.end();
     }
 

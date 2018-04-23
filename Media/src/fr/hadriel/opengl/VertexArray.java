@@ -49,7 +49,10 @@ public final class VertexArray {
         for(int i = 0; i < vertexAttributes.length; i++) {
             VertexAttribute attribute = vertexAttributes[i];
             glEnableVertexAttribArray(i);
-            glVertexAttribPointer(i, attribute.components, attribute.type.name, attribute.normalized, stride, offset);
+            if (attribute.type == GLType.FLOAT || attribute.type == GLType.DOUBLE)
+                glVertexAttribPointer(i, attribute.components, attribute.type.name, attribute.normalized, stride, offset);
+            else
+                glVertexAttribIPointer(i, attribute.components, attribute.type.name, stride, offset);
             offset += attribute.type.size * attribute.components;
         }
         vertexBuffer.unbind();

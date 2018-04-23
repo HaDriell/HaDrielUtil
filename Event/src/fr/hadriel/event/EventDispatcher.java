@@ -37,8 +37,10 @@ public class EventDispatcher implements IEventListener {
 
     @SuppressWarnings("unchecked")
     public synchronized IEvent onEvent(IEvent event) {
-        for(IEventListener listener : listeners) {
-            event = allowMutation ? listener.onEvent(event) : event;
+        if (event != null) {
+            for (IEventListener listener : listeners) {
+                event = allowMutation ? listener.onEvent(event) : event;
+            }
         }
         return event;
     }
