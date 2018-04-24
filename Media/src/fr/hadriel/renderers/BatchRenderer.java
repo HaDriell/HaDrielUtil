@@ -4,10 +4,7 @@ import com.sun.istack.internal.NotNull;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.font.FontChar;
 import fr.hadriel.asset.graphics.image.ImageRegion;
-import fr.hadriel.math.Matrix3;
-import fr.hadriel.math.Matrix4;
-import fr.hadriel.math.Vec2;
-import fr.hadriel.math.Vec4;
+import fr.hadriel.math.*;
 import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
 
@@ -47,8 +44,7 @@ public class BatchRenderer {
         this.shader = Shader.GLSL(BatchRenderer.class.getResourceAsStream("batch_shader.glsl"));
         this.sampler2D = new TextureSampler2D(32);
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
-        shader.uniform("u_weight", 0.49f);
-        shader.uniform("u_edge", 0.12f);
+        setFontConfig(0.5f, 0.1f);
 
         //init VAO
         this.vao = new VertexArray(MAX_VERTICES, UI_SHADER_LAYOUT);
@@ -71,6 +67,11 @@ public class BatchRenderer {
         state.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
         state.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
         state.setBlendEquation(BlendEquation.GL_FUNC_ADD);
+    }
+
+    public void setFontConfig(float boldness, float smoothness) {
+        shader.uniform("u_weight", Mathf.lerp(0.1f, 0.5f, boldness));
+        shader.uniform("u_edge",   Mathf.lerp(0.01f, 0.2f, smoothness));
     }
 
     public void setProjection(float left, float right, float top, float bottom) {

@@ -7,25 +7,33 @@ import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.renderers.BatchRenderer;
 import fr.hadriel.renderers.RenderUtil;
+import fr.hadriel.util.Timer;
 
 public class TestBatchRenderer extends Application {
 
+    Timer age;
     BatchRenderer renderer;
     Image teron;
-    Font diablo;
+    Font arial;
 
     protected void start(String[] args) {
         renderer = new BatchRenderer();
         renderer.setProjection(0, 800, 0, 450);
         teron = manager.load("Media/res/Teron Fielsang.png", Image.class);
-        diablo = manager.load("Media/res/Diablo.fnt", Font.class);
+        arial = manager.load("Media/res/Arial.fnt", Font.class);
+        age = new Timer();
     }
 
     protected void update(float delta) {
+        float size = 12f;
         RenderUtil.Clear();
+        renderer.setFontConfig(0.3f, 0.1f);
         renderer.begin();
         renderer.draw(Matrix3.Identity, 0, 0, teron.width(), teron.height(), teron.getRegion(), new Vec4(1, 1, 1, 1));
-        renderer.draw(Matrix3.Identity, 0, 0, "Hello world", diablo, 20f, new Vec4(1, 1, 1, 1));
+        renderer.draw(Matrix3.Identity, 0, 100, "Mon petit chéri d'amour", arial, size, new Vec4(1, 1, 1, 1));
+        renderer.draw(Matrix3.Identity, 0, 120, "Aujourd'hui j'ai terminé d'unifier mes deux", arial, size, new Vec4(1, 1, 1, 1));
+        renderer.draw(Matrix3.Identity, 0, 140, "moteurs de rendus (Image et Texte). C'est", arial, size, new Vec4(1, 1, 1, 1));
+        renderer.draw(Matrix3.Identity, 0, 160, "trop cool :3", arial, size, new Vec4(1, 1, 1, 1));
         renderer.end();
     }
 
