@@ -99,6 +99,18 @@ public class Font extends Asset {
         return unknownCharacter;
     }
 
+    public Vec2 sizeof(String text, float size) {
+        float scale = size / info.size;
+        float advance = 0;
+        char previousCharacter = 0;
+        for (char character : text.toCharArray()) {
+            FontChar fc = character(character);
+            advance += fc.xadvance + kerning(previousCharacter, character);
+            previousCharacter = character;
+        }
+        return new Vec2(advance * scale, common.lineHeight * scale);
+    }
+
     // PARSING FUNCTIONS BELOW
     private void parseInfo(String[] args) {
         String face = null;

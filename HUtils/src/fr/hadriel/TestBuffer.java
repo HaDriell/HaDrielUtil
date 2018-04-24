@@ -25,7 +25,6 @@ public class TestBuffer {
         float g     = random.nextFloat();
         double h    = random.nextDouble();
 
-
         assertEqual(buffer.clear().write(a).flip().readBoolean(), a, "Failed to read/write Primitive");
         assertEqual(buffer.clear().write(b).flip().readByte()   , b, "Failed to read/write Primitive");
         assertEqual(buffer.clear().write(c).flip().readShort()  , c, "Failed to read/write Primitive");

@@ -7,7 +7,7 @@ import fr.hadriel.opengl.shader.Shader;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class RenderUtil {
+public final class RenderUtil {
     private RenderUtil() {}
 
     public static void Clear() {

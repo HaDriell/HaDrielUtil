@@ -120,8 +120,6 @@ public class FontBatchRenderer {
                 }
             }
 
-            System.out.println("Texture : " + texture);
-
             vertexBuffer.write(transform.multiply(fcPosition.x, fcPosition.y))
                     .write(color)
                     .write(region == null ? Vec2.ZERO : region.uv0)

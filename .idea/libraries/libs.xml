@@ -1,7 +1,13 @@
 <component name="libraryTable">
   <library name="libs">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/HUtils/libs" />
+    </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/HUtils/libs" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/HUtils/libs" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/HUtils/libs" recursive="false" type="SOURCES" />
   </library>
 </component>

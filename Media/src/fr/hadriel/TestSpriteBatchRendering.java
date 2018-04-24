@@ -7,11 +7,10 @@ import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.renderers.RenderUtil;
 import fr.hadriel.renderers.SpriteBatchRenderer;
-import org.lwjgl.opengl.GLUtil;
 
 import java.util.Random;
 
-public class TestBatchRendering extends Application {
+public class TestSpriteBatchRendering extends Application {
 
     SpriteBatchRenderer renderer;
 
@@ -70,6 +69,6 @@ public class TestBatchRendering extends Application {
     protected void terminate() { }
 
     public static void main(String[] args) {
-        launch(new TestBatchRendering());
+        launch(new TestSpriteBatchRendering());
     }
 }

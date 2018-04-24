@@ -5,7 +5,6 @@
       <element id="archive" name="HaDrielUtil.jar">
         <element id="module-output" name="HaDrielUtil" />
       </element>
-      <element id="library" level="project" name="libs" />
     </root>
   </artifact>
 </component>
