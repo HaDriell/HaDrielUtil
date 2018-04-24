@@ -1,9 +1,9 @@
 package fr.hadriel.renderers;
 
 import com.sun.istack.internal.NotNull;
-import fr.hadriel.graphics.font.Font;
-import fr.hadriel.graphics.font.FontChar;
-import fr.hadriel.graphics.image.ImageRegion;
+import fr.hadriel.asset.graphics.font.Font;
+import fr.hadriel.asset.graphics.font.FontChar;
+import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec2;
@@ -47,6 +47,8 @@ public class BatchRenderer {
         this.shader = Shader.GLSL(BatchRenderer.class.getResourceAsStream("batch_shader.glsl"));
         this.sampler2D = new TextureSampler2D(32);
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
+        shader.uniform("u_weight", 0.49f);
+        shader.uniform("u_edge", 0.12f);
 
         //init VAO
         this.vao = new VertexArray(MAX_VERTICES, UI_SHADER_LAYOUT);

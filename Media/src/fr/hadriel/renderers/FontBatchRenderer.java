@@ -1,9 +1,9 @@
 package fr.hadriel.renderers;
 
 import com.sun.istack.internal.NotNull;
-import fr.hadriel.graphics.font.Font;
-import fr.hadriel.graphics.font.FontChar;
-import fr.hadriel.graphics.image.ImageRegion;
+import fr.hadriel.asset.graphics.font.Font;
+import fr.hadriel.asset.graphics.font.FontChar;
+import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec2;

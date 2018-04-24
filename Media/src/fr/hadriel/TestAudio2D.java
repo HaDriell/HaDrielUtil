@@ -1,11 +1,10 @@
 package fr.hadriel;
 
 import fr.hadriel.application.Application;
-import fr.hadriel.audio.Audio2D;
-import fr.hadriel.audio.Sound;
-import fr.hadriel.audio.Source2D;
+import fr.hadriel.asset.audio.Audio2D;
+import fr.hadriel.asset.audio.Sound;
+import fr.hadriel.asset.audio.Source2D;
 import fr.hadriel.math.Mathf;
-import fr.hadriel.math.Vec2;
 import fr.hadriel.util.Timer;
 
 public class TestAudio2D extends Application {

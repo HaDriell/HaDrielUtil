@@ -1,6 +1,6 @@
 package fr.hadriel;
 
-import fr.hadriel.audio.ogg.VorbisFile;
+import fr.hadriel.asset.audio.ogg.VorbisFile;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;

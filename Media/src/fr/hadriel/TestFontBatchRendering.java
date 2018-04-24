@@ -1,7 +1,7 @@
 package fr.hadriel;
 
 import fr.hadriel.application.Application;
-import fr.hadriel.graphics.font.Font;
+import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec4;

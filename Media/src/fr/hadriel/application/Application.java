@@ -1,13 +1,10 @@
 package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
-import fr.hadriel.audio.Audio2D;
-import fr.hadriel.graphics.Graphic2D;
-import fr.hadriel.graphics.WindowHint;
+import fr.hadriel.asset.audio.Audio2D;
+import fr.hadriel.asset.graphics.Graphic2D;
+import fr.hadriel.asset.graphics.WindowHint;
 import fr.hadriel.util.Timer;
-import org.lwjgl.opengl.GL;
-
-import static org.lwjgl.glfw.GLFW.*;
 
 public abstract class Application {
 

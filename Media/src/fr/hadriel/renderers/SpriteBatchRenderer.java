@@ -1,7 +1,7 @@
 package fr.hadriel.renderers;
 
 import com.sun.istack.internal.NotNull;
-import fr.hadriel.graphics.image.ImageRegion;
+import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.opengl.*;
