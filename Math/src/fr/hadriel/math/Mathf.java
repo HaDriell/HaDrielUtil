@@ -115,8 +115,13 @@ public strictfp final class Mathf {
         return (float) Math.pow(f, p);
     }
 
-    public static float lerp(float t, float start, float end) {
-        return start + (end - start) * t;
+    public static float rlerp(float v, float a, float b) {
+        if (a == b) return 0;
+        return (v - a) / (b - a);
+    }
+
+    public static float lerp(float t, float a, float b) {
+        return (1 - t) * a + t * b;
     }
 
     public static Vec2 lerp(float t, Vec2 start, Vec2 end) {

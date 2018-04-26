@@ -7,6 +7,8 @@ import static org.lwjgl.opengl.GL14.*;
 
 public class RenderState {
 
+    private boolean depthTesting;
+
     private boolean blending;
 
     private BlendEquation equation;
@@ -21,6 +23,7 @@ public class RenderState {
     private int culling;
 
     public RenderState() {
+        this.depthTesting   = false;
         this.blending       = false;
         this.equation       = BlendEquation.GL_FUNC_ADD;
         this.srcFactor      = BlendFactor.GL_ONE;
@@ -28,6 +31,14 @@ public class RenderState {
         this.windingOrder   = GL_CCW;
         this.faceCulling    = false;
         this.culling        = GL_BACK;
+    }
+
+    public void setDepthTesting(boolean depthTesting) {
+        this.depthTesting = depthTesting;
+    }
+
+    public boolean isDepthTesting() {
+        return depthTesting;
     }
 
     public void setBlending(boolean blending) {
@@ -95,7 +106,7 @@ public class RenderState {
         glFrontFace(windingOrder);
 
         //Face Culling
-        if(faceCulling) {
+        if (faceCulling) {
             glEnable(GL_CULL_FACE);
             glCullFace(culling);
         } else {
@@ -103,12 +114,19 @@ public class RenderState {
         }
 
         //Blending Mode
-        if(blending) {
+        if (blending) {
             glEnable(GL_BLEND);
             glBlendEquation(equation.value);
             glBlendFunc(srcFactor.value, dstFactor.value);
         } else {
             glDisable(GL_BLEND);
+        }
+
+        //Depth Testing
+        if (depthTesting) {
+            glEnable(GL_DEPTH_TEST);
+        } else {
+            glDisable(GL_DEPTH_TEST);
         }
     }
 }

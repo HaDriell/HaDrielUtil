@@ -1,5 +1,7 @@
 package fr.hadriel.asset;
 
+import org.pmw.tinylog.Logger;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -34,7 +36,7 @@ public class AssetManager {
             asset = getByPath(path, type);
             if (asset == null)
                 throw new RuntimeException(String.format("Invalid Asset type %s for Asset %s", type.getSimpleName(), path.toString()));
-            System.out.println(String.format("Asset Manager: Asset %s of type %s already loaded: Skipping Load", path.toString(), type.getSimpleName()));
+            Logger.info("[Asset Manager] {} Asset from '{}' already loaded. Skipped Loading.", type.getSimpleName(), path.toString());
         } else {
             try {
                 asset = type.newInstance(); // instanciate asset
@@ -45,7 +47,7 @@ public class AssetManager {
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading Asset", e);
             }
-            System.out.println(String.format("Asset Manager: Asset %s of type %s loaded", path.toString(), type.getSimpleName()));
+            Logger.info("[Asset Manager] {} Asset loaded from '{}'", type.getSimpleName(), path.toString());
         }
 
         //Add a reference (if not already defined) to the asset map
@@ -56,6 +58,7 @@ public class AssetManager {
         return asset;
     }
 
+    //TODO : unload correctly assets
     public void unload(Asset asset) {
         if (asset == null || !asset.isLoaded())
             return;

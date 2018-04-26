@@ -5,6 +5,7 @@ import fr.hadriel.asset.AssetManager;
 import fr.hadriel.asset.graphics.image.Image;
 import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.opengl.TextureFilter;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -171,6 +172,7 @@ public class Font extends Asset {
             if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
         Image image = manager.load(path.resolveSibling(file), Image.class);
+//        image.texture().setFilter(TextureFilter.LINEAR, TextureFilter.LINEAR);
         pages.put(id, image);
     }
 

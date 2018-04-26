@@ -1,6 +1,5 @@
 package fr.hadriel.opengl;
 
-import com.sun.istack.internal.NotNull;
 
 import static org.lwjgl.opengl.GL13.*;
 
@@ -35,7 +34,7 @@ public class TextureSampler2D {
         return -1;
     }
 
-    public int activateTexture(@NotNull Texture2D texture) {
+    public int activateTexture(Texture2D texture) {
         int id = getActiveTextureIndex(texture);
         if(slot < textures.length && id == -1) {
             id = slot;

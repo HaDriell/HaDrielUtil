@@ -1,13 +1,9 @@
 package fr.hadriel.renderers;
 
-import com.sun.istack.internal.NotNull;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.font.FontChar;
 import fr.hadriel.asset.graphics.image.ImageRegion;
-import fr.hadriel.math.Matrix3;
-import fr.hadriel.math.Matrix4;
-import fr.hadriel.math.Vec2;
-import fr.hadriel.math.Vec4;
+import fr.hadriel.math.*;
 import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
 
@@ -47,9 +43,7 @@ public class BatchRenderer {
         this.shader = Shader.GLSL(BatchRenderer.class.getResourceAsStream("batch_shader.glsl"));
         this.sampler2D = new TextureSampler2D(32);
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
-        shader.uniform("u_weight", 0.49f);
-        shader.uniform("u_edge", 0.12f);
-
+        setFontSharpness(0.7f);
         //init VAO
         this.vao = new VertexArray(MAX_VERTICES, UI_SHADER_LAYOUT);
         this.vertexBuffer = vao.getBuffer();
@@ -77,14 +71,21 @@ public class BatchRenderer {
         shader.uniform("u_projection", Matrix4.Orthographic(left, right, top, bottom, -1, 1));
     }
 
+    public void setFontSharpness(float sharpness) {
+        float weight = Mathf.lerp(sharpness, 0.0f, 0.5f);
+        float edge = Mathf.lerp(sharpness, 0.5f, 0.0f);
+        shader.uniform("u_weight", weight);
+        shader.uniform("u_edge", edge);
+    }
+
     public void begin() {
         sampler2D.clear();
         elementCount = 0;
         vertexBuffer.bind().map();
     }
 
-    private void submit(@NotNull Matrix3 transform, float x, float y, float width, float height, @NotNull Vec4 color,
-                        Texture2D texture2D, int mode, @NotNull Vec2 uv0, @NotNull Vec2 uv1, @NotNull Vec2 uv2, @NotNull Vec2 uv3) {
+    private void submit(Matrix3 transform, float x, float y, float width, float height, Vec4 color,
+                        Texture2D texture2D, int mode, Vec2 uv0, Vec2 uv1, Vec2 uv2, Vec2 uv3) {
         //Check Buffer capacity
         if (elementCount + 6 > MAX_SPRITES) {
             end();
@@ -131,7 +132,7 @@ public class BatchRenderer {
     }
 
 
-    public void draw(@NotNull Matrix3 transform, float x, float y, @NotNull String text, @NotNull Font font, float size, @NotNull Vec4 color) {
+    public void draw(Matrix3 transform, float x, float y, String text, Font font, float size, Vec4 color) {
         if (text.isEmpty()) return; // no text to render
 
         float scale = size / font.info().size; // ratio between render size and desired size
@@ -155,7 +156,7 @@ public class BatchRenderer {
         }
     }
 
-    public void draw(@NotNull Matrix3 transform, float x, float y, float width, float height, @NotNull ImageRegion region, @NotNull Vec4 color) {
+    public void draw(Matrix3 transform, float x, float y, float width, float height, ImageRegion region, Vec4 color) {
         submit(transform, x, y, width, height, color, region.texture, MODE_SPRITE, region.uv0, region.uv1, region.uv2, region.uv3);
     }
 

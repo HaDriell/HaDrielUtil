@@ -1,6 +1,5 @@
 package fr.hadriel.renderers;
 
-import com.sun.istack.internal.NotNull;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.font.FontChar;
 import fr.hadriel.asset.graphics.image.ImageRegion;
@@ -84,7 +83,7 @@ public class FontBatchRenderer {
         vertexBuffer.bind().map();
     }
 
-    public void draw(Matrix3 transform, @NotNull String text, @NotNull Font font, float size, Vec4 color) {
+    public void draw(Matrix3 transform, String text, Font font, float size, Vec4 color) {
         if(text.isEmpty()) return; // no text to render
 
         if (elementCount + 6 > MAX_CHARACTERS) {

@@ -1,6 +1,5 @@
 package fr.hadriel.renderers;
 
-import com.sun.istack.internal.NotNull;
 import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
@@ -75,7 +74,7 @@ public class SpriteBatchRenderer {
         vertexBuffer.bind().map();
     }
 
-    public void draw(@NotNull Matrix3 transform, float width, float height, ImageRegion region, @NotNull Vec4 color) {
+    public void draw(Matrix3 transform, float width, float height, ImageRegion region, Vec4 color) {
         //Check the vertexBufferCapacity
         if (elementCount + 6 > MAX_VERTICES) {
             end();
