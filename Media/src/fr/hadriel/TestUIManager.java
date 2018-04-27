@@ -2,8 +2,6 @@ package fr.hadriel;
 
 import fr.hadriel.application.Application;
 import fr.hadriel.application.event.MouseMovedEvent;
-import fr.hadriel.application.event.MousePressedEvent;
-import fr.hadriel.application.event.MouseReleasedEvent;
 import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.gui.Container;
@@ -16,58 +14,66 @@ import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.renderers.BatchGraphics;
 import fr.hadriel.renderers.RenderUtil;
+import org.lwjgl.glfw.GLFW;
 
 public class TestUIManager extends Application {
 
     private UIManager ui;
     private BatchGraphics graphics;
     private Font diabloFont;
-    private Font arialFont;
+    private Font diablo2Font;
+    private Font arial;
+
+    private Label first;
+    private Label second;
 
     @Override
     protected void start(String[] args) {
         diabloFont = manager.load("Media/res/Diablo.fnt", Font.class);
-        arialFont = manager.load("Media/res/Arial.fnt", Font.class);
+        diablo2Font = manager.load("Media/res/Diablo2.fnt", Font.class);
+        arial = manager.load("Media/res/Arial.fnt", Font.class);
         graphics = new BatchGraphics();
         ui = new UIManager();
 
         Container root = new Container();
 
-        Label arial = new Label();
-        arial.setTransform(Matrix3.Identity);
-        arial.color = new Vec4(1, 0, 0, 1);
-        arial.size = 12f;
-        arial.text = "Label";
-        arial.font = arialFont;
-        root.getChildren().add(arial);
+        first = new Label();
+        first.setTransform(Matrix3.Identity);
+        first.color = new Vec4(1, 0, 0, 1);
+        first.size = 12f;
+        first.text = "Diablo";
+        first.font = diabloFont;
+        root.getChildren().add(first);
 
-        Label diablo = new Label();
-        diablo.setTransform(Matrix3.Translation(0, 12));
-        diablo.color = new Vec4(1, 1, 1, 1);
-        diablo.size = 12f;
-        diablo.text = "Diablo";
-        diablo.font = diabloFont;
-        root.getChildren().add(diablo);
-
-        MultiEventListener listener = new MultiEventListener();
-
-        listener.on(MouseMovedEvent.class, event -> {
-            float sharpness = Mathf.rlerp(event.x, 0, 800);
-            diablo.text = "Sharpness " + sharpness;
-            graphics.setFontSharpness(sharpness);
-            return event;
-        });
-
-        Graphic2D.addEventListener(listener);
-        Graphic2D.addEventListener(ui);
+        second = new Label();
+        second.setTransform(Matrix3.Translation(0, 20));
+        second.color = new Vec4(1, 0.2f, 0.2f, 1);
+        second.size = 12f;
+        second.text = "Diablo";
+        second.font = arial;
+        root.getChildren().add(second);
         ui.setRoot(root);
+
+        Graphic2D.addEventListener(ui);
     }
 
     @Override
     protected void update(float delta) {
         RenderUtil.Clear();
+        //Prepare renderer
         Vec2 size = Graphic2D.getWindowSize();
         graphics.setProjection(0, size.x, 0, size.y);
+
+        //Prepare Font settings
+        Vec2 mouse = Graphic2D.getMouse();
+        float buffer = Mathf.rlerp(mouse.x, 0, size.x);
+        float gamma = Mathf.rlerp(mouse.y, 0, size.y);
+        if (Graphic2D.isMouseButtonDown(0)) {
+            graphics.setSDFSettings(buffer, gamma);
+            first.text = String.format("Diablo (Buffer = %.3f)", buffer);
+            second.text = String.format("Diablo (Gamma = %.3f)", gamma);
+        }
+
         graphics.begin();
         ui.render(graphics);
         graphics.end();

@@ -18,12 +18,13 @@ public class BatchGraphics {
         this.matrixStack = new Stack<>();
     }
 
-    public void setFontSharpness(float sharpness) {
-        renderer.setFontSharpness(sharpness);
-    }
-
     public void setProjection(float left, float right, float top, float bottom) {
         renderer.setProjection(left, right, top, bottom);
+    }
+
+    public void setSDFSettings(float buffer, float gamma) {
+        renderer.setFontBuffer(buffer);
+        renderer.setFontGamma(gamma);
     }
 
     public void begin() {

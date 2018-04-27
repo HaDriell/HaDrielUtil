@@ -32,7 +32,6 @@ public class TestBatchRenderer extends Application {
 
         RenderUtil.Clear();
         renderer.begin();
-        renderer.setFontSharpness(0.5f);
         renderer.draw(Matrix3.Identity, 0, 0, teron.width(), teron.height(), teron.getRegion(), new Vec4(1, 1, 1, 1));
         renderer.draw(Matrix3.Identity, 0, 100, "Hello world", diablo, 10f, new Vec4(1, 1, 1, 1));
         renderer.end();

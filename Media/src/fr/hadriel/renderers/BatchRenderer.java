@@ -11,7 +11,7 @@ import static fr.hadriel.renderers.RenderUtil.DrawTriangles;
 
 public class BatchRenderer {
     private static final int MODE_SPRITE = 0;
-    private static final int MODE_FONT   = 1;
+    private static final int MODE_SDF    = 1;
 
 
     private static final int MAX_SPRITES  = 100_000;
@@ -43,7 +43,6 @@ public class BatchRenderer {
         this.shader = Shader.GLSL(BatchRenderer.class.getResourceAsStream("batch_shader.glsl"));
         this.sampler2D = new TextureSampler2D(32);
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
-        setFontSharpness(0.7f);
         //init VAO
         this.vao = new VertexArray(MAX_VERTICES, UI_SHADER_LAYOUT);
         this.vertexBuffer = vao.getBuffer();
@@ -71,11 +70,12 @@ public class BatchRenderer {
         shader.uniform("u_projection", Matrix4.Orthographic(left, right, top, bottom, -1, 1));
     }
 
-    public void setFontSharpness(float sharpness) {
-        float weight = Mathf.lerp(sharpness, 0.0f, 0.5f);
-        float edge = Mathf.lerp(sharpness, 0.5f, 0.0f);
-        shader.uniform("u_weight", weight);
-        shader.uniform("u_edge", edge);
+    public void setFontBuffer(float buffer) {
+        shader.uniform("u_buffer", buffer);
+    }
+
+    public void setFontGamma(float gamma) {
+        shader.uniform("u_gamma", gamma);
     }
 
     public void begin() {
@@ -152,7 +152,7 @@ public class BatchRenderer {
             if (region == null)
                 continue; // skip submit
 
-            submit(transform, x + fcPosition.x, y + fcPosition.y, fcSize.x, fcSize.y, color, region.texture, MODE_FONT, region.uv0, region.uv1, region.uv2, region.uv3);
+            submit(transform, x + fcPosition.x, y + fcPosition.y, fcSize.x, fcSize.y, color, region.texture, MODE_SDF, region.uv0, region.uv1, region.uv2, region.uv3);
         }
     }
 

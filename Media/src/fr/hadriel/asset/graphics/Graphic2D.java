@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -141,6 +143,19 @@ public final class Graphic2D {
     public static void update() {
         glfwPollEvents();
         glfwSwapBuffers(window);
+    }
+
+    public static Vec2 getMouse() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            DoubleBuffer x = stack.mallocDouble(1);
+            DoubleBuffer y = stack.mallocDouble(1);
+            glfwGetCursorPos(window, x, y);
+            return new Vec2(x.get(0), y.get(0));
+        }
+    }
+
+    public static boolean isMouseButtonDown(int button) {
+        return glfwGetMouseButton(window, button) != GLFW_RELEASE;
     }
 
     public static Vec2 getWindowSize() {
