@@ -1,52 +1,54 @@
 package fr.hadriel.asset.graphics.gui;
 
 
-import fr.hadriel.application.event.FocusGainEvent;
-import fr.hadriel.application.event.FocusLostEvent;
-import fr.hadriel.application.event.MouseEvent;
+import fr.hadriel.application.event.*;
 import fr.hadriel.event.IEvent;
 import fr.hadriel.event.IEventListener;
 import fr.hadriel.renderers.BatchGraphics;
 
+import java.util.List;
+
 public class UIManager implements IEventListener {
 
-    private Component root;
-    private Component focus;
+    private List<UIElement> elements; // list of all elements
 
-    public void setRoot(Component root) {
-        this.root = root;
-        this.focus = null; // Invalidate focus.
+    private UIElement hover; // element that is hovered by the mouse
+    private UIElement focus; // element that owns the focus
+
+    public void requestFocus(UIElement element) {
+        if (focus != null) focus.focusLost(new FocusLostEvent());
+        focus = element;
+        if (focus != null) focus.focusGained(new FocusGainedEvent());
     }
 
-    public Component getRoot() {
-        return root;
+    //Updates the Hover on mouse movement
+    private void capture() {
+
     }
 
-    public void requestFocus(Component focus) {
-        if (this.focus == focus) return; // no changes
-        if (this.focus != null) this.focus.onEvent(new FocusLostEvent());
-        this.focus = focus;
-        if (this.focus != null) this.focus.onEvent(new FocusGainEvent());
-    }
-
-    public Component getFocus() {
-        return focus;
-    }
-
-    public IEvent onEvent(IEvent event) {
-        //Focus may change
-        if (root != null) {
-            if (MouseEvent.class.isInstance(event)) {
-                MouseEvent mouseEvent = (MouseEvent) event;
-                requestFocus(root.hit(mouseEvent.x, mouseEvent.y));
+    public UIElement getCapturedUIElement(float x, float y) {
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            UIElement element = elements.get(i);
+            if (element.hit(x, y)) {
+                return element;
             }
-            Component target = focus != null ? focus : root;
-            target.onEvent(event); // consume event anyway
         }
         return null;
     }
 
+    public IEvent onEvent(IEvent event) {
+        int it = elements.size();
+        while (it-- > 0 && event != null) {
+            UIElement element = elements.get(it);
+
+        }
+        return event;
+    }
+
     public void render(BatchGraphics graphics) {
-        if (root != null) root.render(graphics);
+        for (UIElement element : elements) {
+            if (element.enabled)
+                element.render(graphics);
+        }
     }
 }

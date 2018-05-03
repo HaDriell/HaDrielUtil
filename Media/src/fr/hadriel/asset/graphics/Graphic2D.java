@@ -11,7 +11,6 @@ import org.lwjgl.opengl.GLCapabilities;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -58,7 +57,7 @@ public final class Graphic2D {
         glfwSetWindowCloseCallback(window, window -> dispatcher.onEvent(new WindowCloseEvent()));
         glfwSetWindowFocusCallback(window, (window, focused) -> {
             if(focused)
-                dispatcher.onEvent(new FocusGainEvent());
+                dispatcher.onEvent(new FocusGainedEvent());
             else
                 dispatcher.onEvent(new FocusLostEvent());
         });
