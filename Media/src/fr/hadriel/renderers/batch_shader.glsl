@@ -41,8 +41,8 @@ const int MAX_TEXTURES = 32;
 out vec4 color;
 
 uniform sampler2D u_texture[MAX_TEXTURES]; // list of textures activated while batching geometry
-uniform float u_buffer = 0.2;
-uniform float u_gamma = 1.0;
+uniform float u_buffer = 0.5;
+uniform float u_gamma = 0.1;
 
 in struct Vertex
 {

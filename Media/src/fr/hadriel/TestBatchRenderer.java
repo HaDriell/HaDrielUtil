@@ -22,7 +22,7 @@ public class TestBatchRenderer extends Application {
         renderer = new BatchRenderer();
         renderer.setProjection(0, 800, 0, 450);
         teron = manager.load("Media/res/Teron Fielsang.png", Image.class);
-        diablo = manager.load("Media/res/Diablo.fnt", Font.class);
+        diablo = manager.load("Media/res/Diablo2.fnt", Font.class);
         time = new Timer();
         time.reset();
     }

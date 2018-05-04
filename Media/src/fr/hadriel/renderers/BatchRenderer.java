@@ -136,15 +136,15 @@ public class BatchRenderer {
         if (text.isEmpty()) return; // no text to render
 
         float scale = size / font.info().size; // ratio between render size and desired size
-        float advance = 0; // unscaled advance of the text cursor
+        float xadvance = 0; // unscaled advance of the text cursor
         char previousCharacter = 0;
         for(char character : text.toCharArray()) {
             FontChar fc = font.character(character);
             //Char dimensions
-            Vec2 fcPosition = new Vec2(fc.xoffset + advance, fc.yoffset).scale(scale);
-            Vec2 fcSize = new Vec2(fc.width, fc.height).scale(scale);
+            Vec2 fcPosition = new Vec2(xadvance + fc.xoffset, fc.yoffset);
+            Vec2 fcSize = new Vec2(fc.width, fc.height);
 
-            advance += fc.xadvance + font.kerning(previousCharacter, character);
+            xadvance += fc.width - fc.xoffset + font.kerning(previousCharacter, character);
             previousCharacter = character;
 
             //Texture info
@@ -152,12 +152,16 @@ public class BatchRenderer {
             if (region == null)
                 continue; // skip submit
 
-            submit(transform, x + fcPosition.x, y + fcPosition.y, fcSize.x, fcSize.y, color, region.texture, MODE_SDF, region.uv0, region.uv1, region.uv2, region.uv3);
+            submit(transform, x + fcPosition.x * scale, y + fcPosition.y * scale, fcSize.x * scale, fcSize.y * scale, color, region.texture, MODE_SDF, region.uv0, region.uv1, region.uv2, region.uv3);
         }
     }
 
     public void draw(Matrix3 transform, float x, float y, float width, float height, ImageRegion region, Vec4 color) {
         submit(transform, x, y, width, height, color, region.texture, MODE_SPRITE, region.uv0, region.uv1, region.uv2, region.uv3);
+    }
+
+    public void draw(Matrix3 transform, float x, float y, float width, float height, Vec4 color) {
+        submit(transform, x, y, width, height, color, null, MODE_SPRITE, Vec2.ZERO, Vec2.ZERO, Vec2.ZERO, Vec2.ZERO);
     }
 
     public void end() {

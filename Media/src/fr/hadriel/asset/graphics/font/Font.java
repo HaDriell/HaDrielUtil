@@ -102,14 +102,15 @@ public class Font extends Asset {
 
     public Vec2 sizeof(String text, float size) {
         float scale = size / info.size;
-        float advance = 0;
+        float xoffset = 0;
+        float yoffset = common.lineHeight;
         char previousCharacter = 0;
         for (char character : text.toCharArray()) {
             FontChar fc = character(character);
-            advance += fc.xadvance + kerning(previousCharacter, character);
+            xoffset += fc.xadvance - fc.xoffset + kerning(previousCharacter, character);
             previousCharacter = character;
         }
-        return new Vec2(advance * scale, common.lineHeight * scale);
+        return new Vec2(xoffset * scale, yoffset * scale);
     }
 
     // PARSING FUNCTIONS BELOW

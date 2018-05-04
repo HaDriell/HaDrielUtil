@@ -41,6 +41,7 @@ public class BatchGraphics {
         if (matrixStack.size() > 1) matrixStack.pop(); // protect stack from being empty
     }
 
+
     public void draw(float x, float y, ImageRegion sprite) {
         draw(x, y, sprite.texture.width, sprite.texture.height, sprite, WHITE);
     }
@@ -53,13 +54,17 @@ public class BatchGraphics {
         draw(x, y, width, height, sprite, WHITE);
     }
 
+    public void draw(float x, float y, String text, Font font, float fontSize) {
+        draw(x, y, text, font, fontSize, WHITE);
+    }
+
     public void draw(float x, float y, float width, float height, ImageRegion sprite, Vec4 color) {
         if (sprite == null) return;
         renderer.draw(matrixStack.peek(), x, y, width, height, sprite, color);
     }
 
-    public void draw(float x, float y, String text, Font font, float fontSize) {
-        draw(x, y, text, font, fontSize, WHITE);
+    public void draw(float x, float y, float width, float height, Vec4 color) {
+        renderer.draw(matrixStack.peek(), x, y, width, height, color);
     }
 
     public void draw(float x, float y, String text, Font font, float fontSize, Vec4 color) {

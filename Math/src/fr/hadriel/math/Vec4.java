@@ -16,6 +16,7 @@ public class Vec4 {
     public final float z;
     public final float w;
 
+    public Vec4(double x, double y, double z, double w) { this((float) x, (float) y, (float) z, (float) w); }
     public Vec4(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
