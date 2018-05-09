@@ -8,6 +8,10 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -53,7 +57,7 @@ public final class Graphic2D {
         glfwSetWindowCloseCallback(window, window -> dispatcher.onEvent(new WindowCloseEvent()));
         glfwSetWindowFocusCallback(window, (window, focused) -> {
             if(focused)
-                dispatcher.onEvent(new FocusGainEvent());
+                dispatcher.onEvent(new FocusGainedEvent());
             else
                 dispatcher.onEvent(new FocusLostEvent());
         });
@@ -77,11 +81,11 @@ public final class Graphic2D {
         });
     }
 
-    public void addEventListener(IEventListener listener) {
+    public static void addEventListener(IEventListener listener) {
         dispatcher.addEventListener(listener);
     }
 
-    public void removeEventListener(IEventListener listener) {
+    public static void removeEventListener(IEventListener listener) {
         dispatcher.removeEventListener(listener);
     }
 
@@ -106,7 +110,7 @@ public final class Graphic2D {
         glfwHideWindow(window);
     }
 
-    public static void iconity() {
+    public static void iconify() {
         glfwIconifyWindow(window);
     }
 
@@ -127,7 +131,7 @@ public final class Graphic2D {
     }
 
     public static void setVSync(boolean vsync) {
-        glfwSwapInterval(vsync ? 1 : 0);
+        glfwSwapInterval(vsync ? GLFW_TRUE : GLFW_FALSE);
     }
 
     public static void makeContextCurrent() {
@@ -138,5 +142,27 @@ public final class Graphic2D {
     public static void update() {
         glfwPollEvents();
         glfwSwapBuffers(window);
+    }
+
+    public static Vec2 getMouse() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            DoubleBuffer x = stack.mallocDouble(1);
+            DoubleBuffer y = stack.mallocDouble(1);
+            glfwGetCursorPos(window, x, y);
+            return new Vec2(x.get(0), y.get(0));
+        }
+    }
+
+    public static boolean isMouseButtonDown(int button) {
+        return glfwGetMouseButton(window, button) != GLFW_RELEASE;
+    }
+
+    public static Vec2 getWindowSize() {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            IntBuffer width = stack.mallocInt(1);
+            IntBuffer height = stack.mallocInt(1);
+            glfwGetWindowSize(window, width, height);
+            return new Vec2(width.get(0), height.get(0));
+        }
     }
 }

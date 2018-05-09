@@ -17,6 +17,10 @@ public class Image extends Asset {
         texture = new Texture2D(image.width, image.height, image.pixels);
     }
 
+    public Texture2D texture() {
+        return texture;
+    }
+
     public int width() {
         return texture.width;
     }

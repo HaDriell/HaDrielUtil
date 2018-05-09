@@ -5,6 +5,7 @@ import fr.hadriel.asset.audio.Audio2D;
 import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.WindowHint;
 import fr.hadriel.util.Timer;
+import org.pmw.tinylog.Configurator;
 
 public abstract class Application {
 

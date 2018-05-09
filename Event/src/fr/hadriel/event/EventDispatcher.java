@@ -39,7 +39,10 @@ public class EventDispatcher implements IEventListener {
     public synchronized IEvent onEvent(IEvent event) {
         if (event != null) {
             for (IEventListener listener : listeners) {
-                event = allowMutation ? listener.onEvent(event) : event;
+                if (allowMutation)
+                    event = listener.onEvent(event);
+                else
+                    listener.onEvent(event);
             }
         }
         return event;

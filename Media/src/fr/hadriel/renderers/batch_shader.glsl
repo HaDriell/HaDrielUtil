@@ -41,8 +41,8 @@ const int MAX_TEXTURES = 32;
 out vec4 color;
 
 uniform sampler2D u_texture[MAX_TEXTURES]; // list of textures activated while batching geometry
-uniform float u_weight;
-uniform float u_edge;
+uniform float u_buffer = 0.5;
+uniform float u_gamma = 0.1;
 
 in struct Vertex
 {
@@ -53,9 +53,6 @@ in struct Vertex
 
 flat in int tid;
 flat in int mode;
-
-//void mode_sprite();
-//void mode_font();
 
 void main()
 {
@@ -72,8 +69,8 @@ void main()
     {
         if (tid < 0 || tid >= MAX_TEXTURES)
             discard;
-        float distance = 1.0 - texture(u_texture[tid], v.uv).a;
-        float alpha = 1.0 - smoothstep(u_weight, u_weight + u_edge, distance);
+        float distance = texture(u_texture[tid], v.uv).a;
+        float alpha = smoothstep(u_buffer - u_gamma, u_buffer + u_gamma, distance);
         color = vec4(v.color.rgb, v.color.a * alpha);
     }
 }

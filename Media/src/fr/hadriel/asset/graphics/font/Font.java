@@ -5,6 +5,7 @@ import fr.hadriel.asset.AssetManager;
 import fr.hadriel.asset.graphics.image.Image;
 import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.opengl.TextureFilter;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -101,14 +102,15 @@ public class Font extends Asset {
 
     public Vec2 sizeof(String text, float size) {
         float scale = size / info.size;
-        float advance = 0;
+        float xoffset = 0;
+        float yoffset = common.lineHeight;
         char previousCharacter = 0;
         for (char character : text.toCharArray()) {
             FontChar fc = character(character);
-            advance += fc.xadvance + kerning(previousCharacter, character);
+            xoffset += fc.xadvance - fc.xoffset + kerning(previousCharacter, character);
             previousCharacter = character;
         }
-        return new Vec2(advance * scale, common.lineHeight * scale);
+        return new Vec2(xoffset * scale, yoffset * scale);
     }
 
     // PARSING FUNCTIONS BELOW
@@ -171,6 +173,7 @@ public class Font extends Asset {
             if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
         Image image = manager.load(path.resolveSibling(file), Image.class);
+//        image.texture().setFilter(TextureFilter.LINEAR, TextureFilter.LINEAR);
         pages.put(id, image);
     }
 

@@ -21,7 +21,7 @@ public class TestFontBatchRendering extends Application {
     protected void start(String[] args) {
         System.out.println("Loading Resources");
         arial = manager.load("Media/res/Arial.fnt", Font.class);
-        diablo = manager.load("Media/res/Diablo.fnt", Font.class);
+        diablo = manager.load("Media/res/Diablo2.fnt", Font.class);
         renderer = new FontBatchRenderer();
         renderer.setProjection(0, 800, 0, 450); // that's the shit bugging
         System.out.println("Loading Done !");
