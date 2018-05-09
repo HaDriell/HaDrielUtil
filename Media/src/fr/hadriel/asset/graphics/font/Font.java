@@ -13,6 +13,15 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class Font extends Asset {
+    //According to Hiero generated Font
+    public static final int SPACING_H = 0;
+    public static final int SPACING_V = 1;
+
+    //According to Hiero generated Font
+    public static final int PADDING_TOP    = 0;
+    public static final int PADDING_RIGHT  = 1;
+    public static final int PADDING_BOTTOM = 2;
+    public static final int PADDING_LEFT   = 3;
 
     //Font data
     private FontInfo info;
@@ -101,13 +110,16 @@ public class Font extends Asset {
     }
 
     public Vec2 sizeof(String text, float size) {
-        float scale = size / info.size;
+        int[] padding = info.padding;
+        int[] spacing = info.spacing;
+
+        float scale = size / (float) info.size;
         float xoffset = 0;
-        float yoffset = common.lineHeight;
+        float yoffset = common.lineHeight - padding[PADDING_TOP] - padding[PADDING_BOTTOM] - spacing[SPACING_V];
         char previousCharacter = 0;
         for (char character : text.toCharArray()) {
             FontChar fc = character(character);
-            xoffset += fc.xadvance - fc.xoffset + kerning(previousCharacter, character);
+            xoffset += fc.xadvance + kerning(previousCharacter, character) - padding[PADDING_LEFT] - padding[PADDING_RIGHT] - spacing[SPACING_H];
             previousCharacter = character;
         }
         return new Vec2(xoffset * scale, yoffset * scale);
@@ -173,7 +185,7 @@ public class Font extends Asset {
             if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
         Image image = manager.load(path.resolveSibling(file), Image.class);
-//        image.texture().setFilter(TextureFilter.LINEAR, TextureFilter.LINEAR);
+        image.texture().setFilter(TextureFilter.LINEAR_MIPMAP_LINEAR, TextureFilter.LINEAR_MIPMAP_LINEAR);
         pages.put(id, image);
     }
 

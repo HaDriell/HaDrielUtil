@@ -131,28 +131,31 @@ public class BatchRenderer {
         elementCount += 6;
     }
 
-
     public void draw(Matrix3 transform, float x, float y, String text, Font font, float size, Vec4 color) {
         if (text.isEmpty()) return; // no text to render
 
-        float scale = size / font.info().size; // ratio between render size and desired size
-        float xadvance = 0; // unscaled advance of the text cursor
-        char previousCharacter = 0;
-        for(char character : text.toCharArray()) {
+        //Relative to the BMFont Options. May be null
+        int[] padding = font.info().padding;
+        int[] spacing = font.info().spacing;
+
+        float scale = size / (float) font.info().size; // ratio between render size and desired size
+
+        int cursor = 0; // unscaled advance of the text cursor
+        for(int c = 0; c < text.length(); c++) {
+            char character = text.charAt(c);
+            int kerning = font.kerning(character, c + 1 < text.length() ? text.charAt(c + 1) : 0);
             FontChar fc = font.character(character);
-            //Char dimensions
-            Vec2 fcPosition = new Vec2(xadvance + fc.xoffset, fc.yoffset);
-            Vec2 fcSize = new Vec2(fc.width, fc.height);
-
-            xadvance += fc.width - fc.xoffset + font.kerning(previousCharacter, character);
-            previousCharacter = character;
-
             //Texture info
             ImageRegion region = font.sprite(fc);
-            if (region == null)
-                continue; // skip submit
-
-            submit(transform, x + fcPosition.x * scale, y + fcPosition.y * scale, fcSize.x * scale, fcSize.y * scale, color, region.texture, MODE_SDF, region.uv0, region.uv1, region.uv2, region.uv3);
+            if (region != null && character != ' ') {
+                submit(transform,
+                        x + (cursor + fc.xoffset + kerning) * scale,
+                        y + (fc.yoffset) * scale,
+                        fc.width * scale,
+                        fc.height * scale,
+                        color, region.texture, MODE_SDF, region.uv0, region.uv1, region.uv2, region.uv3);
+            }
+            cursor += fc.xadvance + kerning - padding[Font.PADDING_LEFT] - padding[Font.PADDING_RIGHT] - spacing[Font.SPACING_H];
         }
     }
 

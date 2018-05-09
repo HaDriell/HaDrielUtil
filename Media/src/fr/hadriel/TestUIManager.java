@@ -12,6 +12,7 @@ import fr.hadriel.math.Vec4;
 import fr.hadriel.renderers.BatchGraphics;
 import fr.hadriel.renderers.RenderUtil;
 import fr.hadriel.util.Timer;
+import org.lwjgl.glfw.GLFW;
 
 public class TestUIManager extends Application {
     private static final String[] LOREM_IPSUM = {
@@ -49,7 +50,7 @@ public class TestUIManager extends Application {
 
         VBox lorem_ipsum = new VBox();
         for(String line : LOREM_IPSUM) {
-            lorem_ipsum.add(new Label(line, diablo2Font, 12f, new Vec4(0.5, 0.5, 0.5, 1)));
+            lorem_ipsum.add(new Label(line, verdana, 12f, new Vec4(0.5, 0.5, 0.5, 1)));
         }
         ui.add(lorem_ipsum);
 
@@ -60,7 +61,6 @@ public class TestUIManager extends Application {
 
     @Override
     protected void update(float delta) {
-        first.setFontSize(12f + 12f * Mathf.abs(Mathf.cos(timer.elapsed())));
         RenderUtil.Clear();
         //Prepare renderer
         Vec2 size = Graphic2D.getWindowSize();
@@ -68,12 +68,17 @@ public class TestUIManager extends Application {
 
         //Prepare Font settings
         Vec2 mouse = Graphic2D.getMouse();
-        float buffer = Mathf.rlerp(mouse.x, 0, size.x);
-        float gamma = Mathf.rlerp(mouse.y, 0, size.y);
-        if (Graphic2D.isMouseButtonDown(0)) {
+        if (Graphic2D.isKeyPressed(GLFW.GLFW_KEY_S)) {
+            first.setFontSize(mouse.x);
+            second.setFontSize(mouse.y);
+        }
+
+        if (Graphic2D.isKeyPressed(GLFW.GLFW_KEY_F)) {
+            float buffer = Mathf.rlerp(mouse.x, 0, size.x);
+            float gamma = Mathf.rlerp(mouse.y, 0, size.y);
             graphics.setSDFSettings(buffer, gamma);
-            first.setText(String.format("Arial (Buffer = %.3f)", buffer));
-            second.setText(String.format("Diablo (Gamma = %.3f)", gamma));
+            first.setText(String.format("%s (Buffer = %.3f)", verdana.info().face, buffer));
+            second.setText(String.format("%s (Gamma = %.3f)", diablo2Font.info().face, gamma));
         }
 
         graphics.begin();

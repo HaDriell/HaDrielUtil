@@ -153,6 +153,10 @@ public final class Graphic2D {
         }
     }
 
+    public static boolean isKeyPressed(int key) {
+        return glfwGetKey(window, key) != GLFW_RELEASE;
+    }
+
     public static boolean isMouseButtonDown(int button) {
         return glfwGetMouseButton(window, button) != GLFW_RELEASE;
     }
