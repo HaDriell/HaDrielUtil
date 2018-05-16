@@ -1,6 +1,7 @@
 package fr.hadriel.asset.graphics.ui;
 
 import fr.hadriel.event.IEvent;
+import fr.hadriel.math.Vec4;
 import fr.hadriel.renderers.BatchGraphics;
 
 import java.util.ArrayList;
@@ -10,12 +11,17 @@ import java.util.List;
 public abstract class UIContainer extends UIElement {
 
     private final List<UIElement> children;
-    private boolean requireLayout;
-    private boolean layoutLock;
 
     protected UIContainer() {
         this.children = new ArrayList<>();
     }
+
+    protected void onValidate() {
+        children.forEach(UIElement::validate); // validate children before layout
+        onLayout();
+    }
+
+    protected abstract void onLayout();
 
     public void add(UIElement element) {
         for (UIElement e = element; e != null; e = e.getParent())
@@ -26,16 +32,13 @@ public abstract class UIContainer extends UIElement {
         }
         children.add(element);
         element.parent = this;
-    }
-
-    public void invalidateLayout() {
-        if (layoutLock) return; // ignore signals while layout is being setup. This way, user & system calls are both simple to implement & extend for UI dev
-        requireLayout = true;
-        super.invalidateLayout();
+        invalidate();
     }
 
     public void remove(UIElement element) {
-        requireLayout = children.remove(element);
+        if (children.remove(element)) {
+            invalidate();
+        }
     }
 
     public Iterator<UIElement> children() {
@@ -46,9 +49,8 @@ public abstract class UIContainer extends UIElement {
         return new UIElementIterator(children, children.size() - 1, -1, -1);
     }
 
-
     public UIElement capture(float x, float y) {
-        if (hit(x, y)) { // hit means the Container contains the UIElement to capture
+        if (hit(x, y)) { // hit means the Container contains the UIElement to capture (fast verification first)
             Iterator<UIElement> it = childrenInverted();
             while (it.hasNext()) {
                 UIElement element = it.next().capture(x, y);
@@ -68,17 +70,7 @@ public abstract class UIContainer extends UIElement {
         return event;
     }
 
-    public void render(BatchGraphics graphics) {
-        if (requireLayout) {
-            layoutLock = true;
-            onLayout();
-            layoutLock = false;
-            requireLayout = false;
-        }
-        onRender(graphics);
+    public void onRender(BatchGraphics graphics) {
         children.forEach(child -> child.render(graphics));
     }
-
-    protected void onRender(BatchGraphics graphics) { } // default to NOP rendering
-    protected abstract void onLayout();
 }

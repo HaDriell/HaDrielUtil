@@ -2,15 +2,23 @@ package fr.hadriel.asset.graphics.ui;
 
 
 import fr.hadriel.application.event.*;
+import fr.hadriel.asset.graphics.ui.containers.AnchorPane;
 import fr.hadriel.event.IEvent;
-import fr.hadriel.renderers.BatchGraphics;
 
 import java.util.Iterator;
 
-public class UIManager extends UIContainer {
+public class UIManager extends AnchorPane {
 
     private UIElement hover; // element that is hovered by the mouse
     private UIElement focus; // element that owns the focus
+
+    public UIElement getHover() {
+        return hover;
+    }
+
+    public UIElement getFocus() {
+        return focus;
+    }
 
     public void requestFocus(UIElement element) {
         if (focus != null) focus.focusLost(new FocusLostEvent());
@@ -26,7 +34,6 @@ public class UIManager extends UIContainer {
         if (hover != null) hover.onEvent(new MouseEnteredEvent());
     }
 
-    //TODO : fix that shitty logic on event capture (hover & focus)
     public IEvent onEvent(IEvent event) {
         if (event instanceof MouseEvent) {
             MouseEvent me = (MouseEvent) event;
@@ -39,6 +46,4 @@ public class UIManager extends UIContainer {
         }
         return event;
     }
-
-    protected void onLayout() { } // Absolute Layout
 }

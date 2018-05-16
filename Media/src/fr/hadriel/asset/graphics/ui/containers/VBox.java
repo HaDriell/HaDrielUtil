@@ -25,7 +25,7 @@ public class VBox extends UIContainer {
 
     public void setAlign(Align align) {
         this.align = align;
-        invalidateLayout();
+        invalidate();
     }
 
     protected void onLayout() {

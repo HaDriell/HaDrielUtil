@@ -70,7 +70,7 @@ public final class Graphic2D {
                 dispatcher.onEvent(new KeyPressedEvent(key, mods));
         });
         glfwSetMouseButtonCallback(window, (window, button, scancode, action) -> {
-            if(action == GLFW_RELEASE)
+            if(scancode == GLFW_RELEASE)
                 dispatcher.onEvent(new MouseReleasedEvent(mouse, button));
             else
                 dispatcher.onEvent(new MousePressedEvent(mouse, button));

@@ -13,6 +13,7 @@ public abstract class UIElement implements IEventListener {
     //package-private
     UIContainer parent;
     private boolean enabled;
+    private boolean valid;
 
     //Bounds
     private float x;
@@ -22,9 +23,11 @@ public abstract class UIElement implements IEventListener {
 
     protected UIElement() {
         this.enabled = true;
+        this.valid = false;
     }
 
     public final boolean hit(float x, float y) {
+        validate();
         float dx = x - this.x;
         float dy = y - this.y;
         return enabled && dx >= 0 && dx <= width && dy >= 0 && dy <= height;
@@ -42,10 +45,6 @@ public abstract class UIElement implements IEventListener {
         if (parent != null) parent.requestFocus(element);
     }
 
-    public void invalidateLayout() {
-        if (parent != null) parent.invalidateLayout();
-    }
-
     public UIElement capture(float x, float y) {
         return hit(x, y) ? this : null;
     }
@@ -55,17 +54,23 @@ public abstract class UIElement implements IEventListener {
     }
 
     public void setPosition(float x, float y) {
+        if (this.x != x || this.y != y) {
+            System.out.println("Updating Position " + getPosition() + " to " + new Vec2(x, y));
+            invalidate();
+        }
         this.x = x;
         this.y = y;
-        invalidateLayout();
     }
 
     public Vec2 getSize() { return new Vec2(width, height); }
 
     public void setSize(float width, float height) {
+        if (this.width != width || this.height != height) {
+            System.out.println("Updating Size " + getSize() + " to " + new Vec2(width, height));
+            invalidate();
+        }
         this.width = width;
         this.height = height;
-        invalidateLayout();
     }
 
     public boolean isEnabled() {
@@ -73,18 +78,44 @@ public abstract class UIElement implements IEventListener {
     }
 
     public void setEnabled(boolean enabled) {
+        if (this.enabled != enabled) invalidate();
         this.enabled = enabled;
-        invalidateLayout();
     }
 
-    public void render(BatchGraphics graphics) {
+    /* UIElement validation (enable & size & position) */
+
+    public final void invalidate() {
+        if(!valid) return;
+        valid = false;
+        if (parent != null) parent.invalidate();
+    }
+
+    public final void validate() {
+        if (valid) return;
+        onValidate();
+        valid = true;
+    }
+
+    //Customizable behavior on Validation
+    protected void onValidate() { }
+
+    /* render mechanic section */
+
+    public final void render(BatchGraphics graphics) {
         if (enabled) {
+            validate();
             graphics.push(Matrix3.Translation(x, y));
-            // TODO : if clipping can be enabled, add a clipping security
+            // TODO : setup clipping when supported
             onRender(graphics);
             graphics.pop();
         }
     }
+
+    //Customizable behavior on Render
+    protected abstract void onRender(BatchGraphics graphics);
+
+
+    /* event handling section */
 
     public IEvent onEvent(IEvent event) {
         //Key handling
@@ -112,5 +143,4 @@ public abstract class UIElement implements IEventListener {
     protected IEvent focusGained(FocusGainedEvent event) { return event; }
     protected IEvent focusLost(FocusLostEvent event) { return event; }
 
-    protected abstract void onRender(BatchGraphics graphics);
 }

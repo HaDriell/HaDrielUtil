@@ -115,6 +115,11 @@ public strictfp final class Mathf {
         return (float) Math.pow(f, p);
     }
 
+    public static float hermite(float v, float a, float b) {
+        v = clamp(0, 1, (v - a) / (b - a));
+        return v * v * (3 - 2 * v);
+    }
+
     public static float rlerp(float v, float a, float b) {
         if (a == b) return 0;
         return (v - a) / (b - a);

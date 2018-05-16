@@ -185,7 +185,7 @@ public class Font extends Asset {
             if("file".equals(key))  file = value.substring(1, value.length() - 1);
         }
         Image image = manager.load(path.resolveSibling(file), Image.class);
-        image.texture().setFilter(TextureFilter.LINEAR_MIPMAP_LINEAR, TextureFilter.LINEAR_MIPMAP_LINEAR);
+        image.texture().setFilter(TextureFilter.LINEAR, TextureFilter.LINEAR);
         pages.put(id, image);
     }
 
