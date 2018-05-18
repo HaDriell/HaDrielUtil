@@ -3,7 +3,6 @@ package fr.hadriel;
 import fr.hadriel.application.Application;
 import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.font.Font;
-import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.renderers.BatchGraphics;
 import fr.hadriel.renderers.RenderUtil;
@@ -11,14 +10,14 @@ import org.lwjgl.glfw.GLFW;
 
 public class TestFontSpreadQuality extends Application {
 
-    float size = 24;
-    float buffer = 0.5f;
-    float gamma = 0.1f;
+    private float size = 24;
+    private float buffer = 0.5f;
+    private float gamma = 0.1f;
 
-    Font arial10;
-    Font arial15;
-    Font arial20;
-    BatchGraphics g;
+    private Font arial10;
+    private Font arial15;
+    private Font arial20;
+    private BatchGraphics g;
 
     protected void start(String[] args) {
         Vec2 size = Graphic2D.getWindowSize();

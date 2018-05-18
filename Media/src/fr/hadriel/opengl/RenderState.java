@@ -7,8 +7,9 @@ import static org.lwjgl.opengl.GL14.*;
 
 public class RenderState {
 
-    private boolean depthTesting;
+    private int x, y, width, height;
 
+    private boolean depthTesting;
     private boolean blending;
 
     private BlendEquation equation;
@@ -31,6 +32,13 @@ public class RenderState {
         this.windingOrder   = GL_CCW;
         this.faceCulling    = false;
         this.culling        = GL_BACK;
+    }
+
+    public void setViewport(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public void setDepthTesting(boolean depthTesting) {
@@ -102,10 +110,10 @@ public class RenderState {
     }
 
     public void apply() {
-        //Winding Order
-        glFrontFace(windingOrder);
+        glViewport(x, y, width, height);
 
-        //Face Culling
+        //Winding Order & Face Culling
+        glFrontFace(windingOrder);
         if (faceCulling) {
             glEnable(GL_CULL_FACE);
             glCullFace(culling);
