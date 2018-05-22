@@ -5,20 +5,23 @@ import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
-import fr.hadriel.opengl.*;
+import fr.hadriel.opengl.GLType;
+import fr.hadriel.opengl.TextureSampler2D;
+import fr.hadriel.opengl.VertexAttribute;
+import fr.hadriel.opengl.VertexBuffer;
 import fr.hadriel.opengl.shader.Shader;
 
-public class SpriteBatchRenderer extends G2DBatchRenderer<ImageRegion> {
+public class SpriteRenderer implements IRenderer<> {
     public static final int DEFAULT_CAPACITY = 600_000;
 
     private final TextureSampler2D sampler2D;
 
-    public SpriteBatchRenderer() {
+    public SpriteRenderer() {
         this(DEFAULT_CAPACITY);
     }
 
-    public SpriteBatchRenderer(int vertexCapacity) {
-        super(Shader.GLSL(SpriteBatchRenderer.class.getResourceAsStream("sprite_shader.glsl")),
+    public SpriteRenderer(int vertexCapacity) {
+        super(Shader.GLSL(SpriteRenderer.class.getResourceAsStream("sprite_shader.glsl")),
                 new VertexAttribute[] {
                         new VertexAttribute("position", GLType.FLOAT, 2),
                         new VertexAttribute("color", GLType.FLOAT, 4),

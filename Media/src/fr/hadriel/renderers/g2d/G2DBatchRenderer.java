@@ -9,7 +9,7 @@ public abstract class G2DBatchRenderer<Primitive> implements G2DRenderer<Primiti
 
     //Batch info
     protected final Shader shader;
-    protected final RenderState renderState;
+    protected final OpenGLConfiguration renderState;
     protected final VertexArray vertexArray;
 
     //Batch state
@@ -18,7 +18,7 @@ public abstract class G2DBatchRenderer<Primitive> implements G2DRenderer<Primiti
 
     protected G2DBatchRenderer(Shader shader, VertexAttribute[] layout, int maxVertexCapacity) {
         this.shader = shader;
-        this.renderState = new RenderState();
+        this.renderState = new OpenGLConfiguration();
         this.vertexArray = new VertexArray(maxVertexCapacity, layout);
     }
 
@@ -35,8 +35,7 @@ public abstract class G2DBatchRenderer<Primitive> implements G2DRenderer<Primiti
     }
 
     public void setBlendFunction(BlendFactor source, BlendFactor destination) {
-        renderState.setSrcBlendFactor(source);
-        renderState.setDstBlendFactor(destination);
+        renderState.setBlendFunction(source, destination);
     }
 
     public void setBlendEquation(BlendEquation equation) {

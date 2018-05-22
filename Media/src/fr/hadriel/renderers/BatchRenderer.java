@@ -27,7 +27,7 @@ public class BatchRenderer {
     };
 
     private Shader shader;
-    private RenderState state;
+    private OpenGLConfiguration state;
     private VertexArray vao;
     private IndexBuffer indexBuffer;
 
@@ -58,8 +58,8 @@ public class BatchRenderer {
         }
         indexBuffer.unmap().unbind();
 
-        //init RenderState
-        this.state = new RenderState();
+        //init OpenGLConfiguration
+        this.state = new OpenGLConfiguration();
         state.setBlending(true);
         state.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
         state.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);

@@ -1,7 +1,7 @@
 package fr.hadriel.renderers;
 
 import fr.hadriel.opengl.IndexBuffer;
-import fr.hadriel.opengl.RenderState;
+import fr.hadriel.opengl.OpenGLConfiguration;
 import fr.hadriel.opengl.VertexArray;
 import fr.hadriel.opengl.shader.Shader;
 
@@ -23,7 +23,7 @@ public final class RenderUtil {
         Draw(GL_TRIANGLES, shader, vertexArray, null, null, elementCount);
     }
 
-    public static void DrawTriangles(Shader shader, VertexArray vertexArray, RenderState state, int elementCount) {
+    public static void DrawTriangles(Shader shader, VertexArray vertexArray, OpenGLConfiguration state, int elementCount) {
         Draw(GL_TRIANGLES, shader, vertexArray, null, state, elementCount);
     }
 
@@ -31,7 +31,7 @@ public final class RenderUtil {
         Draw(GL_TRIANGLES, shader, vertexArray, indexBuffer, null, elementCount);
     }
 
-    public static void DrawTriangles(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, RenderState state, int elementCount) {
+    public static void DrawTriangles(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, OpenGLConfiguration state, int elementCount) {
         Draw(GL_TRIANGLES, shader, vertexArray, indexBuffer, state, elementCount);
     }
 
@@ -39,7 +39,7 @@ public final class RenderUtil {
         Draw(GL_TRIANGLE_STRIP, shader, vertexArray, null, null, elementCount);
     }
 
-    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, RenderState state, int elementCount) {
+    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, OpenGLConfiguration state, int elementCount) {
         Draw(GL_TRIANGLE_STRIP, shader, vertexArray, null, state, elementCount);
     }
 
@@ -47,11 +47,11 @@ public final class RenderUtil {
         Draw(GL_TRIANGLE_STRIP, shader, vertexArray, indexBuffer, null, elementCount);
     }
 
-    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, RenderState state, int elementCount) {
+    public static void DrawTriangleStrip(Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, OpenGLConfiguration state, int elementCount) {
         Draw(GL_TRIANGLE_STRIP, shader, vertexArray, indexBuffer, state, elementCount);
     }
 
-    public static void Draw(int glPrimitive, Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, RenderState state, int elementCount) {
+    public static void Draw(int glPrimitive, Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, OpenGLConfiguration state, int elementCount) {
         if(vertexArray == null) return; // no data to render
 
         //Prepare Shader

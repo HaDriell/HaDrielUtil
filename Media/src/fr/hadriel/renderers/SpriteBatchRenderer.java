@@ -27,7 +27,7 @@ public class SpriteBatchRenderer {
     };
 
     private Shader shader;
-    private RenderState state;
+    private OpenGLConfiguration state;
     private VertexArray vao;
     private IndexBuffer indexBuffer;
     private VertexBuffer vertexBuffer;
@@ -56,8 +56,8 @@ public class SpriteBatchRenderer {
         }
         indexBuffer.unmap().unbind();
 
-        //init RenderState
-        this.state = new RenderState();
+        //init OpenGLConfiguration
+        this.state = new OpenGLConfiguration();
         state.setBlending(true);
         state.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
         state.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
