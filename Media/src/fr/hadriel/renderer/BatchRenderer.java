@@ -1,4 +1,4 @@
-package fr.hadriel.renderers;
+package fr.hadriel.renderer;
 
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.font.FontChar;
@@ -7,7 +7,7 @@ import fr.hadriel.math.*;
 import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
 
-import static fr.hadriel.renderers.RenderUtil.DrawTriangles;
+import static fr.hadriel.g2d.RenderUtil.DrawTriangles;
 
 public class BatchRenderer {
     private static final int MODE_SPRITE = 0;
@@ -32,16 +32,16 @@ public class BatchRenderer {
     private IndexBuffer indexBuffer;
 
 
-    //Batch Context
+    //CommandBatch Context
     private VertexBuffer vertexBuffer;
-    private final TextureSampler2D sampler2D;
+    private final TextureBuffer sampler2D;
     private int elementCount;
 
 
     public BatchRenderer() {
         //init Shader
         this.shader = Shader.GLSL(BatchRenderer.class.getResourceAsStream("batch_shader.glsl"));
-        this.sampler2D = new TextureSampler2D(32);
+        this.sampler2D = new TextureBuffer(32);
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
         //init VAO
         this.vao = new VertexArray(MAX_VERTICES, UI_SHADER_LAYOUT);
@@ -61,8 +61,7 @@ public class BatchRenderer {
         //init OpenGLConfiguration
         this.state = new OpenGLConfiguration();
         state.setBlending(true);
-        state.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
-        state.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+        state.setBlendFunction(BlendFactor.GL_SRC_ALPHA, BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
         state.setBlendEquation(BlendEquation.GL_FUNC_ADD);
     }
 
@@ -105,7 +104,7 @@ public class BatchRenderer {
             }
         }
 
-        //Draw the Quad
+        //draw the Sprite
         vertexBuffer.write(transform.multiply(x, y))
                 .write(color)
                 .write(uv0)

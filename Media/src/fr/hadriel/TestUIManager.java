@@ -14,8 +14,8 @@ import fr.hadriel.event.IEvent;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
-import fr.hadriel.renderers.BatchGraphics;
-import fr.hadriel.renderers.RenderUtil;
+import fr.hadriel.renderer.BatchGraphics;
+import fr.hadriel.g2d.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Iterator;

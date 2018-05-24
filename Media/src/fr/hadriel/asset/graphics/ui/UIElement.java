@@ -5,7 +5,7 @@ import fr.hadriel.event.IEvent;
 import fr.hadriel.event.IEventListener;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.renderers.BatchGraphics;
+import fr.hadriel.renderer.BatchGraphics;
 
 public abstract class UIElement implements IEventListener {
 
@@ -111,7 +111,7 @@ public abstract class UIElement implements IEventListener {
         }
     }
 
-    //Customizable behavior on Render
+    //Customizable behavior on Sprite
     protected abstract void onRender(BatchGraphics graphics);
 
 

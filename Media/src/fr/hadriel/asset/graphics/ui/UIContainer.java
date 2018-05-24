@@ -1,8 +1,7 @@
 package fr.hadriel.asset.graphics.ui;
 
 import fr.hadriel.event.IEvent;
-import fr.hadriel.math.Vec4;
-import fr.hadriel.renderers.BatchGraphics;
+import fr.hadriel.renderer.BatchGraphics;
 
 import java.util.ArrayList;
 import java.util.Iterator;

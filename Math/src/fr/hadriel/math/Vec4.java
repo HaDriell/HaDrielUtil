@@ -10,6 +10,7 @@ public class Vec4 {
     public static final Vec4 Z = new Vec4(0, 0, 1, 0);
     public static final Vec4 W = new Vec4(0, 0, 0, 1);
     public static final Vec4 ZERO = new Vec4(0, 0, 0, 0);
+    public static final Vec4 XYZW = new Vec4(1, 1, 1, 1);
 
     public final float x;
     public final float y;

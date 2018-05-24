@@ -1,5 +1,6 @@
 package fr.hadriel.opengl.shader;
 
+import fr.hadriel.math.*;
 import fr.hadriel.opengl.VertexAttribute;
 import fr.hadriel.util.IOUtils;
 import org.lwjgl.system.MemoryStack;
@@ -8,7 +9,9 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.*;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
 
 /**
  * Created by glathuiliere on 29/11/2016.
@@ -110,7 +113,7 @@ public class Shader {
         return program != -1 ? new Shader(program) : null;
     }
 
-    private final int program;
+    public final int program;
     private final Uniform[] uniforms;
     private final GLSLAttribute[] attributes;
 
@@ -164,20 +167,63 @@ public class Shader {
 
     public void bind() {
         glUseProgram(program);
-        for(Uniform uniform : uniforms) {
-            uniform.setup();
-        }
     }
 
     public void unbind() {
         glUseProgram(0);
     }
 
-    public void uniform(String name, Object value) {
-        for(Uniform uniform : uniforms) {
-            if(uniform.name.equals(name)) {
-                uniform.value = value;
-            }
+    private int uniformLocation(String name) {
+        for (Uniform uniform : uniforms) {
+            if (uniform.name.equals(name))
+                return uniform.location;
+        }
+        return -1;
+    }
+
+    public void uniform(String name, int value) {
+        glUniform1i(uniformLocation(name), value);
+    }
+
+    public void uniform(String name, float value) {
+        glUniform1f(uniformLocation(name), value);
+    }
+
+    public void uniform(String name, int[] values) {
+        glUniform1iv(uniformLocation(name), values);
+    }
+
+    public void uniform(String name, float[] values) {
+        glUniform1fv(uniformLocation(name), values);
+    }
+
+    public void uniform(String name, Vec2 v) {
+        glUniform2f(uniformLocation(name), v.x, v.y);
+    }
+
+    public void uniform(String name, Vec3 v) {
+        glUniform3f(uniformLocation(name), v.x, v.y, v.z);
+    }
+
+    public void uniform(String name, Vec4 v) {
+        glUniform4f(uniformLocation(name), v.x, v.y, v.z, v.w);
+    }
+
+    public void uniform(String name, Matrix3 matrix) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(9);
+            buffer.put(matrix.elements());
+            buffer.flip();
+            glUniformMatrix3fv(uniformLocation(name), false, buffer);
+        }
+    }
+
+    public void uniform(String name, Matrix4 matrix) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(16);
+            buffer.put(matrix.elements());
+            buffer.flip();
+            glUniformMatrix4fv(uniformLocation(name), false, buffer);
         }
     }
 
@@ -188,5 +234,9 @@ public class Shader {
             if(!attributes[i].validate(vertexAttributes[i]))
                 return false;
         return true;
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof Shader && this.program == ((Shader) obj).program;
     }
 }

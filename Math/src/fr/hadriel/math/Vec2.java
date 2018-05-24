@@ -10,6 +10,7 @@ public strictfp class Vec2 {
     public static final Vec2 X = new Vec2(1, 0);
     public static final Vec2 Y = new Vec2(0, 1);
     public static final Vec2 ZERO = new Vec2();
+    public static final Vec2 XY = new Vec2(1, 1);
 
     public final float x;
     public final float y;

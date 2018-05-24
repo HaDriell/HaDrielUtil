@@ -4,8 +4,8 @@ import fr.hadriel.application.Application;
 import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.renderers.BatchGraphics;
-import fr.hadriel.renderers.RenderUtil;
+import fr.hadriel.renderer.BatchGraphics;
+import fr.hadriel.g2d.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
 public class TestFontSpreadQuality extends Application {

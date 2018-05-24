@@ -1,4 +1,4 @@
-package fr.hadriel.renderers;
+package fr.hadriel.renderer;
 
 import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
@@ -8,7 +8,7 @@ import fr.hadriel.math.Matrix4;
 import fr.hadriel.math.Vec4;
 import fr.hadriel.opengl.shader.Shader;
 
-import static fr.hadriel.renderers.RenderUtil.*;
+import static fr.hadriel.g2d.RenderUtil.*;
 
 /**
  *
@@ -32,14 +32,14 @@ public class SpriteBatchRenderer {
     private IndexBuffer indexBuffer;
     private VertexBuffer vertexBuffer;
 
-    //Batch Context
-    private final TextureSampler2D sampler2D;
+    //CommandBatch Context
+    private final TextureBuffer sampler2D;
     private int elementCount;
 
     public SpriteBatchRenderer() {
         //init Shader
         this.shader = Shader.GLSL(SpriteBatchRenderer.class.getResourceAsStream("spritebatch_shader.glsl"));
-        this.sampler2D = new TextureSampler2D(32); // same value of u_texture
+        this.sampler2D = new TextureBuffer(32); // same value of u_texture
         shader.uniform("u_texture[0]", sampler2D.getUniformValue());
 
         //init VAO
@@ -59,8 +59,7 @@ public class SpriteBatchRenderer {
         //init OpenGLConfiguration
         this.state = new OpenGLConfiguration();
         state.setBlending(true);
-        state.setSrcBlendFactor(BlendFactor.GL_SRC_ALPHA);
-        state.setDstBlendFactor(BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
+        state.setBlendFunction(BlendFactor.GL_SRC_ALPHA, BlendFactor.GL_ONE_MINUS_SRC_ALPHA);
         state.setBlendEquation(BlendEquation.GL_FUNC_ADD);
     }
 

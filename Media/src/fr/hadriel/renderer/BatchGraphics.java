@@ -1,4 +1,4 @@
-package fr.hadriel.renderers;
+package fr.hadriel.renderer;
 
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.image.ImageRegion;

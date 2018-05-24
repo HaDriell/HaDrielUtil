@@ -9,6 +9,7 @@ import static org.lwjgl.opengl.GL30.*;
  * Created by glathuiliere on 29/11/2016.
  */
 public class Texture2D {
+
     public static boolean ENABLE_MIPMAP = true;
 
     public final int handle;
@@ -60,5 +61,9 @@ public class Texture2D {
 
     public void destroy() {
         glDeleteTextures(handle);
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof Texture2D && ((Texture2D) obj).handle == handle;
     }
 }

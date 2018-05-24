@@ -1,14 +1,20 @@
-package fr.hadriel.renderers;
+package fr.hadriel.g2d;
 
-import fr.hadriel.opengl.IndexBuffer;
-import fr.hadriel.opengl.OpenGLConfiguration;
-import fr.hadriel.opengl.VertexArray;
+import fr.hadriel.math.Matrix3;
+import fr.hadriel.math.Vec2;
+import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public final class RenderUtil {
-    private RenderUtil() {}
+    private RenderUtil() {
+    }
 
     public static void Clear() {
         Clear(0, 0, 0, 1);
@@ -17,6 +23,10 @@ public final class RenderUtil {
     public static void Clear(float r, float g, float b, float a) {
         glClearColor(r, g, b, a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    }
+
+    public static void SetViewport(int x, int y, int width, int height) {
+        glViewport(x, y, width, height);
     }
 
     public static void DrawTriangles(Shader shader, VertexArray vertexArray, int elementCount) {
@@ -52,21 +62,21 @@ public final class RenderUtil {
     }
 
     public static void Draw(int glPrimitive, Shader shader, VertexArray vertexArray, IndexBuffer indexBuffer, OpenGLConfiguration state, int elementCount) {
-        if(vertexArray == null) return; // no data to render
+        if (vertexArray == null) return; // no data to render
 
         //Prepare Shader
-        if(shader != null) {
+        if (shader != null) {
             shader.bind();
         }
 
         //Prepare Pipeline if provided
-        if(state != null) state.apply();
+        if (state != null) state.apply();
 
         //Bind data (in case it was unbound)
         vertexArray.bind();
 
         //Choose between indexed and non indexed modes
-        if(indexBuffer != null) {
+        if (indexBuffer != null) {
             indexBuffer.bind();
             glDrawElements(glPrimitive, elementCount, indexBuffer.getType().name, 0);
         } else {

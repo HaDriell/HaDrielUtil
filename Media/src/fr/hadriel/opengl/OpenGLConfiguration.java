@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL14.*;
 
 public class OpenGLConfiguration {
 
-    private int x, y, width, height;
-
     private boolean depthTesting;
 
     private boolean blending;
@@ -30,13 +28,6 @@ public class OpenGLConfiguration {
         this.dstFactor    = BlendFactor.GL_ZERO;
         this.windingOrder = WindingOrder.COUNTER_CLOCKWISE;
         this.faceCulling  = FaceCulling.NONE;
-    }
-
-    public void setViewport(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
     }
 
     public void setDepthTesting(boolean depthTesting) {
@@ -69,9 +60,6 @@ public class OpenGLConfiguration {
     }
 
     public void apply() {
-        //Viewport
-        glViewport(x, y, width, height);
-
         //FaceCulling
         switch (faceCulling) {
             case NONE:

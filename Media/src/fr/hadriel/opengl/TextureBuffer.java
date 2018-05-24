@@ -3,13 +3,13 @@ package fr.hadriel.opengl;
 
 import static org.lwjgl.opengl.GL13.*;
 
-public class TextureSampler2D {
+public class TextureBuffer {
 
     private final int[] uniformValue;
     private final Texture2D[] textures;
     private int slot;
 
-    public TextureSampler2D(int size) {
+    public TextureBuffer(int size) {
         textures = new Texture2D[size];
         //init the uniform array
         uniformValue = new int[size];

@@ -4,7 +4,7 @@ import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.ui.UIElement;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
-import fr.hadriel.renderers.BatchGraphics;
+import fr.hadriel.renderer.BatchGraphics;
 
 import java.util.Objects;
 

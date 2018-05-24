@@ -5,8 +5,8 @@ import fr.hadriel.asset.graphics.image.Image;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec4;
-import fr.hadriel.renderers.RenderUtil;
-import fr.hadriel.renderers.SpriteBatchRenderer;
+import fr.hadriel.g2d.RenderUtil;
+import fr.hadriel.renderer.SpriteBatchRenderer;
 
 import java.util.Random;
 
