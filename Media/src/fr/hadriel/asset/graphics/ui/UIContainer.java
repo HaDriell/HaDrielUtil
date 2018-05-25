@@ -1,7 +1,6 @@
 package fr.hadriel.asset.graphics.ui;
 
 import fr.hadriel.event.IEvent;
-import fr.hadriel.renderer.BatchGraphics;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -69,7 +68,7 @@ public abstract class UIContainer extends UIElement {
         return event;
     }
 
-    public void onRender(BatchGraphics graphics) {
+    public void onRender(Object graphics) {
         children.forEach(child -> child.render(graphics));
     }
 }

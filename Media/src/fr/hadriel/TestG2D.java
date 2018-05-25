@@ -1,27 +1,50 @@
 package fr.hadriel;
 
 import fr.hadriel.application.Application;
+import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.image.Image;
-import fr.hadriel.asset.graphics.image.Sprite;
-import fr.hadriel.renderer.g2d.G2D;
-import fr.hadriel.renderer.g2d.SpriteRenderer;
+import fr.hadriel.g2d.Renderer;
+import fr.hadriel.g2d.commandbuffer.Command;
+import fr.hadriel.g2d.commandbuffer.CommandBatch;
+import fr.hadriel.math.Matrix3;
+import fr.hadriel.math.Matrix4;
+import fr.hadriel.opengl.shader.Shader;
+import fr.hadriel.util.Timer;
 
 public class TestG2D extends Application {
 
-    Image teron;
+    private Image teron;
+    private Renderer renderer;
+    private Shader shader;
+
+    private int fpsCount;
+    private Timer timer;
 
     protected void start(String[] args) {
         teron = manager.load("Media/res/Teron Fielsang.png", Image.class);
-        SpriteRenderer renderer = new SpriteRenderer();
-        renderer.setProjection(0, 800, 0, 450, 1000, 0);
-        G2D.define(Sprite.class, renderer);
-        G2D.setViewport(0, 0, 800, 450);
+        renderer = new Renderer();
+        shader = Shader.GLSL(Renderer.class.getResourceAsStream("renderer/sprite_shader.glsl"));
+        timer = new Timer();
     }
 
     protected void update(float delta) {
-        G2D.prepareFrame();
-        G2D.draw(teron.getSprite(0, 0, teron.width(), teron.height()));
-        G2D.presentFrame();
+        CommandBatch batch = new CommandBatch(shader);
+        batch.uniform("u_projection", Matrix4.Orthographic(0, 800, 0, 450, 1000, 0));
+        for (int x = 0; x < 800; x += 40) {
+            for (int y = 0; y < 450; y += 50) {
+                batch.add(new Command(Matrix3.Translation(x, y), x, y, 40, 50));
+            }
+        }
+
+        if (timer.elapsed() > 1) {
+            timer.reset();
+            Graphic2D.setTitle(String.format("Window (%d FPS)", fpsCount));
+            fpsCount = 0;
+        }
+        renderer.begin();
+        renderer.submit(shader, batch);
+        renderer.end();
+        fpsCount++;
     }
 
     protected void terminate() {

@@ -4,7 +4,6 @@ import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.ui.UIElement;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
-import fr.hadriel.renderer.BatchGraphics;
 
 import java.util.Objects;
 
@@ -67,7 +66,7 @@ public class Label extends UIElement {
         this.color = Objects.requireNonNull(color);
     }
 
-    protected void onRender(BatchGraphics graphics) {
-        graphics.draw(0, 0, text, font, fontSize, color);
+    protected void onRender(Object graphics) {
+//        graphics.draw(0, 0, text, font, fontSize, color);
     }
 }

@@ -3,6 +3,7 @@ package fr.hadriel.opengl.shader;
 import fr.hadriel.math.*;
 import fr.hadriel.opengl.VertexAttribute;
 import fr.hadriel.util.IOUtils;
+import fr.hadriel.util.logging.Log;
 import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -11,12 +12,14 @@ import static org.lwjgl.opengl.GL20.*;
 import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by glathuiliere on 29/11/2016.
  */
 public class Shader {
+    private static final Logger logger = Log.getLogger(Shader.class);
 
     private static int CompileShader(int shaderType, String source) {
         int shader = glCreateShader(shaderType);
@@ -114,7 +117,7 @@ public class Shader {
     }
 
     public final int program;
-    private final Uniform[] uniforms;
+    private final UniformDeclaration[] uniforms;
     private final GLSLAttribute[] attributes;
 
     private Shader(int program) {
@@ -130,15 +133,16 @@ public class Shader {
             glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, attributeCount);
 
 
-            //Uniform initialization
-            this.uniforms = new Uniform[uniformCount.get(0)];
+            //UniformDeclaration initialization
+            this.uniforms = new UniformDeclaration[uniformCount.get(0)];
             for (int i = 0; i < uniforms.length; i++) {
                 size.clear();
                 type.clear();
                 String name = glGetActiveUniform(program, i, size, type);
                 int location = glGetUniformLocation(program, name);
                 GLSLType glslType = GLSLType.findByType(type.get(0));
-                uniforms[i] = new Uniform(name, location, glslType);
+                uniforms[i] = new UniformDeclaration(name, location, glslType);
+                logger.config("Declared uniform %s %s");
             }
 
             //Attributes initialization
@@ -173,58 +177,162 @@ public class Shader {
         glUseProgram(0);
     }
 
-    private int uniformLocation(String name) {
-        for (Uniform uniform : uniforms) {
+    private UniformDeclaration getUniformDeclaration(String name) {
+        for (UniformDeclaration uniform : uniforms)
             if (uniform.name.equals(name))
-                return uniform.location;
-        }
-        return -1;
+                return uniform;
+        return null;
     }
 
     public void uniform(String name, int value) {
-        glUniform1i(uniformLocation(name), value);
+        __uniform(getUniformDeclaration(name), value);
     }
 
     public void uniform(String name, float value) {
-        glUniform1f(uniformLocation(name), value);
+        __uniform(getUniformDeclaration(name), value);
     }
 
-    public void uniform(String name, int[] values) {
-        glUniform1iv(uniformLocation(name), values);
+    public void uniform(String name, int[] value) {
+        __uniform(getUniformDeclaration(name), value);
     }
 
-    public void uniform(String name, float[] values) {
-        glUniform1fv(uniformLocation(name), values);
+    public void uniform(String name, float[] value) {
+        __uniform(getUniformDeclaration(name), value);
     }
 
     public void uniform(String name, Vec2 v) {
-        glUniform2f(uniformLocation(name), v.x, v.y);
+        __uniform(getUniformDeclaration(name), v);
     }
 
     public void uniform(String name, Vec3 v) {
-        glUniform3f(uniformLocation(name), v.x, v.y, v.z);
+        __uniform(getUniformDeclaration(name), v);
     }
 
     public void uniform(String name, Vec4 v) {
-        glUniform4f(uniformLocation(name), v.x, v.y, v.z, v.w);
+        __uniform(getUniformDeclaration(name), v);
     }
 
     public void uniform(String name, Matrix3 matrix) {
+        __uniform(getUniformDeclaration(name), matrix);
+    }
+
+    public void uniform(String name, Matrix4 matrix) {
+        __uniform(getUniformDeclaration(name), matrix);
+    }
+
+    public void uniform(UniformDeclaration declaration, Object value) {
+        if (declaration == null || value == null) return;
+        switch (declaration.type) {
+            case GL_INT:
+            case GL_SAMPLER_1D:
+            case GL_SAMPLER_2D:
+            case GL_SAMPLER_1D_SHADOW:
+            case GL_SAMPLER_2D_SHADOW:
+                if (value instanceof Integer) {
+                    __uniform(declaration, (Integer) value);
+                    return;
+                }
+                break;
+            case GL_FLOAT:
+                if (value instanceof Float) {
+                    __uniform(declaration, (Float) value);
+                    return;
+                }
+                break;
+            case GL_FLOAT_VEC2:
+                if (value instanceof Vec2) {
+                    __uniform(declaration, (Vec2) value);
+                return;
+                }
+                break;
+            case GL_FLOAT_VEC3:
+                if (value instanceof Vec3) {
+                    __uniform(declaration, (Vec3) value);
+                    return;
+                }
+                break;
+            case GL_FLOAT_VEC4:
+                if (value instanceof Vec4) {
+                    __uniform(declaration, (Vec4) value);
+                    return;
+                }
+                break;
+            case GL_FLOAT_MAT3:
+                if (value instanceof Matrix3) {
+                    __uniform(declaration, (Matrix3) value);
+                    return;
+                }
+                break;
+            case GL_FLOAT_MAT4:
+                if (value instanceof Matrix4) {
+                    __uniform(declaration, (Matrix4) value);
+                    return;
+                }
+                break;
+            default:
+                logger.warning(String.format("Unsupported uniform type %s !", declaration.type.toString()));
+                return;
+        }
+        logger.warning(String.format("Invalid uniform type %s ! It should be %s", value.getClass().getSimpleName(), declaration.type));
+    }
+
+    private void __uniform(UniformDeclaration declaration, int value) {
+        if (declaration == null) return;
+        glUniform1i(declaration.location, value);
+    }
+
+    private void __uniform(UniformDeclaration declaration, int[] value) {
+        if (declaration == null) return;
+        glUniform1iv(declaration.location, value);
+    }
+
+    private void __uniform(UniformDeclaration declaration, float value) {
+        if (declaration == null) return;
+        glUniform1f(declaration.location, value);
+    }
+
+    private void __uniform(UniformDeclaration declaration, float[] value) {
+        if (declaration == null) return;
+        glUniform1fv(declaration.location, value);
+    }
+
+    private void __uniform(UniformDeclaration declaration, Vec2 value) {
+        if (declaration == null) return;
+        glUniform2f(declaration.location, value.x, value.y);
+    }
+
+    private void __uniform(UniformDeclaration declaration, Vec3 value) {
+        if (declaration == null) return;
+        glUniform3f(declaration.location, value.x, value.y, value.z);
+    }
+
+    private void __uniform(UniformDeclaration declaration, Vec4 value) {
+        if (declaration == null) return;
+        glUniform4f(declaration.location, value.x, value.y, value.z, value.w);
+    }
+
+    public void __uniform(UniformDeclaration declaration, Matrix3 matrix) {
+        if (declaration == null) return;
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buffer = stack.mallocFloat(9);
             buffer.put(matrix.elements());
             buffer.flip();
-            glUniformMatrix3fv(uniformLocation(name), false, buffer);
+            glUniformMatrix3fv(declaration.location, false, buffer);
         }
     }
 
-    public void uniform(String name, Matrix4 matrix) {
+    public void __uniform(UniformDeclaration declaration, Matrix4 matrix) {
+        if (declaration == null) return;
         try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buffer = stack.mallocFloat(16);
             buffer.put(matrix.elements());
             buffer.flip();
-            glUniformMatrix4fv(uniformLocation(name), false, buffer);
+            glUniformMatrix4fv(declaration.location, false, buffer);
         }
+    }
+
+    public UniformBuffer createUniformBuffer() {
+        return new UniformBuffer(uniforms);
     }
 
     public boolean validate(VertexAttribute[] vertexAttributes) {

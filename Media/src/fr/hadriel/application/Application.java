@@ -5,9 +5,12 @@ import fr.hadriel.asset.audio.Audio2D;
 import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.WindowHint;
 import fr.hadriel.util.Timer;
-import org.pmw.tinylog.Configurator;
+import fr.hadriel.util.logging.Log;
+
+import java.util.logging.Logger;
 
 public abstract class Application {
+    private static final Logger logger = Log.getLogger(Application.class);
 
     private static final int LAUNCHING = 0x1;
     private static final int UPDATING = 0x2;
@@ -39,14 +42,16 @@ public abstract class Application {
     }
 
     private void _init(WindowHint hint, String[] args) {
-
+        logger.fine("Initializing Application Graphics");
         //Graphics INIT
         Graphic2D.create(hint);
 
+        logger.fine("Initializing Application Audio");
         //Audio INIT
         Audio2D.initialize();
         applicationState = UPDATING;
 
+        logger.fine("Starting Application");
         // End-User INIT
         start(args);
         Graphic2D.show();
@@ -63,8 +68,13 @@ public abstract class Application {
     }
 
     private void _terminate() {
+        logger.fine("Terminating Application");
         terminate();
+
+        logger.fine("Uninitializng Audio");
         Audio2D.terminate();
+
+        logger.fine("Uninitializng Graohics");
         Graphic2D.terminate();
     }
 

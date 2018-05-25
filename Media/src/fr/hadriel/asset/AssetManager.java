@@ -1,13 +1,15 @@
 package fr.hadriel.asset;
 
-import org.pmw.tinylog.Logger;
+import fr.hadriel.util.logging.Log;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class AssetManager {
+    private static final Logger logger = Log.getLogger("Asset Manager");
 
     private final Map<Path, Asset> assets;
     private final Map<String, Asset> namedAssets;
@@ -36,7 +38,7 @@ public class AssetManager {
             asset = getByPath(path, type);
             if (asset == null)
                 throw new RuntimeException(String.format("Invalid Asset type %s for Asset %s", type.getSimpleName(), path.toString()));
-            Logger.info("[Asset Manager] {} Asset from '{}' already loaded. Skipped Loading.", type.getSimpleName(), path.toString());
+            logger.info(String.format("%s at '%s' already loaded. Skipping load", type.getSimpleName(), path.toString()));
         } else {
             try {
                 asset = type.newInstance(); // instanciate asset
@@ -47,7 +49,7 @@ public class AssetManager {
             } catch (Exception e) {
                 throw new RuntimeException("Error while loading Asset", e);
             }
-            Logger.info("[Asset Manager] {} Asset loaded from '{}'", type.getSimpleName(), path.toString());
+            logger.info(String.format("%s loaded from '%s'", type.getSimpleName(), path.toString()));
         }
 
         //Add a reference (if not already defined) to the asset map

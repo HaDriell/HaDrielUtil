@@ -5,7 +5,6 @@ import fr.hadriel.event.IEvent;
 import fr.hadriel.event.IEventListener;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.renderer.BatchGraphics;
 
 public abstract class UIElement implements IEventListener {
 
@@ -101,18 +100,18 @@ public abstract class UIElement implements IEventListener {
 
     /* render mechanic section */
 
-    public final void render(BatchGraphics graphics) {
+    public final void render(Object graphics) {
         if (enabled) {
             validate();
-            graphics.push(Matrix3.Translation(x, y));
+//            graphics.push(Matrix3.Translation(x, y));
             // TODO : setup clipping when supported
             onRender(graphics);
-            graphics.pop();
+//            graphics.pop();
         }
     }
 
     //Customizable behavior on Sprite
-    protected abstract void onRender(BatchGraphics graphics);
+    protected abstract void onRender(Object graphics);
 
 
     /* event handling section */

@@ -1,41 +1,63 @@
 package fr.hadriel.opengl.shader;
 
-import fr.hadriel.math.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 public class UniformBuffer {
-    private final Map<String, Object> values;
 
-    public UniformBuffer() {
-        this.values = new HashMap<>();
+    private static final class Uniform {
+        public final UniformDeclaration declaration;
+        public Object value;
+
+        private Uniform(UniformDeclaration declaration, Object value) {
+            this.declaration = declaration;
+            this.value = value;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj instanceof Uniform) {
+                Uniform other = (Uniform) obj;
+                return other.declaration.equals(declaration) && other.value.equals(value);
+            }
+            return false;
+        }
+    }
+
+    private final Uniform[] uniforms;
+
+
+    public UniformBuffer(UniformDeclaration[] declarations) {
+        uniforms = new Uniform[declarations.length];
+        for (int i = 0; i < uniforms.length; i++) {
+            uniforms[i] = new Uniform(declarations[i], null);
+        }
+    }
+
+    private Uniform find(String name) {
+        for (Uniform u : uniforms)
+            if (u.declaration.name.equals(name))
+                return u;
+        return null;
     }
 
     public void uniform(String name, Object value) {
-        values.put(name, value);
+        Uniform uniform = find(name);
+        if (uniform != null) uniform.value = value;
     }
 
-    public void apply(Shader shader) {
-        values.forEach((name, value) -> {
-            if (value instanceof Integer) shader.uniform(name, (int) value);
-            if (value instanceof Float) shader.uniform(name, (float) value);
-
-            if (value instanceof float[]) shader.uniform(name, (float[]) value);
-            if (value instanceof int[]) shader.uniform(name, (int[]) value);
-
-            if (value instanceof Vec2) shader.uniform(name, (Vec2) value);
-            if (value instanceof Vec3) shader.uniform(name, (Vec3) value);
-            if (value instanceof Vec4) shader.uniform(name, (Vec4) value);
-
-            if (value instanceof Matrix3) shader.uniform(name, (Matrix3) value);
-            if (value instanceof Matrix4) shader.uniform(name, (Matrix4) value);
-        });
+    public void setupUniforms(Shader shader) {
+        for (Uniform uniform : uniforms) {
+            shader.uniform(uniform.declaration, uniform.value);
+        }
     }
 
     //Compare the maps values
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        return obj instanceof UniformBuffer && ((UniformBuffer) obj).values.equals(values);
+        if (obj instanceof UniformBuffer) {
+            UniformBuffer other = (UniformBuffer) obj;
+            if (other.uniforms.length != uniforms.length) return false;
+            return Arrays.equals(uniforms, other.uniforms);
+        }
+        return false;
     }
 }

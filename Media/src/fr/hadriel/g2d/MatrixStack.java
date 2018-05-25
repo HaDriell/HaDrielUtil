@@ -1,4 +1,4 @@
-package fr.hadriel.opengl;
+package fr.hadriel.g2d;
 
 import fr.hadriel.math.Matrix3;
 
