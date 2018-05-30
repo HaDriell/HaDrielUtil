@@ -142,7 +142,7 @@ public class Shader {
                 int location = glGetUniformLocation(program, name);
                 GLSLType glslType = GLSLType.findByType(type.get(0));
                 uniforms[i] = new UniformDeclaration(name, location, glslType);
-                logger.config("Declared uniform %s %s");
+                logger.config("Declared setUniform %s %s");
             }
 
             //Attributes initialization
@@ -184,96 +184,40 @@ public class Shader {
         return null;
     }
 
-    public void uniform(String name, int value) {
+    public void setUniform(String name, int value) {
         __uniform(getUniformDeclaration(name), value);
     }
 
-    public void uniform(String name, float value) {
+    public void setUniform(String name, float value) {
         __uniform(getUniformDeclaration(name), value);
     }
 
-    public void uniform(String name, int[] value) {
+    public void setUniform(String name, int[] value) {
         __uniform(getUniformDeclaration(name), value);
     }
 
-    public void uniform(String name, float[] value) {
+    public void setUniform(String name, float[] value) {
         __uniform(getUniformDeclaration(name), value);
     }
 
-    public void uniform(String name, Vec2 v) {
+    public void setUniform(String name, Vec2 v) {
         __uniform(getUniformDeclaration(name), v);
     }
 
-    public void uniform(String name, Vec3 v) {
+    public void setUniform(String name, Vec3 v) {
         __uniform(getUniformDeclaration(name), v);
     }
 
-    public void uniform(String name, Vec4 v) {
+    public void setUniform(String name, Vec4 v) {
         __uniform(getUniformDeclaration(name), v);
     }
 
-    public void uniform(String name, Matrix3 matrix) {
+    public void setUniform(String name, Matrix3 matrix) {
         __uniform(getUniformDeclaration(name), matrix);
     }
 
-    public void uniform(String name, Matrix4 matrix) {
+    public void setUniform(String name, Matrix4 matrix) {
         __uniform(getUniformDeclaration(name), matrix);
-    }
-
-    public void uniform(UniformDeclaration declaration, Object value) {
-        if (declaration == null || value == null) return;
-        switch (declaration.type) {
-            case GL_INT:
-            case GL_SAMPLER_1D:
-            case GL_SAMPLER_2D:
-            case GL_SAMPLER_1D_SHADOW:
-            case GL_SAMPLER_2D_SHADOW:
-                if (value instanceof Integer) {
-                    __uniform(declaration, (Integer) value);
-                    return;
-                }
-                break;
-            case GL_FLOAT:
-                if (value instanceof Float) {
-                    __uniform(declaration, (Float) value);
-                    return;
-                }
-                break;
-            case GL_FLOAT_VEC2:
-                if (value instanceof Vec2) {
-                    __uniform(declaration, (Vec2) value);
-                return;
-                }
-                break;
-            case GL_FLOAT_VEC3:
-                if (value instanceof Vec3) {
-                    __uniform(declaration, (Vec3) value);
-                    return;
-                }
-                break;
-            case GL_FLOAT_VEC4:
-                if (value instanceof Vec4) {
-                    __uniform(declaration, (Vec4) value);
-                    return;
-                }
-                break;
-            case GL_FLOAT_MAT3:
-                if (value instanceof Matrix3) {
-                    __uniform(declaration, (Matrix3) value);
-                    return;
-                }
-                break;
-            case GL_FLOAT_MAT4:
-                if (value instanceof Matrix4) {
-                    __uniform(declaration, (Matrix4) value);
-                    return;
-                }
-                break;
-            default:
-                logger.warning(String.format("Unsupported uniform type %s !", declaration.type.toString()));
-                return;
-        }
-        logger.warning(String.format("Invalid uniform type %s ! It should be %s", value.getClass().getSimpleName(), declaration.type));
     }
 
     private void __uniform(UniformDeclaration declaration, int value) {
@@ -329,10 +273,6 @@ public class Shader {
             buffer.flip();
             glUniformMatrix4fv(declaration.location, false, buffer);
         }
-    }
-
-    public UniformBuffer createUniformBuffer() {
-        return new UniformBuffer(uniforms);
     }
 
     public boolean validate(VertexAttribute[] vertexAttributes) {

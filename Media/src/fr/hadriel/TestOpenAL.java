@@ -13,7 +13,7 @@ import static org.lwjgl.openal.ALC10.*;
 public class TestOpenAL {
     public static void main(String[] args) {
 
-        //OpenAL setup
+        //OpenAL setupUniforms
         String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
         long device = alcOpenDevice(defaultDeviceName);
         int[] attributes = {0};

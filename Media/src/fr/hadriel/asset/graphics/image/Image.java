@@ -34,15 +34,7 @@ public class Image extends Asset {
     }
 
     public ImageRegion getRegion(int x, int y, int width, int height) {
-        float left = x / (float) texture.width;
-        float bottom = (y + height) / (float) texture.height;
-        float right = (x + width) / (float) texture.width;
-        float top = y / (float) texture.height;
-        return getRegion(new Vec2(left, top), new Vec2(right, top), new Vec2(right, bottom), new Vec2(left, bottom));
-    }
-
-    public ImageRegion getRegion(Vec2 uv0, Vec2 uv1, Vec2 uv2, Vec2 uv3) {
-        return new ImageRegion(texture, uv0, uv1, uv2, uv3);
+        return new ImageRegion(texture, x, y, width, height);
     }
 
     protected void onUnload(AssetManager manager) {

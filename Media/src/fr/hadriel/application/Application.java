@@ -10,7 +10,7 @@ import fr.hadriel.util.logging.Log;
 import java.util.logging.Logger;
 
 public abstract class Application {
-    private static final Logger logger = Log.getLogger(Application.class);
+    protected static final Logger logger = Log.getLogger(Application.class);
 
     private static final int LAUNCHING = 0x1;
     private static final int UPDATING = 0x2;

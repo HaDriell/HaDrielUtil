@@ -4,7 +4,8 @@ import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec4;
 
-public class Command {
+//package-private
+public final class Command {
     public final Matrix3 transform;
     public final Vec2 position;
     public final Vec2 size;

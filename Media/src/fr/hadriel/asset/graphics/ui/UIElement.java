@@ -104,7 +104,7 @@ public abstract class UIElement implements IEventListener {
         if (enabled) {
             validate();
 //            graphics.push(Matrix3.Translation(x, y));
-            // TODO : setup clipping when supported
+            // TODO : setupUniforms clipping when supported
             onRender(graphics);
 //            graphics.pop();
         }

@@ -1,7 +1,7 @@
 package fr.hadriel;
 
 import fr.hadriel.application.Application;
-import fr.hadriel.asset.graphics.Graphic2D;
+import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.image.Image;
 import fr.hadriel.g2d.Renderer;
 import fr.hadriel.g2d.commandbuffer.Command;
@@ -9,42 +9,70 @@ import fr.hadriel.g2d.commandbuffer.CommandBatch;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4;
 import fr.hadriel.opengl.shader.Shader;
-import fr.hadriel.util.Timer;
 
 public class TestG2D extends Application {
 
+    private Font arial;
     private Image teron;
     private Renderer renderer;
-    private Shader shader;
-
-    private int fpsCount;
-    private Timer timer;
+    private Shader spriteShader;
+    private Shader sdfShader;
 
     protected void start(String[] args) {
         teron = manager.load("Media/res/Teron Fielsang.png", Image.class);
+        arial = manager.load("Media/res/Arial.fnt", Font.class);
         renderer = new Renderer();
-        shader = Shader.GLSL(Renderer.class.getResourceAsStream("renderer/sprite_shader.glsl"));
-        timer = new Timer();
+        spriteShader = Shader.GLSL(Renderer.class.getResourceAsStream("defaults/sprite_shader.glsl"));
+        sdfShader = Shader.GLSL(Renderer.class.getResourceAsStream("defaults/sdf_shader.glsl"));
     }
 
     protected void update(float delta) {
-        CommandBatch batch = new CommandBatch(shader);
-        batch.uniform("u_projection", Matrix4.Orthographic(0, 800, 0, 450, 1000, 0));
-        for (int x = 0; x < 800; x += 40) {
-            for (int y = 0; y < 450; y += 50) {
-                batch.add(new Command(Matrix3.Translation(x, y), x, y, 40, 50));
+        renderer.begin();
+        //Batch filling
+        int size = 16;
+        CommandBatch spriteBatch = new CommandBatch();
+        spriteBatch.setUniform("u_projection", Matrix4.Orthographic(0, 800, 0, 450, 1000, 0));
+        spriteBatch.setUniform("u_texture", teron.texture());
+        for (int x = 0; x < 800; x += size) {
+            for (int y = 0; y < 450; y += size) {
+                spriteBatch.add(new Command(Matrix3.Translation(x, y), 0, 0, size, size));
             }
         }
+        logger.info("Sprite Batch size: " + spriteBatch.size());
+        renderer.submit(spriteShader, spriteBatch);
 
-        if (timer.elapsed() > 1) {
-            timer.reset();
-            Graphic2D.setTitle(String.format("Window (%d FPS)", fpsCount));
-            fpsCount = 0;
-        }
-        renderer.begin();
-        renderer.submit(shader, batch);
+
+//        CommandBatch[] batches = new CommandBatch[arial.common().pages];
+//        for (int i = 0; i < batches.length; i++) {
+//            batches[i] = new CommandBatch(sdfShader);
+//            batches[i].setUniform("u_projection", Matrix4.Orthographic(0, 800, 0, 450, 1000, 0));
+//            batches[i].setUniform("u_buffer", 0.5f);
+//            batches[i].setUniform("u_gamma", 0.1f);
+//            batches[i].setUniform("u_texture", arial.page(i).texture());
+//        }
+//
+//        String text = "Hello, world !";
+//        float scale = 32f / arial.info().size;
+//        int xadvance = 0;
+//        byte[] chars = text.getBytes();
+//        for(int i = 0; i < chars.length; i++) {
+//            FontChar fc = arial.character(chars[i]);
+//            CommandBatch batch = batches[fc.page];
+//            int kerning = arial.kerning(chars[i], (i + 1 < chars.length) ? chars[i + 1] : 0);
+//            batch.add(new Command(Matrix3.Identity,
+//                    (fc.xoffset + xadvance + kerning) * scale,
+//                    (fc.yoffset) * scale,
+//                    fc.width * scale,
+//                    fc.height * scale,
+//                    Vec4.XYZW));
+//            xadvance += fc.xadvance + kerning - arial.info().paddingLeft - arial.info().paddingRight - arial.info().spacingH;
+//        }
+//
+//        for (CommandBatch batch : batches) {
+//            if (batch.size() > 0)
+//                renderer.submit(sdfShader, batch);
+//        }
         renderer.end();
-        fpsCount++;
     }
 
     protected void terminate() {

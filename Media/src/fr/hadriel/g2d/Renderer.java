@@ -5,14 +5,15 @@ import fr.hadriel.g2d.commandbuffer.CommandBatch;
 import fr.hadriel.g2d.commandbuffer.CommandBuffer;
 import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
-import fr.hadriel.opengl.shader.UniformBuffer;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Iterator;
-import java.util.List;
+
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
 
 public final class Renderer {
     public static final int DEFAULT_VERTEX_CAPACITY = 60_000;
+    public static final int DEFAULT_VERTEX_ARRAY_COUNT = 2;
 
     public static final VertexAttribute[] VERTEX_LAYOUT = {
             new VertexAttribute("position", GLType.FLOAT, 2),
@@ -21,15 +22,25 @@ public final class Renderer {
     };
 
     private CommandBuffer commandBuffer;
-    private VertexArray vertexArray;
+    private VertexArray[] vertexArrays;
+    private int vertexArrayIndex;
 
     public Renderer() {
-        this(DEFAULT_VERTEX_CAPACITY);
+        this(DEFAULT_VERTEX_CAPACITY, DEFAULT_VERTEX_ARRAY_COUNT);
     }
 
-    public Renderer(int maxVertexCapacity) {
-        this.vertexArray = new VertexArray(maxVertexCapacity, VERTEX_LAYOUT);
+    public Renderer(int maxVertexCapacity, int vertexArrayCount) {
         this.commandBuffer = new CommandBuffer();
+        this.vertexArrays = new VertexArray[vertexArrayCount];
+        for (int i = 0; i < vertexArrays.length; i++) {
+            vertexArrays[i] = new VertexArray(maxVertexCapacity, VERTEX_LAYOUT);
+        }
+        this.vertexArrayIndex = 0;
+    }
+
+    private VertexArray nextVertexArray() {
+        vertexArrayIndex = (vertexArrayIndex + 1) % vertexArrays.length;
+        return vertexArrays[vertexArrayIndex];
     }
 
     //Staging functions
@@ -37,31 +48,24 @@ public final class Renderer {
         commandBuffer.clear();
     }
 
-    public void submit(Shader shader, UniformBuffer uniformBuffer, List<Command> commands) {
-        commandBuffer.submit(shader, uniformBuffer, commands);
-    }
-
-    public void submit(Shader shader, UniformBuffer uniformBuffer, Command... commands) {
-        commandBuffer.submit(shader, uniformBuffer, commands);
-    }
-
     public void submit(Shader shader, CommandBatch batch) {
         commandBuffer.submit(shader, batch);
     }
 
     public void end() {
-        vertexArray.bind(); // bind VAO
         commandBuffer.forEach(batchList -> {
             Shader shader = batchList.getShader();
             shader.bind(); // bin Shader
             batchList.forEach(batch -> {
-                GLBuffer buffer = vertexArray.getBuffer().bind(); // bind VBO
                 Iterator<Command> commands = batch.iterator();
                 while (commands.hasNext()) {
-                    int elementCount = 0;
+                    VertexArray vertexArray = nextVertexArray();
+                    vertexArray.bind(); // bind VAO
+                    GLBuffer buffer = vertexArray.getBuffer().bind(); // bind VBO
 
-                    //Edit VBO
+                    //Map VBO for edition
                     buffer.map();
+                    int elementCount = 0;
                     while (commands.hasNext() && elementCount + 6 < vertexArray.getMaxElementCount()) {
                         Command c = commands.next();
 
@@ -90,8 +94,8 @@ public final class Renderer {
                         elementCount += 6;
                     }
                     buffer.unmap();
-                    batch.setUniforms(shader); // setup Uniforms
-                    GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, elementCount); // Issue Draw Call
+                    batch.setupUniforms(shader); // setup Uniforms
+                    glDrawArrays(GL_TRIANGLES, 0, elementCount); // Issue Draw Call
                 }
             });
         });

@@ -90,7 +90,7 @@ public strictfp class Matrix3 {
     }
 
     public static Matrix3 Translation(float x, float y) {
-        float[] elements = new float[16];
+        float[] elements = new float[9];
         elements[M00] = 1f;
         elements[M11] = 1f;
         elements[M22] = 1f;

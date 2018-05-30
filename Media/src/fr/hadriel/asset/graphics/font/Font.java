@@ -5,23 +5,24 @@ import fr.hadriel.asset.AssetManager;
 import fr.hadriel.asset.graphics.image.Image;
 import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.opengl.TextureFilter;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.*;
 
 public class Font extends Asset {
-    //According to Hiero generated Font
-    public static final int SPACING_H = 0;
-    public static final int SPACING_V = 1;
 
-    //According to Hiero generated Font
-    public static final int PADDING_TOP    = 0;
-    public static final int PADDING_RIGHT  = 1;
-    public static final int PADDING_BOTTOM = 2;
-    public static final int PADDING_LEFT   = 3;
+    //Smallest prefix overhead
+    public static final String PREFIX_INFO      = "info";
+    public static final String PREFIX_COMMON    = "common";
+    public static final String PREFIX_PAGE      = "sprite";
+    public static final String PREFIX_CHARACTER = "char";
+    public static final String PREFIX_KERNING   = "kerning";
+
 
     //Font data
     private FontInfo info;
@@ -34,44 +35,87 @@ public class Font extends Asset {
 
 
     protected void onLoad(AssetManager manager, Path path, ByteBuffer fileContent) {
-        characters = new HashMap<>();
-        pages = new HashMap<>();
-        kernings = new HashMap<>();
+        FontInfo info = new FontInfo();
+        FontCommon common = new FontCommon();
+        Map<Integer, Image> pages = new HashMap<>();
+        Map<Integer, FontChar> characters = new HashMap<>();
+        Map<Long, FontKerning> kernings = new HashMap<>();
 
-        byte[] data = new byte[fileContent.remaining()];
-        fileContent.get(data, 0, data.length);
+        byte[] buffer = new byte[fileContent.remaining()];
+        fileContent.get(buffer, 0, buffer.length);
 
-        //Parse the Font File Descriptor
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data)))) {
-            in.lines().forEach(line -> {
-                String[] words = line.trim().split("\\s+");
-                String[] args = Arrays.copyOfRange(words, 1, words.length);
-                switch (words[0]) {
-                    case "info":
-                        parseInfo(args);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buffer)))) {
+            LineParser parser = new LineParser();
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (line.startsWith("chars")) continue; // skip these lines
+                parser.parse(line);
+                switch (parser.prefix) {
+                    case PREFIX_INFO:
+                        info.face = parser.getString("face");
+                        info.size = parser.getInt("size");
+                        info.bold = parser.getBoolean("bold");
+                        info.italic = parser.getBoolean("italic");
+                        info.charset = parser.getString("charset");
+                        info.smooth = parser.getBoolean("smooth");
+                        info.unicode = parser.getBoolean("unicode");
+                        info.stretchH = parser.getInt("stretchH");
+                        info.aa   = parser.getInt("aa");
+                        int[] spacing = parser.getInt2("spacing");
+                        info.spacingH = spacing[0];
+                        info.spacingV = spacing[1];
+                        int[] padding = parser.getInt4("padding");
+                        info.paddingUp    = padding[0];
+                        info.paddingRight = padding[1];
+                        info.paddingDown  = padding[2];
+                        info.paddingLeft  = padding[3];
                         break;
-                    case "common":
-                        parseCommon(args);
+
+                    case PREFIX_COMMON:
+                        common.lineHeight = parser.getInt("lineHeight");
+                        common.base = parser.getInt("base");
+                        common.scaleW = parser.getInt("scaleW");
+                        common.scaleH = parser.getInt("scaleH");
+                        common.pages = parser.getInt("pages");
+                        common.packed = parser.getInt("packed");
                         break;
-                    case "char":
-                        parseChar(args);
+
+                    case PREFIX_PAGE:
+                        int id = parser.getInt("id");
+                        Image image = manager.load(path.resolveSibling(parser.getString("file")), Image.class);
+                        pages.put(id, image);
                         break;
-                    case "kerning":
-                        parseKerning(args);
+
+                    case PREFIX_CHARACTER:
+                        FontChar fc = new FontChar();
+                        fc.id = parser.getInt("id");
+                        fc.x  = parser.getInt("x");
+                        fc.y  = parser.getInt("y");
+                        fc.width = parser.getInt("width");
+                        fc.height = parser.getInt("height");
+                        fc.xoffset = parser.getInt("xoffset");
+                        fc.yoffset = parser.getInt("yoffset");
+                        fc.xadvance = parser.getInt("xadvance");
+                        fc.page = parser.getInt("page");
+                        fc.channel = parser.getInt("chnl");
+                        characters.put(fc.id, fc);
                         break;
-                    case "page":
-                        parsePage(args, path, manager);
+                    case PREFIX_KERNING:
+                        FontKerning fk = new FontKerning();
+                        fk.first = parser.getInt("first");
+                        fk.second = parser.getInt("second");
+                        fk.amount = parser.getInt("amount");
+                        kernings.put(COMBINE(fk.first, fk.second), fk);
                         break;
-                    case "chars":
-                    case "kernings":
-                        break; //ignore these lines
-                    default:
-                        System.err.println("WARNING : invalid line while parsing Font");
                 }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read the Font file", e);
-        }
+            }
+        } catch (IOException ignore) {}
+
+        this.info = info;
+        this.common = common;
+        this.pages = pages;
+        this.characters = characters;
+        this.kernings = kernings;
     }
 
     protected void onUnload(AssetManager manager) {
@@ -89,8 +133,12 @@ public class Font extends Asset {
     }
 
     public int kerning(int first, int second) {
-        FontKerning kerning = kernings.get(PAIR(first, second));
+        FontKerning kerning = kernings.get(COMBINE(first, second));
         return kerning != null ? kerning.amount : 0;
+    }
+
+    public Image page(int page) {
+        return pages.get(page);
     }
 
     public ImageRegion sprite(FontChar fc) {
@@ -110,133 +158,82 @@ public class Font extends Asset {
     }
 
     public Vec2 sizeof(String text, float size) {
-        int[] padding = info.padding;
-        int[] spacing = info.spacing;
-
         float scale = size / (float) info.size;
         float xoffset = 0;
-        float yoffset = common.lineHeight - padding[PADDING_TOP] - padding[PADDING_BOTTOM] - spacing[SPACING_V];
+        float yoffset = common.lineHeight - info.paddingUp - info.paddingDown - info.spacingV;
         char previousCharacter = 0;
         for (char character : text.toCharArray()) {
             FontChar fc = character(character);
-            xoffset += fc.xadvance + kerning(previousCharacter, character) - padding[PADDING_LEFT] - padding[PADDING_RIGHT] - spacing[SPACING_H];
+            xoffset += fc.xadvance + kerning(previousCharacter, character) - info.paddingLeft - info.paddingRight - info.spacingH;
             previousCharacter = character;
         }
         return new Vec2(xoffset * scale, yoffset * scale);
     }
 
-    // PARSING FUNCTIONS BELOW
-    private void parseInfo(String[] args) {
-        String face = null;
-        int aa = 0, size = 0, stretchH = 0;
-        boolean bold = false, italic = false, unicode = false, smooth = false;
-        int[] padding = new int[4];
-        int[] spacing = new int[2];
-
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("face".equals(key))      face = value;
-            if("size".equals(key))      size = Integer.parseInt(value);
-            if("bold".equals(key))      bold = "1".equals(value);
-            if("italic".equals(key))    italic = "1".equals(value);
-            if("unicode".equals(key))   unicode = "1".equals(value);
-            if("smooth".equals(key))    smooth = "1".equals(value);
-            if("stretchH".equals(key))  stretchH = Integer.parseInt(value);
-            if("aa".equals(key))        aa = Integer.parseInt(value);
-            if("padding".equals(key))   padding = new int[] {
-                    Integer.parseInt(value.split(",")[0]),
-                    Integer.parseInt(value.split(",")[1]),
-                    Integer.parseInt(value.split(",")[2]),
-                    Integer.parseInt(value.split(",")[3])
-            };
-            if("spacing".equals(key))   spacing = new int[] {
-                    Integer.parseInt(value.split(",")[0]),
-                    Integer.parseInt(value.split(",")[1])
-            };
-        }
-        info = new FontInfo(face, size, bold, italic, null, unicode, stretchH, smooth, aa, padding, spacing, 1);
-    }
-
-    private void parseCommon(String[] args) {
-        int lineHeight = 0, base = 0, scaleW = 0, scaleH = 0, pages = 0;
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("lineHeight".equals(key))    lineHeight = Integer.parseInt(value);
-            if("base".equals(key))          base = Integer.parseInt(value);
-            if("scaleW".equals(key))        scaleW = Integer.parseInt(value);
-            if("scaleH".equals(key))        scaleH = Integer.parseInt(value);
-            if("pages".equals(key))         pages = Integer.parseInt(value);
-        }
-        common = new FontCommon(lineHeight, base, scaleW, scaleH, pages);
-    }
-
-    private void parsePage(String[] args, Path path, AssetManager manager) {
-        int id = 0;
-        String file = null;
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("id".equals(key))    id = Integer.parseInt(value);
-            if("file".equals(key))  file = value.substring(1, value.length() - 1);
-        }
-        Image image = manager.load(path.resolveSibling(file), Image.class);
-        image.texture().setFilter(TextureFilter.LINEAR, TextureFilter.LINEAR);
-        pages.put(id, image);
-    }
-
-    private void parseChar(String[] args) {
-        int id = 0, page = 0, x = 0, y = 0, xoffset = 0, yoffset = 0, width = 0, height = 0, xadvance = 0;
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("id".equals(key))        id = Integer.parseInt(value);
-            if("page".equals(key))      page = Integer.parseInt(value);
-            if("x".equals(key))         x = Integer.parseInt(value);
-            if("y".equals(key))         y = Integer.parseInt(value);
-            if("xoffset".equals(key))   xoffset = Integer.parseInt(value);
-            if("yoffset".equals(key))   yoffset = Integer.parseInt(value);
-            if("width".equals(key))     width = Integer.parseInt(value);
-            if("height".equals(key))    height = Integer.parseInt(value);
-            if("xadvance".equals(key))  xadvance = Integer.parseInt(value);
-        }
-        characters.put(id, new FontChar(id, page, x, y, width, height, xoffset, yoffset, xadvance));
-    }
-
-    private void parseKerning(String[] args) {
-        int first = 0, second = 0, amount = 0;
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("first".equals(key))     first = Integer.parseInt(value);
-            if("second".equals(key))    second = Integer.parseInt(value);
-            if("amount".equals(key))    amount = Integer.parseInt(value);
-        }
-        kernings.put(PAIR(first, second), new FontKerning(first, second, amount));
-    }
-
-    // UTILITY FUNCTIONS
-
-    public static Vec2 getTextSize(String text, Font font, float size) {
-        int height = font.common.lineHeight;
-        int width = 0;
-        char previous = 0;
-        for(char c : text.toCharArray()) {
-            width += font.character(c).xadvance;
-            width += font.kerning(previous, c);
-            previous = c;
-        }
-        float scale = size / font.info.size;
-        return new Vec2(width * scale, height * scale);
-    }
-
-    public static long PAIR(int first, int second) {
+    private static long COMBINE(int first, int second) {
         return ((first & 0xFFFFL) << 32) | (second & 0xFFFFL);
     }
+
+    private static final class LineParser {
+        private String prefix;
+        private final Map<String, String> values;
+
+        public LineParser() {
+            this.values = new HashMap<>();
+        }
+
+        public void parse(String line) {
+            int first_space = line.indexOf(" ");
+            prefix = line.substring(0, first_space);
+            line = line.substring(first_space + 1);
+            byte[] buffer = line.getBytes();
+            boolean quoted = false;
+            for (int i = 0; i < buffer.length; i++) {
+                if (buffer[i] == '"')
+                    quoted = !quoted;
+                if (buffer[i] == ' ' && !quoted)
+                    buffer[i] = '\n';
+            }
+            line = new String(buffer);
+            for (String pair : line.split("\n")) {
+                if (pair.contains("=")) {
+                    String[] kv = pair.split("=");
+                    if (kv[1].startsWith("\""))
+                        kv[1] = kv[1].substring(1, kv[1].length() - 1);
+                    values.put(kv[0], kv[1]);
+                }
+            }
+        }
+
+        public String getString(String key) {
+            return values.get(key);
+        }
+
+        public int getInt(String key) {
+            return Integer.parseInt(values.get(key));
+        }
+
+        public boolean getBoolean(String key) {
+            return Boolean.parseBoolean(values.get(key));
+        }
+
+        public int[] getInt2(String key) {
+            String[] array = values.get(key).split(",");
+            return new int[] {
+                    Integer.parseInt(array[0]),
+                    Integer.parseInt(array[1])
+            };
+        }
+
+        public int[] getInt4(String key) {
+            String[] array = values.get(key).split(",");
+            return new int[] {
+                    Integer.parseInt(array[0]),
+                    Integer.parseInt(array[1]),
+                    Integer.parseInt(array[2]),
+                    Integer.parseInt(array[3])
+            };
+        }
+    }
+
 }

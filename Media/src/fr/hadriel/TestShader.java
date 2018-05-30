@@ -42,7 +42,7 @@ public class TestShader extends Application {
 
     protected void update(float delta) {
         shader.bind();
-        shader.uniform("u_color", new Vec4(1, 0, 0, 1));
+        shader.setUniform("u_color", new Vec4(1, 0, 0, 1));
         vertexArray.bind();
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vertexArray.getMaxElementCount());
     }

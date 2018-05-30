@@ -26,7 +26,7 @@ public class Texture2D {
         this.handle = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, handle);
 
-        //Texture2D io setup (migth be empty)
+        //Texture2D io setupUniforms (migth be empty)
         if(pixels == null)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         else

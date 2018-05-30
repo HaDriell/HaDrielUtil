@@ -1,7 +1,6 @@
 package fr.hadriel.g2d.commandbuffer;
 
 import fr.hadriel.opengl.shader.Shader;
-import fr.hadriel.opengl.shader.UniformBuffer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,14 +25,6 @@ public class CommandBuffer implements Iterable<CommandBatchList> {
 
     public void clear() {
         commandBatchLists.clear();
-    }
-
-    public void submit(Shader shader, UniformBuffer uniformBuffer, List<Command> commands) {
-        submit(shader, new CommandBatch(uniformBuffer, commands));
-    }
-
-    public void submit(Shader shader, UniformBuffer uniformBuffer, Command... commands) {
-        submit(shader, new CommandBatch(uniformBuffer, commands));
     }
 
     public void submit(Shader shader, CommandBatch batch) {

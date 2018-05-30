@@ -1,41 +1,48 @@
 package fr.hadriel.g2d.commandbuffer;
 
+import fr.hadriel.math.*;
+import fr.hadriel.opengl.Texture2D;
 import fr.hadriel.opengl.shader.Shader;
-import fr.hadriel.opengl.shader.UniformBuffer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 public class CommandBatch implements Iterable<Command> {
 
-    private final UniformBuffer uniformBuffer;
+    private final UniformBuffer uniforms;
     private final List<Command> commands;
 
-    public CommandBatch(Shader shader, Command... commands) {
-        this(shader.createUniformBuffer(), commands);
-    }
-
-    public CommandBatch(UniformBuffer uniformBuffer, Command... commands) {
-        this(uniformBuffer, Arrays.asList(commands));
-    }
-
-    public CommandBatch(Shader shader, List<Command> commands) {
-        this(shader.createUniformBuffer(), commands);
-    }
-
-    public CommandBatch(UniformBuffer uniformBuffer, List<Command> commands) {
-        this.uniformBuffer = uniformBuffer;
-        this.commands = new ArrayList<>(commands);
+    public CommandBatch() {
+        this.uniforms = new UniformBuffer();
+        this.commands = new ArrayList<>();
     }
 
     public void add(Command command) {
         commands.add(command);
     }
 
+    public void add(Matrix3 transform, float x, float y, float width, float height) {
+        add(transform, x, y, width, height, Vec4.XYZW);
+    }
+
+    public void add(Matrix3 transform, float x, float y, float width, float height, Vec4 color) {
+        add(new Command(transform, x, y, width, height, color));
+    }
+
+    public void setupUniforms(Shader shader) { uniforms.setupUniforms(shader); }
+    public void removeUniform(String name) { uniforms.removeUniform(name); }
+    public void setUniform(String name, int value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, float value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, Vec2 value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, Vec3 value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, Vec4 value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, Matrix3 value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, Matrix4 value) { uniforms.setUniform(name, value); }
+    public void setUniform(String name, Texture2D value) { uniforms.setUniform(name, value); }
+
     public boolean isCompatible(CommandBatch batch) {
-        return this != batch && batch.uniformBuffer.equals(uniformBuffer);
+        return this != batch && batch.uniforms.equals(uniforms);
     }
 
     public boolean merge(CommandBatch batch) {
@@ -44,12 +51,8 @@ public class CommandBatch implements Iterable<Command> {
         return true;
     }
 
-    public void uniform(String name, Object value) {
-        uniformBuffer.uniform(name, value);
-    }
-
-    public void setUniforms(Shader shader) {
-        uniformBuffer.setupUniforms(shader);
+    public int size() {
+        return commands.size();
     }
 
     public Iterator<Command> iterator() {

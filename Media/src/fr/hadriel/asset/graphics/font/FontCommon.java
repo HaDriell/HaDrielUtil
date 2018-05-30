@@ -5,35 +5,26 @@ public class FontCommon {
     /**
      * distance in pixels between two lines
      */
-    public final int lineHeight;
+    public int lineHeight;
     /**
      * distance from the absolute top of the baseline
      */
-    public final int base;
+    public int base;
     /**
      * render texture2D width
      */
-    public final int scaleW;
+    public int scaleW;
     /**
      * render texture2D height
      */
-    public final int scaleH;
+    public int scaleH;
     /**
      * number of pages
      */
-    public final int pages;
+    public int pages;
 
-    public FontCommon(int lineHeight, int base, int scaleW, int scaleH, int pages) {
-        this.lineHeight = lineHeight;
-        this.base = base;
-        this.scaleW = scaleW;
-        this.scaleH = scaleH;
-        this.pages = pages;
-    }
-
-    // packing is not supported in this implementation
-
-    public String toString() {
-        return String.format("lineHeight=%d base=%d scaleW=%d scaleH=%d pages=%d", lineHeight, base, scaleW, scaleH, pages);
-    }
+    /**
+     * switch if packed
+     */
+    public int packed;
 }
