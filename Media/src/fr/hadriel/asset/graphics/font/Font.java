@@ -82,7 +82,7 @@ public class Font extends Asset {
 
                     case PREFIX_PAGE:
                         int id = parser.getInt("id");
-                        Image image = manager.load(path.resolveSibling(parser.getString("file")), Image.class);
+                        Image image = manager.load(Image.class, path.resolveSibling(parser.getString("file")));
                         pages.put(id, image);
                         break;
 
@@ -100,6 +100,7 @@ public class Font extends Asset {
                         fc.channel = parser.getInt("chnl");
                         characters.put(fc.id, fc);
                         break;
+
                     case PREFIX_KERNING:
                         FontKerning fk = new FontKerning();
                         fk.first = parser.getInt("first");

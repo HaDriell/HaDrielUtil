@@ -56,7 +56,7 @@ public class Animation extends Asset {
             String value = kvpair.substring(i + 1, kvpair.length());
             if("texture".equals(key)) file = value.substring(1, value.length() - 1); // remove the double-quotes
         }
-        image = manager.load(path.resolveSibling(file), Image.class);
+        image = manager.load(Image.class, path.resolveSibling(file));
     }
 
     private void parseFrames(String[] args) {

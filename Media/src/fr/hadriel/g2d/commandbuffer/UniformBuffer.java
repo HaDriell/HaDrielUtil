@@ -1,7 +1,7 @@
 package fr.hadriel.g2d.commandbuffer;
 
 import fr.hadriel.math.*;
-import fr.hadriel.opengl.Texture2D;
+import fr.hadriel.opengl.texture.Texture2D;
 import fr.hadriel.opengl.shader.GLSLType;
 import fr.hadriel.opengl.shader.Shader;
 

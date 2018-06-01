@@ -12,19 +12,9 @@ public final class Command {
     public final Vec4 color;
     public final Vec2[] uv;
 
-    public Command(Matrix3 transform, float x, float y, float with, float height) {
-        this(transform, new Vec2(x, y), new Vec2(with, height));
-    }
+    public final int drawOrder;
 
-    public Command(Matrix3 transform, Vec2 position, Vec2 size) {
-        this(transform, position, size, Vec4.XYZW);
-    }
-
-    public Command(Matrix3 transform, float x, float y, float with, float height, Vec4 color) {
-        this(transform, new Vec2(x, y), new Vec2(with, height), color);
-    }
-
-    public Command(Matrix3 transform, Vec2 position, Vec2 size, Vec4 color) {
+    public Command(Matrix3 transform, Vec2 position, Vec2 size, Vec4 color, int drawOrder) {
         this.transform = transform;
         this.position = position;
         this.size = size;
@@ -35,5 +25,6 @@ public final class Command {
                 Vec2.XY,
                 Vec2.Y
         };
+        this.drawOrder = drawOrder;
     }
 }

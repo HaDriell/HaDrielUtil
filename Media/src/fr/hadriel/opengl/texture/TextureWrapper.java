@@ -1,4 +1,4 @@
-package fr.hadriel.opengl;
+package fr.hadriel.opengl.texture;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;

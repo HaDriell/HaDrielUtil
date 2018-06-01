@@ -1,4 +1,4 @@
-package fr.hadriel.opengl;
+package fr.hadriel.opengl.texture;
 
 
 
@@ -9,8 +9,6 @@ import static org.lwjgl.opengl.GL30.*;
  * Created by glathuiliere on 29/11/2016.
  */
 public class Texture2D {
-
-    public static boolean ENABLE_MIPMAP = true;
 
     public final int handle;
     public final int width;
@@ -31,8 +29,7 @@ public class Texture2D {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         else
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        if(ENABLE_MIPMAP)
-            glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateMipmap(GL_TEXTURE_2D); // always Generate mipmaps
     }
 
     public void setWrapping(TextureWrapper xWrapper, TextureWrapper yWrapper) {
@@ -45,10 +42,8 @@ public class Texture2D {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag.value);
     }
 
-    public void setData(int x, int y, int width, int  height, int[] pixels) {
+    public void write(int x, int y, int width, int  height, int[] pixels) {
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        if(ENABLE_MIPMAP)
-            glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     public void bind() {

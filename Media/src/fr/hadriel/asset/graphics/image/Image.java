@@ -2,8 +2,7 @@ package fr.hadriel.asset.graphics.image;
 
 import fr.hadriel.asset.Asset;
 import fr.hadriel.asset.AssetManager;
-import fr.hadriel.math.Vec2;
-import fr.hadriel.opengl.Texture2D;
+import fr.hadriel.opengl.texture.Texture2D;
 
 import java.nio.ByteBuffer;
 import java.nio.file.Path;

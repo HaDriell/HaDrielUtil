@@ -9,61 +9,47 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class AssetManager {
-    private static final Logger logger = Log.getLogger("Asset Manager");
+    private static final Logger logger = Log.getLogger("IResource ResourceManager");
 
-    private final Map<Path, Asset> assets;
-    private final Map<String, Asset> namedAssets;
+    private final Map<String, Asset> assets;
 
     public AssetManager() {
         this.assets = new HashMap<>();
-        this.namedAssets = new HashMap<>();
     }
 
-    public <A extends Asset> A getByName(String name, Class<A> type) {
-        Asset asset = namedAssets.get(name);
-        return type.isInstance(asset) ? type.cast(asset) : null;
+    public <A extends Asset> A get(Class<A> type, String id) {
+        return type.cast(assets.get(id)); // checks removed. The dev has to master his Assets typing for god's sake !
     }
 
-    public <A extends Asset> A getByPath(Path path, Class<A> type) {
-        Asset asset = assets.get(path);
-        return type.isInstance(asset) ? type.cast(asset) : null;
-    }
-
-    public <A extends Asset> A load(String path, Class<A> type) { return load(Paths.get(path), null, type); }
-    public <A extends Asset> A load(String path, String name, Class<A> type) { return load(Paths.get(path), name, type); }
-    public <A extends Asset> A load(Path path, Class<A> type) { return load(path, null, type); }
-    public <A extends Asset> A load(Path path, String name, Class<A> type) {
-        A asset;
-        if (isAssetLoaded(path)) {
-            asset = getByPath(path, type);
-            if (asset == null)
-                throw new RuntimeException(String.format("Invalid Asset type %s for Asset %s", type.getSimpleName(), path.toString()));
-            logger.info(String.format("%s at '%s' already loaded. Skipping load", type.getSimpleName(), path.toString()));
-        } else {
-            try {
-                asset = type.newInstance(); // instanciate asset
-                asset.load(this, path); // load asset
-                assets.put(path, asset); // reference only on load success
-            } catch (InstantiationException e) {
-                throw new RuntimeException("Unable to instanciate Asset (Missing argument-less Constructor ?).", e);
-            } catch (Exception e) {
-                throw new RuntimeException("Error while loading Asset", e);
-            }
-            logger.info(String.format("%s loaded from '%s'", type.getSimpleName(), path.toString()));
+    //TODO : include loadInternal that handles packed resources loading. (and a specific path-to-id generation)
+    //Load and aliases
+    public <A extends Asset> A load(Class<A> type, String path) { return load(type, Paths.get(path), null); }
+    public <A extends Asset> A load(Class<A> type, String path, String id) { return load(type, Paths.get(path), id); }
+    public <A extends Asset> A load(Class<A> type, Path path) { return load(type, path, null); }
+    public <A extends Asset> A load(Class<A> type, Path path, String id) {
+        //Custom path to ID convertion.
+        if (id == null) {
+            id = path.toString().replace('\\', '/').replace('/','.');
+        }
+        //Check reference colisions
+        if (assets.containsKey(id)) {
+            logger.info(String.format("Reference collision: Asset %s is already loaded !", id));
         }
 
-        //Add a reference (if not already defined) to the asset map
-        // TODO : log naming collisions
-        if (name != null) {
-            namedAssets.putIfAbsent(name, asset);
+        try {
+            A asset = type.newInstance();
+            asset.load(path);
+            assets.put(id, asset);
+            logger.info(String.format("%s %s loaded from '%s'", type.getSimpleName(), id, path.toString()));
+            return asset;
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.severe(String.format("Failed to load %s from %s", type.getSimpleName(), path.toString()));
+            throw new RuntimeException("Default Constructor is required !", e);
         }
-        return asset;
     }
 
-    //TODO : unload correctly assets
     public void unload(Asset asset) {
-        if (asset == null || !asset.isLoaded())
-            return;
+        asset.unload();
     }
 
     public boolean isAssetLoaded(Path path) {

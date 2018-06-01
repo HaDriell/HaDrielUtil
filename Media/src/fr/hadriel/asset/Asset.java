@@ -8,9 +8,9 @@ import java.nio.channels.FileChannel;
 import java.nio.file.*;
 
 public abstract class Asset {
-    public static final int CREATED     = 0b001;
-    public static final int LOADED      = 0b010;
-    public static final int UNLOADED    = 0b100;
+    public static final int CREATED  = 0b001;
+    public static final int LOADED   = 0b010;
+    public static final int UNLOADED = 0b100;
 
     private int state;
 
@@ -31,25 +31,25 @@ public abstract class Asset {
     }
 
     //package private
-    void load(AssetManager manager, Path path) {
+    void load(Path path) {
         if(state != CREATED) return; // ignore bad call
         try {
             FileChannel channel = new RandomAccessFile(path.toFile(), "r").getChannel();
             MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, channel.position(), channel.size());
-            onLoad(manager, path, buffer);
+            onLoad(path, buffer);
             state = LOADED;
         } catch (IOException e) {
-            throw new RuntimeException("Unable to load Asset:" + e.getMessage());
+            throw new RuntimeException("Failed to load Asset:" + e.getMessage());
         }
     }
 
     //package private
-    void unload(AssetManager manager) {
+    void unload() {
         if(state != LOADED) return; // ignore bad call
-        onUnload(manager);
+        onUnload();
         state = UNLOADED;
     }
 
-    protected abstract void onLoad(AssetManager manager, Path path, ByteBuffer fileContent);
-    protected abstract void onUnload(AssetManager manager);
+    protected abstract void onLoad(Path path, ByteBuffer fileContent);
+    protected abstract void onUnload();
 }

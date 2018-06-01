@@ -2,6 +2,7 @@ package fr.hadriel.opengl;
 
 
 import fr.hadriel.math.Vec2;
+import fr.hadriel.opengl.texture.Texture2D;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.*;

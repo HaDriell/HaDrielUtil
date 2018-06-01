@@ -1,6 +1,5 @@
 package fr.hadriel.g2d;
 
-import fr.hadriel.asset.AssetManager;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.asset.graphics.image.ImageRegion;
 import fr.hadriel.math.Matrix3;
@@ -11,10 +10,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Graphics {
 
-    public static final String DEFAULT_FONT = "Graphics.default.Font";
-    public static final String DEFAULT_SPRITE_SHADER = "Graphics.default.SpriteShader";
-    public static final String DEFAULT_SDF_SHADER = "Graphics.default.SDFShader";
-
     //Default Shaders
     private final Font defaultFont;
     private final Shader defaultSpriteShader;
@@ -23,7 +18,7 @@ public class Graphics {
     private Renderer renderer;
     private MatrixStack matrixStack;
 
-    public Graphics(AssetManager manager) {
+    public Graphics() {
         this.renderer = new Renderer();
         this.defaultFont = new Font();
         this.defaultSpriteShader = Shader.GLSL(getClass().getResourceAsStream("defaults/sprite_shader.glsl"));

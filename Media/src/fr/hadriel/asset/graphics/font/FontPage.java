@@ -1,8 +1,8 @@
 package fr.hadriel.asset.graphics.font;
 
 import fr.hadriel.asset.graphics.image.ImageFile;
-import fr.hadriel.opengl.Texture2D;
-import fr.hadriel.opengl.TextureFilter;
+import fr.hadriel.opengl.texture.Texture2D;
+import fr.hadriel.opengl.texture.TextureFilter;
 
 public class FontPage {
     public final int id;

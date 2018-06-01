@@ -17,7 +17,7 @@ public class TestAudio2D extends Application {
     float age;
 
     protected void start(String[] args) {
-        sound = manager.load("Media/res/wilhelm.ogg", Sound.class);
+        sound = manager.load(Sound.class, "Media/res/wilhelm.ogg");
         Audio2D.setScreenDistance(2);
         source = new Source2D();
         timer = new Timer();

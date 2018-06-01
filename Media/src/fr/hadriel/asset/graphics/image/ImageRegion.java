@@ -1,6 +1,6 @@
 package fr.hadriel.asset.graphics.image;
 
-import fr.hadriel.opengl.Texture2D;
+import fr.hadriel.opengl.texture.Texture2D;
 
 public class ImageRegion {
 
