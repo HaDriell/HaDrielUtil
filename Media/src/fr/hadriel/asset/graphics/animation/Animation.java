@@ -1,89 +1,72 @@
 package fr.hadriel.asset.graphics.animation;
 
 import fr.hadriel.asset.Asset;
-import fr.hadriel.asset.AssetManager;
-import fr.hadriel.asset.graphics.image.Image;
+import fr.hadriel.io.ImageFile;
+import fr.hadriel.opengl.texture.Texture2D;
+import fr.hadriel.opengl.texture.TextureFormat;
+import fr.hadriel.opengl.texture.TextureRegion;
+import fr.hadriel.util.LineParser;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public class Animation extends Asset {
 
-    private Image image;
-    private AnimationFrame[] frames;
+    private static final String PREFIX_INFO  = "info";
+    private static final String PREFIX_FRAME = "frame";
+    private static final String PREFIX_FRAMES = "frames";
 
-    protected void onLoad(AssetManager manager, Path path, ByteBuffer fileContent) {
-        image = null;
-        frames = null;
+    private Texture2D texture;
+    private TextureRegion[] frames;
+
+    protected void onLoad(Path path, ByteBuffer fileContent) {
+        Texture2D texture = null;
+        TextureRegion[] frames = null;
 
         byte[] data = new byte[fileContent.remaining()];
         fileContent.get(data, 0, data.length);
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data)))) {
-            in.lines().forEach(line -> {
-                String[] words = line.trim().split("\\s+");
-                String[] args = Arrays.copyOfRange(words, 1, words.length);
-                switch (words[0]) {
-                    case "info":
-                        parseInfo(args, path, manager);
+            LineParser parser = new LineParser();
+            String line;
+            while ((line = in.readLine()) != null) {
+                parser.parse(line);
+                switch (parser.getPrefix()) {
+                    case PREFIX_INFO:
+                        String file = parser.getString("texture");
+                        ImageFile image = new ImageFile(path.resolveSibling(file).toString());
+                        texture = new Texture2D();
+                        texture.bind();
+                        texture.setData(image.width, image.height, image.pixels, TextureFormat.RGBA8);
                         break;
-                    case "frames":
-                        parseFrames(args);
+
+                    case PREFIX_FRAMES:
+                        frames = new TextureRegion[parser.getInt("count")];
                         break;
-                    case "frame":
-                        parseFrame(args);
+
+                    case PREFIX_FRAME:
+                        TextureRegion region = texture.region(
+                                parser.getInt("x"),
+                                parser.getInt("y"),
+                                parser.getInt("width"),
+                                parser.getInt("hegiht"));
+                        frames[parser.getInt("id")] = region;
                         break;
-                    default:
-                        throw new RuntimeException("Invalid line (" + line + ")");
                 }
-            });
+            }
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the Animation file", e);
         }
+        this.texture = texture;
+        this.frames = frames;
     }
 
-    protected void onUnload(AssetManager manager) {
-        manager.unload(image);
+    public TextureRegion frame(int id) {
+        return frames[id];
     }
 
-    private void parseInfo(String[] args, Path path, AssetManager manager) {
-        String file = null;
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("texture".equals(key)) file = value.substring(1, value.length() - 1); // remove the double-quotes
-        }
-        image = manager.load(Image.class, path.resolveSibling(file));
-    }
-
-    private void parseFrames(String[] args) {
-        int count = 0;
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("count".equals(key)) count = Integer.parseInt(value);
-        }
-        frames = new AnimationFrame[count];
-    }
-
-    private void parseFrame(String[] args) {
-        int id = 0;
-        int x = 0, y = 0, width = 0, height = 0;
-
-        for(String kvpair : args) {
-            int i = kvpair.indexOf("=");
-            String key = kvpair.substring(0, i);
-            String value = kvpair.substring(i + 1, kvpair.length());
-            if("id".equals(key))        id = Integer.parseInt(value);
-            if("x".equals(key))         x = Integer.parseInt(value);
-            if("y".equals(key))         y = Integer.parseInt(value);
-            if("width".equals(key))     width = Integer.parseInt(value);
-            if("height".equals(key))    height = Integer.parseInt(value);
-        }
-        frames[id] = new AnimationFrame(id, x, y, width, height);
+    protected void onUnload() {
+        texture.destroy();
     }
 }

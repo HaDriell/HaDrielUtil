@@ -1,4 +1,4 @@
-package fr.hadriel.asset.audio.wav;
+package fr.hadriel.io;
 
 import fr.hadriel.util.IOUtils;
 

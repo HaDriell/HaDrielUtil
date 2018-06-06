@@ -1,9 +1,8 @@
 package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
-import fr.hadriel.asset.audio.Audio2D;
-import fr.hadriel.asset.graphics.Graphic2D;
 import fr.hadriel.asset.graphics.WindowHint;
+import fr.hadriel.g2d.Renderer;
 import fr.hadriel.util.Timer;
 import fr.hadriel.util.logging.Log;
 
@@ -12,11 +11,12 @@ import java.util.logging.Logger;
 public abstract class Application {
     protected static final Logger logger = Log.getLogger(Application.class);
 
-    private static final int LAUNCHING = 0x1;
-    private static final int UPDATING = 0x2;
-    private static final int TERMINATING = 0x3;
+    private static final int LAUNCHING   = 0b001;
+    private static final int UPDATING    = 0b010;
+    private static final int TERMINATING = 0b100;
 
     private long applicationState;
+
     protected final AssetManager manager;
 
     protected Application() {
@@ -63,7 +63,8 @@ public abstract class Application {
             return;
         }
         Graphic2D.makeContextCurrent();
-        update(delta);
+        Renderer renderer = Graphic2D.getRenderer();
+        update(renderer, delta);
         Graphic2D.update();
     }
 
@@ -79,7 +80,7 @@ public abstract class Application {
     }
 
     protected abstract void start(String[] args);
-    protected abstract void update(float delta);
+    protected abstract void update(Renderer renderer, float delta);
     protected abstract void terminate();
 
 

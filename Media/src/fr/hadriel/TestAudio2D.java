@@ -1,9 +1,10 @@
 package fr.hadriel;
 
 import fr.hadriel.application.Application;
-import fr.hadriel.asset.audio.Audio2D;
+import fr.hadriel.application.Audio2D;
 import fr.hadriel.asset.audio.Sound;
 import fr.hadriel.asset.audio.Source2D;
+import fr.hadriel.g2d.Renderer;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.util.Timer;
 
@@ -24,7 +25,7 @@ public class TestAudio2D extends Application {
         timer.reset();
     }
 
-    protected void update(float delta) {
+    protected void update(Renderer renderer, float delta) {
         age += delta;
         if (timer.elapsed() > 1f) {
             timer.reset();

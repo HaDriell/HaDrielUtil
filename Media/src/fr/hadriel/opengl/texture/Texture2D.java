@@ -11,39 +11,79 @@ import static org.lwjgl.opengl.GL30.*;
 public class Texture2D {
 
     public final int handle;
-    public final int width;
-    public final int height;
 
-    public Texture2D(int width, int height) {
-        this(width, height, null);
+    private int width;
+    private int height;
+    private TextureFormat format;
+    private TextureFilter minFilter;
+    private TextureFilter magFilter;
+    private TextureWrapper xWrapper;
+    private TextureWrapper yWrapper;
+
+    public Texture2D() {
+        this.handle = glGenTextures();
     }
 
-    public Texture2D(int width, int height, int[] pixels) {
-        this.width = width;
-        this.height = height;
-        this.handle = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, handle);
+    public int width() {
+        return width;
+    }
 
-        //Texture2D io setupUniforms (migth be empty)
-        if(pixels == null)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-        else
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-        glGenerateMipmap(GL_TEXTURE_2D); // always Generate mipmaps
+    public int height() {
+        return height;
+    }
+
+    public TextureFormat format() {
+        return format;
     }
 
     public void setWrapping(TextureWrapper xWrapper, TextureWrapper yWrapper) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, xWrapper.value);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, yWrapper.value);
+        if (this.xWrapper != xWrapper || this.yWrapper != yWrapper) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, xWrapper.value);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, yWrapper.value);
+            this.xWrapper = xWrapper;
+            this.yWrapper = yWrapper;
+        }
     }
 
-    public void setFilter(TextureFilter min, TextureFilter mag) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min.value);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag.value);
+    public void setFilter(TextureFilter minFilter, TextureFilter magFilter) {
+        if (this.minFilter != minFilter || this.magFilter != magFilter) {
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter.value);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter.value);
+            this.minFilter = minFilter;
+            this.magFilter = magFilter;
+        }
+    }
+
+    public void setData(int width, int height) {
+        setData(width, height, TextureFormat.RGBA8);
+    }
+
+    public void setData(int width, int height, TextureFormat format) {
+        glTexImage2D(GL_TEXTURE_2D, 0, format.value, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glGenerateMipmap(GL_TEXTURE_2D); // always Generate mipmaps
+        this.width = width;
+        this.height = height;
+        this.format = format;
+    }
+
+    public void setData(int width, int height, int[] pixels) {
+        setData(width, height, pixels, TextureFormat.RGBA8);
+    }
+
+    public void setData(int width, int height, int[] pixels, TextureFormat format) {
+        glTexImage2D(GL_TEXTURE_2D, 0, format.value, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        glGenerateMipmap(GL_TEXTURE_2D); // always Generate mipmaps
+        this.width = width;
+        this.height = height;
+        this.format = format;
     }
 
     public void write(int x, int y, int width, int  height, int[] pixels) {
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    }
+
+    public TextureRegion region(int x, int y, int width, int height) {
+        return new TextureRegion(this, x, y, width, height);
     }
 
     public void bind() {

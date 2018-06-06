@@ -1,4 +1,4 @@
-package fr.hadriel.asset.graphics.image;
+package fr.hadriel.io;
 
 import org.lwjgl.system.MemoryStack;
 

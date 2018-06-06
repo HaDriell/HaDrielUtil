@@ -1,4 +1,4 @@
-package fr.hadriel.asset.audio.ogg;
+package fr.hadriel.io;
 
 import org.lwjgl.system.MemoryStack;
 

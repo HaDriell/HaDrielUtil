@@ -1,10 +1,12 @@
 package fr.hadriel.asset.graphics.font;
 
 import fr.hadriel.asset.Asset;
-import fr.hadriel.asset.AssetManager;
-import fr.hadriel.asset.graphics.image.Image;
-import fr.hadriel.asset.graphics.image.ImageRegion;
+import fr.hadriel.io.ImageFile;
+import fr.hadriel.opengl.texture.TextureFormat;
+import fr.hadriel.opengl.texture.TextureRegion;
 import fr.hadriel.math.Vec2;
+import fr.hadriel.opengl.texture.Texture2D;
+import fr.hadriel.util.LineParser;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -19,25 +21,25 @@ public class Font extends Asset {
     //Smallest prefix overhead
     public static final String PREFIX_INFO      = "info";
     public static final String PREFIX_COMMON    = "common";
-    public static final String PREFIX_PAGE      = "sprite";
+    public static final String PREFIX_PAGE      = "page";
     public static final String PREFIX_CHARACTER = "char";
     public static final String PREFIX_KERNING   = "kerning";
 
 
-    //Font data
+    //FontFile data
     private FontInfo info;
     private FontCommon common;
-    private Map<Integer, Image> pages;
+    private Map<Integer, Texture2D> pages;
     private Map<Integer, FontChar> characters;
     private Map<Long, FontKerning> kernings;
 
     private FontChar unknownCharacter;
 
 
-    protected void onLoad(AssetManager manager, Path path, ByteBuffer fileContent) {
+    protected void onLoad(Path path, ByteBuffer fileContent) {
         FontInfo info = new FontInfo();
         FontCommon common = new FontCommon();
-        Map<Integer, Image> pages = new HashMap<>();
+        Map<Integer, Texture2D> pages = new HashMap<>();
         Map<Integer, FontChar> characters = new HashMap<>();
         Map<Long, FontKerning> kernings = new HashMap<>();
 
@@ -46,11 +48,11 @@ public class Font extends Asset {
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buffer)))) {
             LineParser parser = new LineParser();
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (line.startsWith("chars")) continue; // skip these lines
+            in.lines().forEach(line -> {
+                if (line.startsWith("chars")) return; // unused line
+
                 parser.parse(line);
-                switch (parser.prefix) {
+                switch (parser.getPrefix()) {
                     case PREFIX_INFO:
                         info.face = parser.getString("face");
                         info.size = parser.getInt("size");
@@ -82,8 +84,11 @@ public class Font extends Asset {
 
                     case PREFIX_PAGE:
                         int id = parser.getInt("id");
-                        Image image = manager.load(Image.class, path.resolveSibling(parser.getString("file")));
-                        pages.put(id, image);
+                        ImageFile image = new ImageFile(path.resolveSibling(parser.getString("file")).toString());
+                        Texture2D texture = new Texture2D();
+                        texture.bind();
+                        texture.setData(image.width, image.height, image.pixels, TextureFormat.RGBA8);
+                        pages.put(id, texture);
                         break;
 
                     case PREFIX_CHARACTER:
@@ -109,7 +114,7 @@ public class Font extends Asset {
                         kernings.put(COMBINE(fk.first, fk.second), fk);
                         break;
                 }
-            }
+            });
         } catch (IOException ignore) {}
 
         this.info = info;
@@ -119,8 +124,9 @@ public class Font extends Asset {
         this.kernings = kernings;
     }
 
-    protected void onUnload(AssetManager manager) {
-        pages.forEach((k, v) -> manager.unload(v)); // unload all pages loaded by that Font
+    protected void onUnload() {
+        pages.forEach((k, v) -> v.destroy());
+        pages.clear();
     }
 
     // PUBLIC API
@@ -138,13 +144,14 @@ public class Font extends Asset {
         return kerning != null ? kerning.amount : 0;
     }
 
-    public Image page(int page) {
+    public Texture2D page(int page) {
         return pages.get(page);
     }
 
-    public ImageRegion sprite(FontChar fc) {
-        Image page = pages.get(fc.page);
-        return page == null ? null : page.getRegion(fc.x, fc.y, fc.width, fc.height);
+    public TextureRegion sprite(FontChar fc) {
+        Texture2D page = pages.get(fc.page);
+        if (page == null) return null;
+        return new TextureRegion(page, fc.x, fc.y, fc.width, fc.height);
     }
 
     public FontChar character(int id) {
@@ -174,67 +181,4 @@ public class Font extends Asset {
     private static long COMBINE(int first, int second) {
         return ((first & 0xFFFFL) << 32) | (second & 0xFFFFL);
     }
-
-    private static final class LineParser {
-        private String prefix;
-        private final Map<String, String> values;
-
-        public LineParser() {
-            this.values = new HashMap<>();
-        }
-
-        public void parse(String line) {
-            int first_space = line.indexOf(" ");
-            prefix = line.substring(0, first_space);
-            line = line.substring(first_space + 1);
-            byte[] buffer = line.getBytes();
-            boolean quoted = false;
-            for (int i = 0; i < buffer.length; i++) {
-                if (buffer[i] == '"')
-                    quoted = !quoted;
-                if (buffer[i] == ' ' && !quoted)
-                    buffer[i] = '\n';
-            }
-            line = new String(buffer);
-            for (String pair : line.split("\n")) {
-                if (pair.contains("=")) {
-                    String[] kv = pair.split("=");
-                    if (kv[1].startsWith("\""))
-                        kv[1] = kv[1].substring(1, kv[1].length() - 1);
-                    values.put(kv[0], kv[1]);
-                }
-            }
-        }
-
-        public String getString(String key) {
-            return values.get(key);
-        }
-
-        public int getInt(String key) {
-            return Integer.parseInt(values.get(key));
-        }
-
-        public boolean getBoolean(String key) {
-            return Boolean.parseBoolean(values.get(key));
-        }
-
-        public int[] getInt2(String key) {
-            String[] array = values.get(key).split(",");
-            return new int[] {
-                    Integer.parseInt(array[0]),
-                    Integer.parseInt(array[1])
-            };
-        }
-
-        public int[] getInt4(String key) {
-            String[] array = values.get(key).split(",");
-            return new int[] {
-                    Integer.parseInt(array[0]),
-                    Integer.parseInt(array[1]),
-                    Integer.parseInt(array[2]),
-                    Integer.parseInt(array[3])
-            };
-        }
-    }
-
 }

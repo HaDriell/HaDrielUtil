@@ -12,18 +12,18 @@ public class ShaderProgram extends Asset {
 
     private Shader shader;
 
-    protected void onLoad(AssetManager manager, Path path, ByteBuffer fileContent) {
+    protected void onLoad(Path path, ByteBuffer fileContent) {
         byte[] data = new byte[fileContent.remaining()];
         fileContent.get(data, 0, data.length);
 
         try (InputStream stream = new ByteArrayInputStream(data)) {
             shader = Shader.GLSL(stream);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to read the Font file", e);
+            throw new RuntimeException("Failed to read the FontFile file", e);
         }
     }
 
-    protected void onUnload(AssetManager manager) {
+    protected void onUnload() {
         shader.destroy();
     }
 }

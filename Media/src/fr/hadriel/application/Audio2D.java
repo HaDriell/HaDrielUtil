@@ -1,4 +1,4 @@
-package fr.hadriel.asset.audio;
+package fr.hadriel.application;
 
 import fr.hadriel.math.Vec2;
 import fr.hadriel.math.Vec3;

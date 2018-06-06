@@ -38,6 +38,12 @@ public final class Renderer {
         this.vertexArrayIndex = 0;
     }
 
+    public void destroy() {
+        for (int i = 0; i < vertexArrays.length; i++) {
+            vertexArrays[i].destroy();
+        }
+    }
+
     private VertexArray nextVertexArray() {
         vertexArrayIndex = (vertexArrayIndex + 1) % vertexArrays.length;
         return vertexArrays[vertexArrayIndex];
