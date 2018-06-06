@@ -12,6 +12,7 @@ import fr.hadriel.opengl.shader.Shader;
 import fr.hadriel.opengl.texture.Texture2D;
 import fr.hadriel.opengl.texture.TextureFilter;
 import fr.hadriel.opengl.texture.TextureFormat;
+import org.lwjgl.opengl.GL11;
 
 public class TestG2D extends Application {
 
@@ -42,7 +43,7 @@ public class TestG2D extends Application {
 
         Texture2D depth = new Texture2D(); // already bound
         depth.bind();
-        depth.setData(128, 128, TextureFormat.DEPTH16);
+        depth.setData(128, 128, TextureFormat.DEPTH24);
         depth.setFilter(TextureFilter.LINEAR, TextureFilter.LINEAR);
         framebuffer.setDepthTexture(depth);
 
@@ -51,11 +52,8 @@ public class TestG2D extends Application {
     }
 
     protected void update(Renderer renderer, float delta) {
-        framebuffer.bind();
-        framebuffer.clear();
 
-        renderer.begin();
-        //Batch filling
+        //Generate data
         int size = 100;
         CommandBatch spriteBatch = new CommandBatch();
         spriteBatch.setUniform("u_projection", Matrix4.Orthographic(0, 800, 0, 450, 1000, 0));
@@ -65,11 +63,38 @@ public class TestG2D extends Application {
                 spriteBatch.add(Matrix3.Translation(x, y), 0, 0, size, size);
             }
         }
-//        logger.info("Sprite Batch size: " + spriteBatch.size());
-        renderer.submit(textureShader, spriteBatch);
-        renderer.end();
 
-        framebuffer.unbind();
+        //Render pass to Framebuffer
+        {
+            framebuffer.bind();
+            framebuffer.clear();
+
+            //Batch filling
+//        logger.info("Sprite Batch size: " + spriteBatch.size());
+
+            renderer.begin();
+            renderer.submit(textureShader, spriteBatch);
+            renderer.end();
+
+            framebuffer.unbind();
+        }
+
+        //Render pass framebuffer to screen
+        {
+            CommandBatch frameBatch = new CommandBatch();
+            frameBatch.setUniform("u_projection", Matrix4.Orthographic(0, 800, 0, 450, 1000, 0));
+            frameBatch.setUniform("u_texture", framebuffer.getColorTexture());
+            frameBatch.add(Matrix3.Identity, 0, 0, 800, 450);
+
+            renderer.begin();
+            renderer.submit(textureShader, frameBatch);
+            renderer.end();
+        }
+
+        //Render pass directly to screen
+        {
+
+        }
     }
 
     protected void terminate() {

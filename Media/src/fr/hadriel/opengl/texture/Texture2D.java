@@ -32,10 +32,6 @@ public class Texture2D {
         return height;
     }
 
-    public TextureFormat format() {
-        return format;
-    }
-
     public void setWrapping(TextureWrapper xWrapper, TextureWrapper yWrapper) {
         if (this.xWrapper != xWrapper || this.yWrapper != yWrapper) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, xWrapper.value);
@@ -59,7 +55,7 @@ public class Texture2D {
     }
 
     public void setData(int width, int height, TextureFormat format) {
-        glTexImage2D(GL_TEXTURE_2D, 0, format.value, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, format.internalFormat, width, height, 0, format.format, GL_UNSIGNED_BYTE, 0);
         glGenerateMipmap(GL_TEXTURE_2D); // always Generate mipmaps
         this.width = width;
         this.height = height;
@@ -71,7 +67,7 @@ public class Texture2D {
     }
 
     public void setData(int width, int height, int[] pixels, TextureFormat format) {
-        glTexImage2D(GL_TEXTURE_2D, 0, format.value, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        glTexImage2D(GL_TEXTURE_2D, 0, format.internalFormat, width, height, 0, format.format, GL_UNSIGNED_BYTE, pixels);
         glGenerateMipmap(GL_TEXTURE_2D); // always Generate mipmaps
         this.width = width;
         this.height = height;
