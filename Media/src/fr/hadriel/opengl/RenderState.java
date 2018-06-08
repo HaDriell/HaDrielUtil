@@ -8,7 +8,7 @@ import java.util.Objects;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL14.*;
 
-public class PipelineState {
+public class RenderState {
 
     //GL Capabilities states
     private Map<Capability, Boolean> capabilities;
@@ -24,13 +24,31 @@ public class PipelineState {
     //Face Culling
     private FaceCulling faceCulling;
 
-    public PipelineState() {
+    //Viewport
+    // these viewport values are invalid to ensure that any viewport will be pushed for the first call
+    private int
+            x = 0,
+            y = 0,
+            width = -1,
+            height = -1;
+
+    public RenderState() {
         this.capabilities = new HashMap<>();
         Arrays.stream(Capability.values()).forEach(this::disable);
         setBlendEquation(BlendEquation.GL_FUNC_ADD);
         setBlendFunction(BlendFactor.GL_ONE, BlendFactor.GL_ZERO);
         setWindingOrder(WindingOrder.COUNTER_CLOCKWISE);
         setFaceCulling(FaceCulling.BACK);
+    }
+
+    public void setViewport(int x, int y, int width, int height) {
+        if (this.x != x || this.y != y || this.width != width || this.height != height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            glViewport(0, 0,  width, height);
+        }
     }
 
     public void enable(Capability capability) {

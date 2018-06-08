@@ -3,7 +3,7 @@ package fr.hadriel;
 import fr.hadriel.application.Application;
 import fr.hadriel.application.Graphic2D;
 import fr.hadriel.io.ImageFile;
-import fr.hadriel.g2d.Renderer;
+import fr.hadriel.g2d.commandbuffer.Renderer;
 import fr.hadriel.g2d.commandbuffer.CommandBatch;
 import fr.hadriel.math.Matrix3;
 import fr.hadriel.math.Matrix4;
@@ -12,7 +12,6 @@ import fr.hadriel.opengl.shader.Shader;
 import fr.hadriel.opengl.texture.Texture2D;
 import fr.hadriel.opengl.texture.TextureFilter;
 import fr.hadriel.opengl.texture.TextureFormat;
-import org.lwjgl.opengl.GL11;
 
 public class TestG2D extends Application {
 

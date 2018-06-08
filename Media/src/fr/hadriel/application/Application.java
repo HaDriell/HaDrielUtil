@@ -2,7 +2,7 @@ package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
 import fr.hadriel.asset.graphics.WindowHint;
-import fr.hadriel.g2d.Renderer;
+import fr.hadriel.g2d.commandbuffer.Renderer;
 import fr.hadriel.util.Timer;
 import fr.hadriel.util.logging.Log;
 

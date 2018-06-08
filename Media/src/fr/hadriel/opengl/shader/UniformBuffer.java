@@ -1,9 +1,7 @@
-package fr.hadriel.g2d.commandbuffer;
+package fr.hadriel.opengl.shader;
 
 import fr.hadriel.math.*;
 import fr.hadriel.opengl.texture.Texture2D;
-import fr.hadriel.opengl.shader.GLSLType;
-import fr.hadriel.opengl.shader.Shader;
 
 import java.util.ArrayList;
 import java.util.List;

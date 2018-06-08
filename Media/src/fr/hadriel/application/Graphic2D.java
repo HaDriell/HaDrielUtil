@@ -5,7 +5,7 @@ import fr.hadriel.asset.graphics.WindowHint;
 import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.event.EventDispatcher;
 import fr.hadriel.event.IEventListener;
-import fr.hadriel.g2d.Renderer;
+import fr.hadriel.g2d.commandbuffer.Renderer;
 import fr.hadriel.math.Vec2;
 import fr.hadriel.opengl.shader.Shader;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -101,8 +101,8 @@ public final class Graphic2D {
             else
                 dispatcher.onEvent(new FocusLostEvent());
         });
-        glfwSetWindowRefreshCallback(window, window -> new RenderEvent());
-        glfwSetWindowSizeCallback(window, (window, w, h) -> new WindowSizeEvent(w, h));
+        glfwSetWindowRefreshCallback(window, window -> dispatcher.onEvent(new RenderEvent()));
+        glfwSetWindowSizeCallback(window, (window, w, h) -> dispatcher.onEvent(new WindowSizeEvent(w, h)));
         glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if(action == GLFW_RELEASE)
                 dispatcher.onEvent(new KeyReleasedEvent(key, mods));

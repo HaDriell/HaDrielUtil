@@ -1,8 +1,5 @@
-package fr.hadriel.g2d;
+package fr.hadriel.g2d.commandbuffer;
 
-import fr.hadriel.g2d.commandbuffer.Command;
-import fr.hadriel.g2d.commandbuffer.CommandBatch;
-import fr.hadriel.g2d.commandbuffer.CommandBuffer;
 import fr.hadriel.opengl.*;
 import fr.hadriel.opengl.shader.Shader;
 

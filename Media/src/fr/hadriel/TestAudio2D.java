@@ -4,7 +4,7 @@ import fr.hadriel.application.Application;
 import fr.hadriel.application.Audio2D;
 import fr.hadriel.asset.audio.Sound;
 import fr.hadriel.asset.audio.Source2D;
-import fr.hadriel.g2d.Renderer;
+import fr.hadriel.g2d.commandbuffer.Renderer;
 import fr.hadriel.math.Mathf;
 import fr.hadriel.util.Timer;
 
