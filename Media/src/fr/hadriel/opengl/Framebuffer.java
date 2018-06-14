@@ -86,4 +86,8 @@ public class Framebuffer {
             }
         }
     }
+
+    public static void BindDefault() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 }

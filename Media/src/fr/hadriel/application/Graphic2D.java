@@ -2,12 +2,10 @@ package fr.hadriel.application;
 
 import fr.hadriel.application.event.*;
 import fr.hadriel.asset.graphics.WindowHint;
-import fr.hadriel.asset.graphics.font.Font;
 import fr.hadriel.event.EventDispatcher;
 import fr.hadriel.event.IEventListener;
-import fr.hadriel.g2d.commandbuffer.Renderer;
+import fr.hadriel.g2d.G2DRenderer;
 import fr.hadriel.math.Vec2;
-import fr.hadriel.opengl.shader.Shader;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -23,46 +21,12 @@ public final class Graphic2D {
     private Graphic2D() {}
     public static final int NO_WINDOW = -1;
 
-    //defaults
-    private static Shader defaultColorShader;
-    private static Shader defaultTextureShader;
-    private static Shader defaultSDFShader;
-    private static Font defaultFont;
-
     private static long window = NO_WINDOW;
     private static GLCapabilities capabilities;
-    private static Renderer renderer;
+    private static G2DRenderer renderer;
     private static EventDispatcher dispatcher;
 
     private static Vec2 mouse;
-
-    public static Shader getDefaultColorShader() {
-        return defaultColorShader;
-    }
-
-    public static Shader getDefaultSDFShader() {
-        return defaultSDFShader;
-    }
-
-    public static Shader getDefaultTextureShader() {
-        return defaultTextureShader;
-    }
-
-    public static Font getDefaultFont() {
-        return defaultFont;
-    }
-
-    private static void loadDefaults() {
-        defaultColorShader = Shader.GLSL(Graphic2D.class.getResourceAsStream("defaults/default_color_shader.glsl"));
-        defaultTextureShader = Shader.GLSL(Graphic2D.class.getResourceAsStream("defaults/default_texture_shader.glsl"));
-        defaultSDFShader = Shader.GLSL(Graphic2D.class.getResourceAsStream("defaults/default_sdf_shader.glsl"));
-    }
-
-    private static void unloadDefaults() {
-        defaultColorShader.destroy();
-        defaultTextureShader.destroy();
-        defaultSDFShader.destroy();
-    }
 
     public static void create(WindowHint hint) {
         if(window != NO_WINDOW)
@@ -91,7 +55,7 @@ public final class Graphic2D {
         glfwSetWindowPos(window, x , y);
         glfwMakeContextCurrent(window);
         capabilities = GL.createCapabilities();
-        renderer = new Renderer();
+        renderer = new G2DRenderer();
 
         dispatcher = new EventDispatcher();
         glfwSetWindowCloseCallback(window, window -> dispatcher.onEvent(new WindowCloseEvent()));
@@ -119,7 +83,6 @@ public final class Graphic2D {
             mouse = new Vec2(xpos, ypos);
             dispatcher.onEvent(new MouseMovedEvent(mouse));
         });
-        loadDefaults();
     }
 
     public static void addEventListener(IEventListener listener) {
@@ -132,8 +95,6 @@ public final class Graphic2D {
 
     public static void terminate() {
         if(window == NO_WINDOW) return;
-        unloadDefaults();
-        renderer.destroy();
         glfwDestroyWindow(window);
         glfwTerminate();
         window = NO_WINDOW;
@@ -177,7 +138,7 @@ public final class Graphic2D {
         glfwSwapInterval(vsync ? GLFW_TRUE : GLFW_FALSE);
     }
 
-    public static Renderer getRenderer() {
+    public static G2DRenderer getRenderer() {
         return renderer;
     }
 

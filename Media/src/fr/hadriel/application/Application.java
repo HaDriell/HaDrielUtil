@@ -2,7 +2,7 @@ package fr.hadriel.application;
 
 import fr.hadriel.asset.AssetManager;
 import fr.hadriel.asset.graphics.WindowHint;
-import fr.hadriel.g2d.commandbuffer.Renderer;
+import fr.hadriel.g2d.G2DRenderer;
 import fr.hadriel.util.Timer;
 import fr.hadriel.util.logging.Log;
 
@@ -63,7 +63,7 @@ public abstract class Application {
             return;
         }
         Graphic2D.makeContextCurrent();
-        Renderer renderer = Graphic2D.getRenderer();
+        G2DRenderer renderer = Graphic2D.getRenderer();
         update(renderer, delta);
         Graphic2D.update();
     }
@@ -80,7 +80,7 @@ public abstract class Application {
     }
 
     protected abstract void start(String[] args);
-    protected abstract void update(Renderer renderer, float delta);
+    protected abstract void update(G2DRenderer renderer, float delta);
     protected abstract void terminate();
 
 

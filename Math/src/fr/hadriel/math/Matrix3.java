@@ -57,9 +57,9 @@ public strictfp class Matrix3 {
         this(IDENTITY);
     }
 
-    public static Matrix3 Transform(float sx, float sy, float r, float px, float py) {
-        float cos = Mathf.cos(Mathf.toRadians(r));
-        float sin = Mathf.sin(Mathf.toRadians(r));
+    public static Matrix3 Transform(float sx, float sy, float angle, float px, float py) {
+        float cos = Mathf.cos(Mathf.toRadians(angle));
+        float sin = Mathf.sin(Mathf.toRadians(angle));
         //manual
         return new Matrix3(
                 cos * sx,   sin,        px,

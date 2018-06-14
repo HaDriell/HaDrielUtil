@@ -1,41 +1,49 @@
 package fr.hadriel.g2d;
 
-import fr.hadriel.opengl.RenderState;
+import fr.hadriel.opengl.Framebuffer;
 import fr.hadriel.opengl.VertexArray;
+import fr.hadriel.opengl.shader.Shader;
 
-public final class G2DRenderer {
-    public static final int DEFAULT_VERTEX_CAPACITY = 60_000; // 10K quads
-    public static final int DEFAULT_VERTEX_ARRAY_COUNT = 2; // 2 VAOs to avoid locks
+import static org.lwjgl.opengl.GL11.*;
 
-    private RenderState renderState;
+public class G2DRenderer {
+    public static final String G2D_PROJECTION = "g2d_projection";
+    public static final String G2D_MODEL = "g2d_model";
+    public static final String G2D_VIEW = "g2d_view";
 
-    private VertexArray[] vertexArrays;
-    private int activeVAO;
+    public void render(G2DScene scene, G2DCamera camera, Framebuffer framebuffer) {
+        if (framebuffer != null)
+            framebuffer.bind();
+        else
+            Framebuffer.BindDefault();
 
+        for(G2DShaderPass pass : scene) {
+            Shader shader = scene.getShader(pass.getShaderID());
+            if (shader == null) { // TODO : log that ?
+                continue; // skip, no shader to render
+            }
 
-    protected G2DRenderer(int vertexArrayCapacity, int vertexArrayCount) {
-        this.renderState = new RenderState();
-        this.vertexArrays = new VertexArray[vertexArrayCount];
-        for (int i = 0; i < vertexArrays.length; i++) {
-            vertexArrays[i] = new VertexArray(vertexArrayCapacity, G2DVertex.VERTEX_LAYOUT);
+            shader.bind();
+            pass.setUniforms(shader); // in order to avoid external override, system uniforms are set AFTER user uniforms
+            shader.setUniform(G2D_PROJECTION, camera.getProjectionTransform());
+            shader.setUniform(G2D_VIEW, camera.getViewTransform());
+
+            for(G2DInstance instance : pass) {
+                G2DMesh mesh = scene.getMesh(instance.getMeshID());
+                if (mesh == null) { // TODO : Log that ?
+                    continue;
+                }
+
+                VertexArray vertexArray = mesh.getVertexArray();
+                if (vertexArray == null) { // TODO : Log that ?
+                    continue;
+                }
+
+                //Draw the Instance
+                shader.setUniform(G2D_MODEL, instance.getTransform());
+                vertexArray.bind();
+                glDrawArrays(GL_TRIANGLES, 0, vertexArray.getMaxElementCount());
+            }
         }
-        this.activeVAO = 0;
-    }
-
-    private VertexArray getVertexArray() {
-        activeVAO = (activeVAO + 1) % vertexArrays.length; // next VAO in the queue
-        return vertexArrays[activeVAO];
-    }
-
-    private void begin() {
-
-    }
-
-    private void submit(G2DMesh mesh) {
-
-    }
-
-    private void end() {
-
     }
 }

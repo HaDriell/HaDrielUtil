@@ -2,6 +2,7 @@ package fr.hadriel;
 
 import fr.hadriel.application.Application;
 import fr.hadriel.application.Graphic2D;
+import fr.hadriel.g2d.G2DRenderer;
 import fr.hadriel.io.ImageFile;
 import fr.hadriel.g2d.commandbuffer.Renderer;
 import fr.hadriel.g2d.commandbuffer.CommandBatch;
@@ -50,7 +51,7 @@ public class TestG2D extends Application {
         framebuffer.unbind();
     }
 
-    protected void update(Renderer renderer, float delta) {
+    protected void update(G2DRenderer renderer, float delta) {
 
         //Generate data
         int size = 100;
